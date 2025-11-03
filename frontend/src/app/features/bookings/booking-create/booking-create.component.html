@@ -1,0 +1,250 @@
+<div class="booking-container" *ngIf="!loading && service">
+  <div class="booking-header">
+    <h1>Complete Your Booking</h1>
+    <p>{{ service.title }}</p>
+  </div>
+
+  <div class="booking-content">
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+      <mat-stepper linear #stepper>
+        <!-- Step 1: Date & Time -->
+        <mat-step [stepControl]="bookingForm.get('date')!" label="Date & Time">
+          <mat-card>
+            <mat-card-content>
+              <h2>When would you like to book?</h2>
+              
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Select Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error>Date is required</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Start Time</mat-label>
+                <input matInput type="time" formControlName="startTime">
+                <mat-error>Time is required</mat-error>
+              </mat-form-field>
+
+              <div class="info-card">
+                <mat-icon>info</mat-icon>
+                <div>
+                  <strong>Availability</strong>
+                  <p>{{ service.availability?.days?.join(', ') || 'Contact host for availability' }}</p>
+                  <p>Hours: {{ service.availability?.startTime }} - {{ service.availability?.endTime }}</p>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button mat-raised-button color="primary" matStepperNext>Next</button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </mat-step>
+
+        <!-- Step 2: Guests & Duration -->
+        <mat-step [stepControl]="bookingForm.get('guests')!" label="Details">
+          <mat-card>
+            <mat-card-content>
+              <h2>Booking Details</h2>
+
+              <div class="detail-control">
+                <div class="detail-info">
+                  <strong>Number of Guests</strong>
+                  <p>Max: {{ service.maxGuests || 10 }} guests</p>
+                </div>
+                <div class="counter">
+                  <button mat-icon-button type="button" (click)="decrementGuests()">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="count">{{ bookingForm.get('guests')?.value }}</span>
+                  <button mat-icon-button type="button" (click)="incrementGuests()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="detail-control" *ngIf="service.pricing.type !== 'fixed'">
+                <div class="detail-info">
+                  <strong>Duration (hours)</strong>
+                  <p>Service duration: {{ service.duration || 60 }} minutes</p>
+                </div>
+                <div class="counter">
+                  <button mat-icon-button type="button" (click)="decrementDuration()">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="count">{{ bookingForm.get('duration')?.value }}</span>
+                  <button mat-icon-button type="button" (click)="incrementDuration()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Special Requests (Optional)</mat-label>
+                <textarea matInput formControlName="specialRequests" rows="4" 
+                          placeholder="Any special requests or requirements..."></textarea>
+              </mat-form-field>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-raised-button color="primary" matStepperNext>Next</button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </mat-step>
+
+        <!-- Step 3: Review & Payment -->
+        <mat-step label="Review & Pay">
+          <mat-card>
+            <mat-card-content>
+              <h2>Review Your Booking</h2>
+
+              <div class="review-section">
+                <div class="review-item">
+                  <mat-icon>event</mat-icon>
+                  <div>
+                    <strong>Date</strong>
+                    <p>{{ bookingForm.get('date')?.value | date: 'fullDate' }}</p>
+                  </div>
+                </div>
+
+                <div class="review-item">
+                  <mat-icon>schedule</mat-icon>
+                  <div>
+                    <strong>Time</strong>
+                    <p>{{ bookingForm.get('startTime')?.value }}</p>
+                  </div>
+                </div>
+
+                <div class="review-item">
+                  <mat-icon>people</mat-icon>
+                  <div>
+                    <strong>Guests</strong>
+                    <p>{{ bookingForm.get('guests')?.value }} guest(s)</p>
+                  </div>
+                </div>
+
+                <div class="review-item" *ngIf="service.pricing.type !== 'fixed'">
+                  <mat-icon>timer</mat-icon>
+                  <div>
+                    <strong>Duration</strong>
+                    <p>{{ bookingForm.get('duration')?.value }} hour(s)</p>
+                  </div>
+                </div>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="price-breakdown">
+                <h3>Price Breakdown</h3>
+                <div class="price-row">
+                  <span>Base Price</span>
+                  <span>{{ basePrice }} MAD</span>
+                </div>
+                <div class="price-row">
+                  <span>Service Fee (10%)</span>
+                  <span>{{ serviceFee }} MAD</span>
+                </div>
+                <mat-divider></mat-divider>
+                <div class="price-row total">
+                  <strong>Total</strong>
+                  <strong>{{ totalPrice }} MAD</strong>
+                </div>
+              </div>
+
+              <div class="terms-section">
+                <mat-checkbox formControlName="agreedToTerms">
+                  I agree to the <a href="/terms" target="_blank">Terms of Service</a> and 
+                  <a href="/cancellation-policy" target="_blank">Cancellation Policy</a>
+                </mat-checkbox>
+              </div>
+
+              <div class="payment-info">
+                <mat-icon>lock</mat-icon>
+                <p>Your payment is secure. Funds will be held in escrow until service completion.</p>
+              </div>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious [disabled]="processing">Back</button>
+                <button mat-raised-button color="accent" type="submit" 
+                        [disabled]="processing || bookingForm.invalid">
+                  <mat-icon *ngIf="!processing">payment</mat-icon>
+                  <mat-spinner *ngIf="processing" diameter="20"></mat-spinner>
+                  {{ processing ? 'Processing...' : 'Confirm & Pay' }}
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </mat-step>
+      </mat-stepper>
+    </form>
+
+    <!-- Booking Summary Sidebar -->
+    <div class="booking-summary">
+      <mat-card>
+        <mat-card-content>
+          <div class="service-preview">
+            <img [src]="service.images[0]" [alt]="service.title">
+            <h3>{{ service.title }}</h3>
+            <div class="rating">
+              <mat-icon>star</mat-icon>
+              <span>{{ service.averageRating?.toFixed(1) }} ({{ service.reviews?.length || 0 }})</span>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="summary-details">
+            <h4>Booking Summary</h4>
+            <div class="summary-row" *ngIf="bookingForm.get('date')?.value">
+              <mat-icon>event</mat-icon>
+              <span>{{ bookingForm.get('date')?.value | date: 'mediumDate' }}</span>
+            </div>
+            <div class="summary-row" *ngIf="bookingForm.get('startTime')?.value">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ bookingForm.get('startTime')?.value }}</span>
+            </div>
+            <div class="summary-row">
+              <mat-icon>people</mat-icon>
+              <span>{{ bookingForm.get('guests')?.value }} guest(s)</span>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="price-summary">
+            <div class="price-row">
+              <span>Subtotal</span>
+              <span>{{ basePrice }} MAD</span>
+            </div>
+            <div class="price-row">
+              <span>Service Fee</span>
+              <span>{{ serviceFee }} MAD</span>
+            </div>
+            <div class="price-row total">
+              <strong>Total</strong>
+              <strong>{{ totalPrice }} MAD</strong>
+            </div>
+          </div>
+
+          <div class="host-info">
+            <img [src]="service.host?.photo || '/assets/default-avatar.png'" [alt]="service.host?.fullName">
+            <div>
+              <strong>{{ service.host?.fullName }}</strong>
+              <p>Your Host</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+  <p>Loading service details...</p>
+</div>

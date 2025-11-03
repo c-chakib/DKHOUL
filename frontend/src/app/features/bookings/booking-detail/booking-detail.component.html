@@ -1,0 +1,130 @@
+<div class="booking-detail-container" *ngIf="!loading && booking">
+  <div class="header">
+    <h1>Booking Details</h1>
+    <mat-chip [class]="booking.status">{{ booking.status | uppercase }}</mat-chip>
+  </div>
+
+  <div class="content">
+    <mat-card class="service-card">
+      <mat-card-header>
+        <mat-card-title>Service Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="service-info">
+          <img [src]="booking.service.images[0]" [alt]="booking.service.title">
+          <div>
+            <h2>{{ booking.service.title }}</h2>
+            <p>{{ booking.service.category }}</p>
+            <button mat-button color="primary" [routerLink]="['/services', booking.service._id]">View Service</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="details-card">
+      <mat-card-header>
+        <mat-card-title>Booking Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="detail-row">
+          <mat-icon>event</mat-icon>
+          <div>
+            <strong>Date</strong>
+            <p>{{ booking.date | date: 'fullDate' }}</p>
+          </div>
+        </div>
+        <div class="detail-row">
+          <mat-icon>schedule</mat-icon>
+          <div>
+            <strong>Time</strong>
+            <p>{{ booking.startTime }}</p>
+          </div>
+        </div>
+        <div class="detail-row">
+          <mat-icon>people</mat-icon>
+          <div>
+            <strong>Guests</strong>
+            <p>{{ booking.guests }} guest(s)</p>
+          </div>
+        </div>
+        <div class="detail-row" *ngIf="booking.duration">
+          <mat-icon>timer</mat-icon>
+          <div>
+            <strong>Duration</strong>
+            <p>{{ booking.duration }} minutes</p>
+          </div>
+        </div>
+        <div class="detail-row" *ngIf="booking.specialRequests">
+          <mat-icon>notes</mat-icon>
+          <div>
+            <strong>Special Requests</strong>
+            <p>{{ booking.specialRequests }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="host-card">
+      <mat-card-header>
+        <mat-card-title>Host Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="host-info">
+          <img [src]="booking.service.host?.photo || '/assets/default-avatar.png'" [alt]="booking.service.host?.fullName">
+          <div>
+            <h3>{{ booking.service.host?.fullName }}</h3>
+            <div class="rating">
+              <mat-icon>star</mat-icon>
+              <span>{{ booking.service.host?.averageRating?.toFixed(1) }}</span>
+            </div>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" (click)="contactHost()">
+          <mat-icon>message</mat-icon>
+          Contact Host
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="price-card">
+      <mat-card-header>
+        <mat-card-title>Payment Summary</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="price-row">
+          <span>Total Amount</span>
+          <span class="amount">{{ booking.totalPrice }} MAD</span>
+        </div>
+        <div class="price-row">
+          <span>Payment Status</span>
+          <mat-chip [class]="booking.payment?.status">{{ booking.payment?.status || 'Pending' }}</mat-chip>
+        </div>
+        <div class="price-row" *ngIf="booking.payment?.paidAt">
+          <span>Paid On</span>
+          <span>{{ booking.payment.paidAt | date: 'short' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="actions-card" *ngIf="booking.status === 'pending' || booking.status === 'confirmed'">
+      <mat-card-content>
+        <h3>Actions</h3>
+        <div class="actions">
+          <button mat-raised-button color="warn" (click)="cancelBooking()" *ngIf="booking.status !== 'cancelled'">
+            <mat-icon>cancel</mat-icon>
+            Cancel Booking
+          </button>
+          <button mat-raised-button color="accent" (click)="leaveReview()" *ngIf="booking.status === 'completed'">
+            <mat-icon>rate_review</mat-icon>
+            Leave Review
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+  <p>Loading booking...</p>
+</div>

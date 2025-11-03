@@ -1,0 +1,5 @@
+// Main content area should account for fixed navbar
+.main-content {
+  margin-top: 64px; // Height of navbar
+  min-height: calc(100vh - 64px);
+}

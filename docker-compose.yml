@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: dkhoul-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: dkhoul
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - dkhoul-network
+
+  redis:
+    image: redis:alpine
+    container_name: dkhoul-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - dkhoul-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dkhoul-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/dkhoul?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: your_super_secret_jwt_key_change_in_production
+      JWT_EXPIRE: 30d
+      CLIENT_URL: http://localhost:4200
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - dkhoul-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dkhoul-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - dkhoul-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  dkhoul-network:
+    driver: bridge

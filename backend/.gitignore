@@ -60,3 +60,5 @@ secrets.json
 # Backup files
 *~
 *.swp
+
+*.md

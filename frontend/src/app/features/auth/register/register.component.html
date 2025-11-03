@@ -1,0 +1,228 @@
+<div class="register-container">
+  <div class="register-card-wrapper">
+    <mat-card class="register-card">
+      <mat-card-header>
+        <div class="logo">
+          <h1>DKHOUL</h1>
+          <p class="tagline">Join Morocco's Premier Marketplace</p>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <h2>Create Your Account</h2>
+        <p class="subtitle">Start your journey with us today</p>
+
+        <mat-stepper linear #stepper>
+          <!-- Step 1: Personal Information -->
+          <mat-step [stepControl]="personalInfoForm">
+            <form [formGroup]="personalInfoForm">
+              <ng-template matStepLabel>Personal Info</ng-template>
+              
+              <div class="step-content">
+                <h3>Tell us about yourself</h3>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>First Name</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="firstName"
+                    placeholder="Enter your first name"
+                  >
+                  <mat-icon matPrefix>person</mat-icon>
+                  <mat-error *ngIf="personalInfoForm.get('firstName')?.invalid && personalInfoForm.get('firstName')?.touched">
+                    {{ getErrorMessage(personalInfoForm, 'firstName') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Last Name</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="lastName"
+                    placeholder="Enter your last name"
+                  >
+                  <mat-icon matPrefix>person_outline</mat-icon>
+                  <mat-error *ngIf="personalInfoForm.get('lastName')?.invalid && personalInfoForm.get('lastName')?.touched">
+                    {{ getErrorMessage(personalInfoForm, 'lastName') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Phone Number</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="phoneNumber"
+                    placeholder="+212 6XX XXX XXX"
+                  >
+                  <mat-icon matPrefix>phone</mat-icon>
+                  <mat-error *ngIf="personalInfoForm.get('phoneNumber')?.invalid && personalInfoForm.get('phoneNumber')?.touched">
+                    {{ getErrorMessage(personalInfoForm, 'phoneNumber') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <div class="stepper-buttons">
+                  <button mat-raised-button color="primary" matStepperNext type="button">
+                    Next
+                    <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </mat-step>
+
+          <!-- Step 2: Account Information -->
+          <mat-step [stepControl]="accountInfoForm">
+            <form [formGroup]="accountInfoForm">
+              <ng-template matStepLabel>Account Info</ng-template>
+              
+              <div class="step-content">
+                <h3>Setup your account</h3>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email Address</mat-label>
+                  <input 
+                    matInput 
+                    type="email"
+                    formControlName="email"
+                    placeholder="Enter your email"
+                  >
+                  <mat-icon matPrefix>email</mat-icon>
+                  <mat-error *ngIf="accountInfoForm.get('email')?.invalid && accountInfoForm.get('email')?.touched">
+                    {{ getErrorMessage(accountInfoForm, 'email') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>I want to</mat-label>
+                  <mat-select formControlName="role">
+                    <mat-option *ngFor="let role of roles" [value]="role.value">
+                      {{ role.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matPrefix>badge</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Password</mat-label>
+                  <input 
+                    matInput 
+                    [type]="hidePassword ? 'password' : 'text'"
+                    formControlName="password"
+                    placeholder="Create a strong password"
+                  >
+                  <mat-icon matPrefix>lock</mat-icon>
+                  <button 
+                    mat-icon-button 
+                    matSuffix 
+                    type="button"
+                    (click)="hidePassword = !hidePassword"
+                  >
+                    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="accountInfoForm.get('password')?.invalid && accountInfoForm.get('password')?.touched">
+                    {{ getErrorMessage(accountInfoForm, 'password') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <!-- Password Strength Indicator -->
+                <div class="password-strength" *ngIf="accountInfoForm.get('password')?.value">
+                  <div class="strength-bar">
+                    <div 
+                      class="strength-fill" 
+                      [style.width.%]="getPasswordStrength().value"
+                      [style.background-color]="getPasswordStrength().color"
+                    ></div>
+                  </div>
+                  <span 
+                    class="strength-label"
+                    [style.color]="getPasswordStrength().color"
+                  >
+                    {{ getPasswordStrength().label }}
+                  </span>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Confirm Password</mat-label>
+                  <input 
+                    matInput 
+                    [type]="hideConfirmPassword ? 'password' : 'text'"
+                    formControlName="confirmPassword"
+                    placeholder="Re-enter your password"
+                  >
+                  <mat-icon matPrefix>lock_outline</mat-icon>
+                  <button 
+                    mat-icon-button 
+                    matSuffix 
+                    type="button"
+                    (click)="hideConfirmPassword = !hideConfirmPassword"
+                  >
+                    <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="accountInfoForm.get('confirmPassword')?.touched">
+                    {{ getErrorMessage(accountInfoForm, 'confirmPassword') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <div class="terms-checkbox">
+                  <mat-checkbox formControlName="agreeToTerms">
+                    I agree to the <a href="/terms" target="_blank">Terms of Service</a> and 
+                    <a href="/privacy" target="_blank">Privacy Policy</a>
+                  </mat-checkbox>
+                </div>
+
+                <div class="stepper-buttons">
+                  <button mat-stroked-button matStepperPrevious type="button">
+                    <mat-icon>arrow_back</mat-icon>
+                    Back
+                  </button>
+                  <button 
+                    mat-raised-button 
+                    color="primary" 
+                    (click)="onSubmit()"
+                    [disabled]="loading || accountInfoForm.invalid"
+                    type="button"
+                  >
+                    <span *ngIf="!loading">Create Account</span>
+                    <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </mat-step>
+        </mat-stepper>
+
+        <!-- Login Link -->
+        <div class="login-link">
+          <p>Already have an account? <a routerLink="/auth/login">Sign In</a></p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Benefits Section -->
+    <div class="benefits-section">
+      <h3>Why Join DKHOUL?</h3>
+      <div class="benefits-grid">
+        <div class="benefit">
+          <mat-icon>verified</mat-icon>
+          <h4>Verified Services</h4>
+          <p>All providers are verified for your safety</p>
+        </div>
+        <div class="benefit">
+          <mat-icon>payment</mat-icon>
+          <h4>Secure Payments</h4>
+          <p>Protected transactions with escrow</p>
+        </div>
+        <div class="benefit">
+          <mat-icon>star</mat-icon>
+          <h4>Quality Guaranteed</h4>
+          <p>Read reviews from real customers</p>
+        </div>
+        <div class="benefit">
+          <mat-icon>support</mat-icon>
+          <h4>24/7 Support</h4>
+          <p>We're always here to help</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

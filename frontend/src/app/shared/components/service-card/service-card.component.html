@@ -1,0 +1,42 @@
+<mat-card class="service-card" (click)="viewService()">
+  <div class="image-container">
+    <img mat-card-image [src]="service?.images?.[0]" [alt]="service?.name" class="service-image">
+    <mat-chip class="category-chip" [style.background-color]="getCategoryColor(service?.category)">
+      {{ service?.category }}
+    </mat-chip>
+  </div>
+
+  <mat-card-content>
+    <h3 class="service-title">{{ service?.name }}</h3>
+    
+    <div class="host-info">
+      <img [src]="service?.host?.avatar || '/assets/default-avatar.png'" [alt]="service?.host?.name" class="host-avatar">
+      <span>{{ service?.host?.name }}</span>
+    </div>
+
+    <p class="service-description">{{ service?.description | slice:0:100 }}...</p>
+
+    <div class="service-meta">
+      <div class="rating" *ngIf="service?.rating">
+        <mat-icon>star</mat-icon>
+        <span>{{ service?.rating.toFixed(1) }}</span>
+        <span class="reviews-count">({{ service?.reviews?.length || 0 }})</span>
+      </div>
+      
+      <div class="location" *ngIf="service?.location">
+        <mat-icon>location_on</mat-icon>
+        <span>{{ service?.location.city }}</span>
+      </div>
+    </div>
+
+    <div class="service-footer">
+      <div class="price">
+        <span class="amount">${{ service?.price }}</span>
+        <span class="unit">/ {{ service?.priceUnit }}</span>
+      </div>
+      <button mat-raised-button color="primary" (click)="viewService(); $event.stopPropagation()">
+        View Details
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

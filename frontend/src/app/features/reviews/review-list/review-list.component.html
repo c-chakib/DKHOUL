@@ -1,0 +1,85 @@
+<div class="reviews-container" *ngIf="!loading">
+  <!-- Rating Summary -->
+  <mat-card class="rating-summary">
+    <div class="overall-rating">
+      <h2>{{ averageRating.toFixed(1) }}</h2>
+      <div class="stars">
+        <mat-icon *ngFor="let star of getRatingStars(averageRating)">star</mat-icon>
+      </div>
+      <p>{{ totalReviews }} reviews</p>
+    </div>
+
+    <div class="rating-breakdown">
+      <div *ngFor="let rating of [5, 4, 3, 2, 1]" class="rating-bar">
+        <span class="label">{{ rating }} <mat-icon>star</mat-icon></span>
+        <div class="bar-container">
+          <div class="bar-fill" [style.width.%]="getRatingPercentage(rating)"></div>
+        </div>
+        <span class="percentage">{{ getRatingPercentage(rating).toFixed(0) }}%</span>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Reviews List -->
+  <div class="reviews-list">
+    <mat-card *ngFor="let review of reviews" class="review-card">
+      <div class="review-header">
+        <img [src]="review.user?.avatar || '/assets/default-avatar.png'" [alt]="review.user?.name">
+        <div class="user-info">
+          <h3>{{ review.user?.name }}</h3>
+          <p class="date">{{ review.createdAt | date:'mediumDate' }}</p>
+        </div>
+        <div class="rating">
+          <div class="stars">
+            <mat-icon *ngFor="let star of getRatingStars(review.rating)">star</mat-icon>
+          </div>
+          <span>{{ review.rating }}/5</span>
+        </div>
+      </div>
+
+      <p class="review-text">{{ review.comment }}</p>
+
+      <div class="category-ratings">
+        <div class="category" *ngIf="review.cleanliness">
+          <mat-icon>cleaning_services</mat-icon>
+          <span>Cleanliness: {{ review.cleanliness }}</span>
+        </div>
+        <div class="category" *ngIf="review.communication">
+          <mat-icon>chat</mat-icon>
+          <span>Communication: {{ review.communication }}</span>
+        </div>
+        <div class="category" *ngIf="review.accuracy">
+          <mat-icon>check_circle</mat-icon>
+          <span>Accuracy: {{ review.accuracy }}</span>
+        </div>
+        <div class="category" *ngIf="review.location">
+          <mat-icon>location_on</mat-icon>
+          <span>Location: {{ review.location }}</span>
+        </div>
+        <div class="category" *ngIf="review.value">
+          <mat-icon>attach_money</mat-icon>
+          <span>Value: {{ review.value }}</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <div class="empty-state" *ngIf="reviews.length === 0">
+      <mat-icon>rate_review</mat-icon>
+      <h3>No reviews yet</h3>
+      <p>Be the first to leave a review!</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator *ngIf="totalReviews > pageSize"
+                 [length]="totalReviews"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="[5, 10, 25, 50]"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+  <p>Loading reviews...</p>
+</div>

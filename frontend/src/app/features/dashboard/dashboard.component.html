@@ -1,0 +1,115 @@
+<div class="dashboard-container" *ngIf="!loading">
+  <div class="header">
+    <h1>Welcome back, {{ user?.name }}!</h1>
+    <p>Here's what's happening with your account today</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <mat-card class="stat-card bookings">
+      <mat-icon>event</mat-icon>
+      <h3>Total Bookings</h3>
+      <p class="stat-number">{{ stats.totalBookings }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card upcoming">
+      <mat-icon>upcoming</mat-icon>
+      <h3>Upcoming</h3>
+      <p class="stat-number">{{ stats.upcomingBookings }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card earnings" *ngIf="user?.role === 'host' || user?.role === 'both'">
+      <mat-icon>payments</mat-icon>
+      <h3>Total Earnings</h3>
+      <p class="stat-number">${{ stats.totalEarnings.toFixed(2) }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card services" *ngIf="user?.role === 'host' || user?.role === 'both'">
+      <mat-icon>business</mat-icon>
+      <h3>Active Services</h3>
+      <p class="stat-number">{{ stats.activeServices }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card rating" *ngIf="user?.role === 'host' || user?.role === 'both'">
+      <mat-icon>star</mat-icon>
+      <h3>Average Rating</h3>
+      <p class="stat-number">{{ stats.averageRating.toFixed(1) }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card reviews" *ngIf="user?.role === 'host' || user?.role === 'both'">
+      <mat-icon>rate_review</mat-icon>
+      <h3>Total Reviews</h3>
+      <p class="stat-number">{{ stats.totalReviews }}</p>
+    </mat-card>
+  </div>
+
+  <!-- Quick Actions -->
+  <mat-card class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+      <button mat-raised-button color="primary" (click)="navigateTo('/services')">
+        <mat-icon>search</mat-icon>
+        Browse Services
+      </button>
+      <button mat-raised-button color="accent" (click)="navigateTo('/bookings')">
+        <mat-icon>event</mat-icon>
+        My Bookings
+      </button>
+      <button mat-raised-button color="primary" (click)="navigateTo('/services/create')" *ngIf="user?.role === 'host' || user?.role === 'both'">
+        <mat-icon>add</mat-icon>
+        Create Service
+      </button>
+      <button mat-raised-button (click)="navigateTo('/messages')">
+        <mat-icon>message</mat-icon>
+        Messages
+      </button>
+      <button mat-raised-button (click)="navigateTo('/profile')">
+        <mat-icon>person</mat-icon>
+        My Profile
+      </button>
+      <button mat-raised-button color="accent" (click)="navigateTo('/services/my-services')" *ngIf="user?.role === 'host' || user?.role === 'both'">
+        <mat-icon>business</mat-icon>
+        Manage Services
+      </button>
+    </div>
+  </mat-card>
+
+  <!-- Recent Activity -->
+  <div class="activity-section">
+    <mat-card class="recent-bookings">
+      <h2>Recent Bookings</h2>
+      <div class="booking-list" *ngIf="recentBookings.length > 0">
+        <div class="booking-item" *ngFor="let booking of recentBookings" (click)="navigateTo('/bookings/' + booking._id)">
+          <img [src]="booking.service?.images[0]" [alt]="booking.service?.name">
+          <div class="booking-details">
+            <h4>{{ booking.service?.name }}</h4>
+            <p>{{ booking.startDate | date:'medium' }}</p>
+            <mat-chip [ngClass]="booking.status">{{ booking.status }}</mat-chip>
+          </div>
+        </div>
+      </div>
+      <p class="empty-message" *ngIf="recentBookings.length === 0">No recent bookings</p>
+      <button mat-button color="primary" (click)="navigateTo('/bookings')">View All</button>
+    </mat-card>
+
+    <mat-card class="recent-services" *ngIf="(user?.role === 'host' || user?.role === 'both') && recentServices.length > 0">
+      <h2>My Services</h2>
+      <div class="service-list">
+        <div class="service-item" *ngFor="let service of recentServices" (click)="navigateTo('/services/' + service._id)">
+          <img [src]="service.images[0]" [alt]="service.name">
+          <div class="service-details">
+            <h4>{{ service.name }}</h4>
+            <p>${{ service.price }}/{{ service.priceUnit }}</p>
+            <mat-chip [ngClass]="service.status">{{ service.status }}</mat-chip>
+          </div>
+        </div>
+      </div>
+      <button mat-button color="primary" (click)="navigateTo('/services/my-services')">View All</button>
+    </mat-card>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+  <p>Loading your dashboard...</p>
+</div>

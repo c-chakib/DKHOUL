@@ -1,0 +1,123 @@
+<div class="login-container">
+  <div class="login-card-wrapper">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <div class="logo">
+          <h1>DKHOUL</h1>
+          <p class="tagline">Morocco's Premier Marketplace</p>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to continue to your account</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <!-- Email Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email Address</mat-label>
+            <input 
+              matInput 
+              type="email" 
+              formControlName="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+            >
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="email?.invalid && email?.touched">
+              {{ getErrorMessage('email') }}
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Password Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input 
+              matInput 
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            >
+            <mat-icon matPrefix>lock</mat-icon>
+            <button 
+              mat-icon-button 
+              matSuffix 
+              type="button"
+              (click)="hidePassword = !hidePassword"
+              [attr.aria-label]="'Hide password'"
+            >
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="password?.invalid && password?.touched">
+              {{ getErrorMessage('password') }}
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="form-options">
+            <mat-checkbox formControlName="rememberMe">
+              Remember me
+            </mat-checkbox>
+            <a routerLink="/auth/forgot-password" class="forgot-link">
+              Forgot Password?
+            </a>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            class="full-width login-btn"
+            [disabled]="loading"
+          >
+            <span *ngIf="!loading">Sign In</span>
+            <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <!-- Social Login -->
+        <div class="social-login">
+          <button mat-stroked-button class="social-btn google-btn">
+            <img src="assets/icons/google.svg" alt="Google" class="social-icon">
+            Continue with Google
+          </button>
+          <button mat-stroked-button class="social-btn facebook-btn">
+            <img src="assets/icons/facebook.svg" alt="Facebook" class="social-icon">
+            Continue with Facebook
+          </button>
+        </div>
+
+        <!-- Sign Up Link -->
+        <div class="signup-link">
+          <p>Don't have an account? <a routerLink="/auth/register">Sign Up</a></p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Features Section -->
+    <div class="features-section">
+      <div class="feature">
+        <mat-icon>verified_user</mat-icon>
+        <h3>Secure & Trusted</h3>
+        <p>Your data is protected with industry-standard encryption</p>
+      </div>
+      <div class="feature">
+        <mat-icon>explore</mat-icon>
+        <h3>Discover Morocco</h3>
+        <p>Access thousands of unique experiences and services</p>
+      </div>
+      <div class="feature">
+        <mat-icon>support_agent</mat-icon>
+        <h3>24/7 Support</h3>
+        <p>Our team is always here to help you</p>
+      </div>
+    </div>
+  </div>
+</div>

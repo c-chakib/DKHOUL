@@ -1,0 +1,253 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Micro-Services Touristiques Authentiques
+      <span class="highlight">par des Marocains</span>
+    </h1>
+    <p class="hero-subtitle">
+      <strong>50-300 DH</strong> au lieu de 400-2000 DH ailleurs. Stockez vos bagages (20 DH), prenez une douche (30 DH), 
+      apprenez la cuisine marocaine (200 DH), ou explorez la médina avec un local (100 DH/h). 
+      <strong>DKHOUL</strong> connecte voyageurs et Marocains pour des services pratiques, abordables et authentiques.
+    </p>
+    <div class="hero-stats-inline">
+      <span class="stat-highlight">🎯 Prix 50-70% moins chers</span>
+      <span class="stat-separator">•</span>
+      <span class="stat-highlight">✨ 100% authentique</span>
+      <span class="stat-separator">•</span>
+      <span class="stat-highlight">💰 80% revenus aux hôtes</span>
+    </div>
+    <div class="hero-actions">
+      <button mat-raised-button color="primary" class="cta-button" (click)="navigateToServices()">
+        <mat-icon>explore</mat-icon>
+        Explorer les Micro-Services
+      </button>
+      <button mat-stroked-button class="secondary-button" (click)="navigateToBecomeProvider()">
+        <mat-icon>add_business</mat-icon>
+        Devenir Hôte - Gagnez 50-300 DH/jour
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">580+</span>
+        <span class="stat-label">Hôtes Marocains</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">10K+</span>
+        <span class="stat-label">Voyageurs Aidés</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">5K+</span>
+        <span class="stat-label">Services Fournis</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <mat-icon class="hero-icon">handshake</mat-icon>
+  </div>
+</section>
+
+<!-- Main 3 Categories -->
+<section class="main-categories">
+  <div class="section-header">
+    <h2>Les 3 Catégories DKHOUL</h2>
+    <p>Monétise ton espace, vends ton savoir-faire, loue ton temps</p>
+  </div>
+  <div class="main-categories-grid">
+    <mat-card class="main-category-card" *ngFor="let category of mainCategories">
+      <div class="category-header">
+        <div class="category-icon-large">
+          <mat-icon>{{ category.icon }}</mat-icon>
+        </div>
+        <span class="category-tagline">{{ category.tagline }}</span>
+      </div>
+      <h3>{{ category.name }}</h3>
+      <p class="category-price">{{ category.priceRange }}</p>
+      <p class="category-description">{{ category.description }}</p>
+      <p class="category-count">{{ category.count }}+ hôtes actifs</p>
+      <div class="subcategories">
+        <span class="subcategory-chip" *ngFor="let sub of category.subcategories">{{ sub }}</span>
+      </div>
+      <div class="category-examples">
+        <p class="examples-title">Exemples populaires:</p>
+        <ul>
+          <li *ngFor="let example of category.examples">{{ example }}</li>
+        </ul>
+      </div>
+      <button mat-raised-button color="primary" (click)="navigateToServices()">
+        Découvrir {{ category.name }}
+      </button>
+    </mat-card>
+  </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="categories">
+  <div class="section-header">
+    <h2>Micro-Services les Plus Demandés</h2>
+    <p>Services pratiques, authentiques et abordables</p>
+  </div>
+  <div class="categories-grid">
+    <mat-card class="category-card" *ngFor="let category of featuredCategories">
+      <mat-icon class="category-icon">{{ category.icon }}</mat-icon>
+      <h3>{{ category.name }}</h3>
+      <p class="service-price">{{ category.price }}</p>
+      <p class="service-description">{{ category.description }}</p>
+      <p class="service-hosts">{{ category.count }} hôtes disponibles</p>
+      <span class="category-badge">{{ category.category }}</span>
+    </mat-card>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works">
+  <div class="section-header">
+    <h2>Comment Fonctionne DKHOUL</h2>
+    <p>Réservez votre micro-service en 4 étapes simples</p>
+  </div>
+  <div class="steps-container">
+    <div class="step" *ngFor="let step of howItWorks">
+      <div class="step-number">{{ step.step }}</div>
+      <mat-icon class="step-icon">{{ step.icon }}</mat-icon>
+      <h3>{{ step.title }}</h3>
+      <p>{{ step.description }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- Value Proposition vs Competitors (NEW FROM PFE) -->
+<section class="value-section">
+  <div class="section-header">
+    <h2>Pourquoi Choisir DKHOUL?</h2>
+    <p>Comparaison avec Airbnb Experiences et GetYourGuide</p>
+  </div>
+  <div class="value-grid">
+    <mat-card class="value-card" *ngFor="let prop of valueProps" [class.highlight]="prop.highlight">
+      <mat-icon class="value-icon">{{ prop.icon }}</mat-icon>
+      <h3>{{ prop.title }}</h3>
+      <p>{{ prop.description }}</p>
+    </mat-card>
+  </div>
+  <div class="comparison-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th class="dkhoul-col">DKHOUL</th>
+          <th>Airbnb Exp.</th>
+          <th>GetYourGuide</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Prix moyen</td>
+          <td class="dkhoul-col"><strong>50-300 DH</strong></td>
+          <td>400-1500 DH</td>
+          <td>600-2000 DH</td>
+        </tr>
+        <tr>
+          <td>Durée</td>
+          <td class="dkhoul-col"><strong>1-3h flexible</strong></td>
+          <td>3-8h fixe</td>
+          <td>Demi-journée</td>
+        </tr>
+        <tr>
+          <td>Micro-services pratiques</td>
+          <td class="dkhoul-col"><strong>✅ Oui</strong></td>
+          <td>❌ Non</td>
+          <td>❌ Non</td>
+        </tr>
+        <tr>
+          <td>Revenus hôtes</td>
+          <td class="dkhoul-col"><strong>80%</strong></td>
+          <td>70%</td>
+          <td>20-30%</td>
+        </tr>
+        <tr>
+          <td>Authenticité</td>
+          <td class="dkhoul-col"><strong>⭐⭐⭐⭐⭐</strong></td>
+          <td>⭐⭐⭐</td>
+          <td>⭐</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials">
+  <div class="section-header">
+    <h2>Témoignages de Nos Utilisateurs</h2>
+    <p>Des expériences authentiques partagées par notre communauté</p>
+  </div>
+  <div class="testimonials-grid">
+    <mat-card class="testimonial-card" *ngFor="let testimonial of testimonials">
+      <div class="testimonial-header">
+        <div class="avatar">{{ testimonial.avatar }}</div>
+        <div class="user-info">
+          <h4>{{ testimonial.name }}</h4>
+          <div class="rating">
+            <mat-icon *ngFor="let star of [1,2,3,4,5]">star</mat-icon>
+          </div>
+        </div>
+      </div>
+      <p class="testimonial-text">"{{ testimonial.text }}"</p>
+    </mat-card>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2>Prêt à Vivre une Expérience Unique?</h2>
+    <p>Rejoignez des milliers de voyageurs et hôtes qui partagent le Maroc authentique</p>
+    <div class="cta-buttons">
+      <button mat-raised-button color="primary" class="large-button" (click)="navigateToRegister()">
+        Sign Up Now
+      </button>
+      <button mat-stroked-button class="large-button" (click)="navigateToServices()">
+        Browse Services
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <div class="footer-logo">
+        <mat-icon>handyman</mat-icon>
+        <span>DKHOUL</span>
+      </div>
+      <p>Morocco's #1 Service Marketplace</p>
+    </div>
+    <div class="footer-section">
+      <h4>For Customers</h4>
+      <ul>
+        <li><a href="#">Find Services</a></li>
+        <li><a href="#">How It Works</a></li>
+        <li><a href="#">Safety</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>For Providers</h4>
+      <ul>
+        <li><a href="#">Become a Provider</a></li>
+        <li><a href="#">Provider Resources</a></li>
+        <li><a href="#">Success Stories</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Terms & Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; {{ 'now' | date: 'yyyy' }} DKHOUL. All rights reserved.</p>
+  </div>
+</footer>
