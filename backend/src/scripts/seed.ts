@@ -590,14 +590,14 @@ const seedData = async () => {
     await Review.deleteMany({});
     console.log('✅ Existing data cleared\n');
 
-    // Create password hash
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    // Plain password - will be hashed by User model's pre-save hook
+    const plainPassword = 'password123';
     
     // Create Admin User
     console.log('👤 Creating Admin user...');
     const admin = await User.create({
       email: 'admin@dkhoul.ma',
-      password: hashedPassword,
+      password: plainPassword,
       role: 'admin',
       profile: {
         firstName: 'Admin',
@@ -627,7 +627,7 @@ const seedData = async () => {
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const user = await User.create({
         email: `user${i + 1}@dkhoul.ma`,
-        password: hashedPassword,
+        password: plainPassword,
         role: 'tourist',
         profile: {
           firstName: firstName,
@@ -667,7 +667,7 @@ const seedData = async () => {
     for (let i = 0; i < 10; i++) {
       const host = await User.create({
         email: `host${i + 1}@dkhoul.ma`,
-        password: hashedPassword,
+        password: plainPassword,
         role: 'host',
         profile: {
           firstName: hostNames[i].firstName,

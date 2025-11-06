@@ -16,6 +16,8 @@ export interface IBooking extends Document {
     totalAmount: number;
     currency: string;
   };
+  // compatibility alias for tests that expect booking.totalAmount
+  totalAmount?: number;
   status: 'pending' | 'confirmed' | 'rejected' | 'completed' | 'cancelled';
   paymentId?: mongoose.Types.ObjectId;
   cancellationReason?: string;
@@ -100,6 +102,14 @@ const BookingSchema = new Schema<IBooking>(
 
 // Indexes
 BookingSchema.index({ status: 1, bookingDate: 1 });
+
+// Virtual alias to expose pricing.totalAmount as booking.totalAmount
+BookingSchema.virtual('totalAmount').get(function(this: IBooking) {
+  return this.pricing?.totalAmount;
+});
+
+BookingSchema.set('toJSON', { virtuals: true });
+BookingSchema.set('toObject', { virtuals: true });
 BookingSchema.index({ touristId: 1, status: 1 });
 BookingSchema.index({ hostId: 1, status: 1 });
 

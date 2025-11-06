@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/User.model';
+import Service from '../models/Service.model';
+import Review from '../models/Review.model';
 import { AppError } from '../middleware/error.middleware';
 import { uploadImage, deleteImage } from '../services/upload.service';
 
@@ -62,21 +64,24 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
       return next(new AppError('User not found', 404));
     }
 
-    // Update fields
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
-    if (phoneNumber) user.phoneNumber = phoneNumber;
-    if (bio) user.bio = bio;
-    if (address) user.address = address;
-    if (city) user.city = city;
-    if (country) user.country = country;
-    if (languages) user.languages = languages;
-    if (notificationPreferences) user.notificationPreferences = notificationPreferences;
+    // Update profile fields (nested under profile)
+    if (firstName !== undefined) user.profile.firstName = firstName;
+    if (lastName !== undefined) user.profile.lastName = lastName;
+    if (phoneNumber !== undefined) user.profile.phone = phoneNumber;
+    if (bio !== undefined) user.profile.bio = bio;
+    if (languages !== undefined) user.profile.languages = languages;
+    
+    // Update top-level location fields
+    if (address !== undefined) user.address = address;
+    if (city !== undefined) user.city = city;
+    if (country !== undefined) user.country = country;
+    
+    if (notificationPreferences !== undefined) user.notificationPreferences = notificationPreferences;
 
     await user.save();
 
     // Remove password from response
-    const userResponse = user.toObject();
+    const userResponse: any = user.toObject();
     delete userResponse.password;
 
     res.json({
@@ -104,19 +109,79 @@ export const uploadProfilePhoto = async (req: Request, res: Response, next: Next
     }
 
     // Delete old photo if exists
-    if (user.photo) {
-      await deleteImage(user.photo);
+    if (user.profile.photo && user.profile.photo !== 'https://via.placeholder.com/150') {
+      await deleteImage(user.profile.photo);
     }
 
     // Upload new photo
     const photoUrl = await uploadImage(req.file);
-    user.photo = photoUrl;
+    user.profile.photo = photoUrl;
     await user.save();
+
+    // Remove password from response
+    const userResponse: any = user.toObject();
+    delete userResponse.password;
 
     res.json({
       success: true,
       message: 'Photo uploaded successfully',
-      data: { photoUrl }
+      data: { user: userResponse }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete profile photo
+export const deleteProfilePhoto = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = (req as any).user.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    // Delete photo if exists
+    if (user.profile.photo) {
+      await deleteImage(user.profile.photo);
+      user.profile.photo = undefined;
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      message: 'Photo deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update settings (notification preferences, etc.)
+export const updateSettings = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = (req as any).user.userId;
+    const { notificationPreferences } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    if (notificationPreferences) {
+      user.notificationPreferences = notificationPreferences;
+      await user.save();
+    }
+
+    // Remove password from response
+    const userResponse: any = user.toObject();
+    delete userResponse.password;
+
+    res.json({
+      success: true,
+      message: 'Settings updated successfully',
+      data: { user: userResponse }
     });
   } catch (error) {
     next(error);
@@ -305,3 +370,88 @@ export const toggleVerification = async (req: Request, res: Response, next: Next
   }
 };
 
+// Get user's services
+export const getUserServices = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { page = '1', limit = '20', status = 'active' } = req.query;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const skip = (pageNum - 1) * limitNum;
+
+    const query: any = { hostId: id };
+    if (status) {
+      query.status = status;
+    }
+
+    const services = await Service.find(query)
+      .skip(skip)
+      .limit(limitNum)
+      .sort({ createdAt: -1 });
+
+    const total = await Service.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        services,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total,
+          pages: Math.ceil(total / limitNum)
+        }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get user's reviews
+export const getUserReviews = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { page = '1', limit = '20' } = req.query;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Get reviews where the user is the reviewee (received reviews)
+    const reviews = await Review.find({ revieweeId: id })
+      .populate('reviewerId', 'profile.firstName profile.lastName profile.photo')
+      .populate('serviceId', 'title')
+      .skip(skip)
+      .limit(limitNum)
+      .sort({ createdAt: -1 });
+
+    const total = await Review.countDocuments({ revieweeId: id });
+
+    res.json({
+      success: true,
+      data: {
+        reviews,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total,
+          pages: Math.ceil(total / limitNum)
+        }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};

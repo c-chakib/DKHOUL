@@ -3,6 +3,7 @@ import Review from '../models/Review.model';
 import Booking from '../models/Booking.model';
 import Service from '../models/Service.model';
 import { AppError } from '../middleware/error.middleware';
+import { getObjectIdString } from '../utils/helpers';
 
 // Create review
 export const createReview = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,11 +13,7 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
       bookingId,
       serviceId,
       reviewerType,
-      overallRating,
-      communicationRating,
-      accuracyRating,
-      valueRating,
-      cleanlinessRating,
+      ratings,
       comment
     } = req.body;
 
@@ -37,18 +34,18 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     if (reviewerType === 'guest') {
-      if (booking.user.toString() !== userId) {
+      if (getObjectIdString(booking.touristId) !== userId) {
         return next(new AppError('Not authorized to review as guest', 403));
       }
     } else if (reviewerType === 'host') {
-      if (service.provider.toString() !== userId) {
+      if (getObjectIdString(service.hostId) !== userId) {
         return next(new AppError('Not authorized to review as host', 403));
       }
     }
 
     // Check if review already exists
     const existingReview = await Review.findOne({
-      booking: bookingId,
+      bookingId: bookingId,
       reviewerType
     });
 
@@ -56,26 +53,34 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
       return next(new AppError('Review already submitted for this booking', 409));
     }
 
-    // Create review
+    // Determine reviewee (the person being reviewed)
+    const revieweeId = reviewerType === 'guest' ? service.hostId : booking.touristId;
+
+    // Create review with expiration (30 days to edit)
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+
     const review = await Review.create({
-      booking: bookingId,
-      service: serviceId,
-      reviewer: userId,
+      bookingId,
+      serviceId,
+      reviewerId: userId,
+      revieweeId,
       reviewerType,
       ratings: {
-        overall: overallRating,
-        communication: communicationRating,
-        accuracy: accuracyRating,
-        value: valueRating,
-        cleanliness: cleanlinessRating
+        overall: ratings.overall,
+        communication: ratings.communication,
+        accuracy: ratings.accuracy,
+        value: ratings.value,
+        cleanliness: ratings.cleanliness
       },
-      comment
+      comment,
+      expiresAt
     });
 
     // Update service rating
     await updateServiceRating(serviceId);
 
-    await review.populate('reviewer', 'firstName lastName photo');
+    await review.populate('reviewerId', 'profile.firstName profile.lastName profile.photo');
 
     res.status(201).json({
       success: true,
@@ -177,7 +182,7 @@ export const updateReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Check authorization
-    if (review.reviewer.toString() !== userId) {
+    if (getObjectIdString(review.reviewerId) !== userId) {
       return next(new AppError('Not authorized to update this review', 403));
     }
 
@@ -187,19 +192,21 @@ export const updateReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Update review
-    const { overallRating, communicationRating, accuracyRating, valueRating, cleanlinessRating, comment } = req.body;
+    const { ratings, comment } = req.body;
 
-    if (overallRating) review.ratings.overall = overallRating;
-    if (communicationRating) review.ratings.communication = communicationRating;
-    if (accuracyRating) review.ratings.accuracy = accuracyRating;
-    if (valueRating) review.ratings.value = valueRating;
-    if (cleanlinessRating) review.ratings.cleanliness = cleanlinessRating;
+    if (ratings) {
+      if (ratings.overall) review.ratings.overall = ratings.overall;
+      if (ratings.communication) review.ratings.communication = ratings.communication;
+      if (ratings.accuracy) review.ratings.accuracy = ratings.accuracy;
+      if (ratings.value) review.ratings.value = ratings.value;
+      if (ratings.cleanliness) review.ratings.cleanliness = ratings.cleanliness;
+    }
     if (comment) review.comment = comment;
 
     await review.save();
 
     // Update service rating
-    await updateServiceRating(review.service.toString());
+    await updateServiceRating(review.serviceId.toString());
 
     res.json({
       success: true,
@@ -224,11 +231,11 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Check authorization
-    if (review.reviewer.toString() !== userId && userRole !== 'admin') {
+    if (getObjectIdString(review.reviewerId) !== userId && userRole !== 'admin') {
       return next(new AppError('Not authorized to delete this review', 403));
     }
 
-    const serviceId = review.service.toString();
+    const serviceId = review.serviceId.toString();
     await review.deleteOne();
 
     // Update service rating
@@ -250,25 +257,24 @@ export const respondToReview = async (req: Request, res: Response, next: NextFun
     const { response } = req.body;
     const userId = (req as any).user.userId;
 
-    const review = await Review.findById(id).populate('service');
+    const review = await Review.findById(id).populate('serviceId');
     if (!review) {
       return next(new AppError('Review not found', 404));
     }
 
     // Check if user is the service provider
-    const service = await Service.findById(review.service);
-    if (service?.provider.toString() !== userId) {
+    const service = await Service.findById(review.serviceId);
+    if (getObjectIdString(service?.hostId) !== userId) {
       return next(new AppError('Only service provider can respond to reviews', 403));
     }
 
     // Check if already responded
-    if (review.hostResponse && review.hostResponse.comment) {
+    if (review.response && review.response.text) {
       return next(new AppError('Already responded to this review', 400));
     }
 
-    review.hostResponse = {
-      comment: response,
-      respondedBy: userId,
+    review.response = {
+      text: response,
       respondedAt: new Date()
     };
 

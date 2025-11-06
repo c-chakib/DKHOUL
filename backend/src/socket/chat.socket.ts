@@ -150,17 +150,17 @@ export const initializeSocket = (server: HTTPServer) => {
           return;
         }
 
-        if (message.receiver.toString() !== socket.userId) {
+        if (message.receiverId.toString() !== socket.userId) {
           socket.emit('error', { message: 'Unauthorized' });
           return;
         }
 
-        message.isRead = true;
+        message.read = true;
         message.readAt = new Date();
         await message.save();
 
         // Notify sender that message was read
-        const senderSocketId = onlineUsers.get(message.sender.toString());
+        const senderSocketId = onlineUsers.get(message.senderId.toString());
         if (senderSocketId) {
           io.to(senderSocketId).emit('message-read', {
             messageId: data.messageId,

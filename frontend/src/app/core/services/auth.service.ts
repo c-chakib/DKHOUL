@@ -4,11 +4,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User } from '../../models/user';
+import { environment } from '../../../environments/environment';
 
 interface AuthResponse {
   success: boolean;
   data: {
-    token: string;
+    accessToken: string;
     refreshToken: string;
     user: User;
   };
@@ -18,7 +19,8 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api';
+  // Use environment apiUrl so tests and runtime share the same base URL
+  private apiUrl = environment.apiUrl;
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
 
@@ -42,7 +44,7 @@ export class AuthService {
       .pipe(
         tap(response => {
           if (response.success) {
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', response.data.accessToken);
             localStorage.setItem('refreshToken', response.data.refreshToken);
             localStorage.setItem('currentUser', JSON.stringify(response.data.user));
             this.currentUserSubject.next(response.data.user);
@@ -56,7 +58,21 @@ export class AuthService {
       .pipe(
         tap(response => {
           if (response.success) {
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
+            localStorage.setItem('currentUser', JSON.stringify(response.data.user));
+            this.currentUserSubject.next(response.data.user);
+          }
+        })
+      );
+  }
+
+  googleLogin(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/google`, { idToken })
+      .pipe(
+        tap(response => {
+          if (response.success) {
+            localStorage.setItem('token', response.data.accessToken);
             localStorage.setItem('refreshToken', response.data.refreshToken);
             localStorage.setItem('currentUser', JSON.stringify(response.data.user));
             this.currentUserSubject.next(response.data.user);
@@ -82,17 +98,24 @@ export class AuthService {
   }
 
   hasRole(role: string): boolean {
-    const user = this.currentUserValue;
+    const user = this.getCurrentUser();
     return user ? user.role === role : false;
   }
 
   refreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refreshToken');
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/refresh`, { refreshToken })
+    if (!refreshToken) {
+      return new Observable(observer => {
+        observer.error({ error: { message: 'No refresh token available' } });
+        observer.complete();
+      });
+    }
+    // Align endpoint naming with tests expecting /refresh-token
+    return this.http.post<{ success: boolean; data: { accessToken: string } }>(`${this.apiUrl}/auth/refresh-token`, { refreshToken })
       .pipe(
         tap(response => {
           if (response.success) {
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', response.data.accessToken);
           }
         })
       );
@@ -103,18 +126,28 @@ export class AuthService {
   }
 
   resetPassword(token: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/reset-password`, { token, password });
+    // Match tests expecting token in path
+    return this.http.post(`${this.apiUrl}/auth/reset-password/${token}`, { password });
   }
 
   verifyEmail(token: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/auth/verify-email/${token}`);
   }
 
-  getUserRole(): string {
-    return this.currentUserValue?.role || '';
+  getUserRole(): string | null {
+    const user = this.getCurrentUser();
+    return user?.role || null;
   }
 
   getCurrentUser(): User | null {
+    const stored = localStorage.getItem('currentUser');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        return null;
+      }
+    }
     return this.currentUserValue;
   }
 }

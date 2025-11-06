@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config/environment';
 
 export interface JwtPayload {
@@ -8,15 +8,17 @@ export interface JwtPayload {
 }
 
 export const generateAccessToken = (payload: JwtPayload): string => {
-  return jwt.sign(payload, config.jwt.secret, {
-    expiresIn: config.jwt.expire
-  });
+  const options: SignOptions = {
+    expiresIn: config.jwt.expiresIn as any
+  };
+  return jwt.sign(payload, config.jwt.secret, options);
 };
 
 export const generateRefreshToken = (payload: JwtPayload): string => {
-  return jwt.sign(payload, config.jwt.refreshSecret, {
-    expiresIn: config.jwt.refreshExpire
-  });
+  const options: SignOptions = {
+    expiresIn: config.jwt.refreshExpiresIn as any
+  };
+  return jwt.sign(payload, config.jwt.refreshSecret, options);
 };
 
 export const verifyAccessToken = (token: string): JwtPayload => {
@@ -27,8 +29,11 @@ export const verifyRefreshToken = (token: string): JwtPayload => {
   return jwt.verify(token, config.jwt.refreshSecret) as JwtPayload;
 };
 
-export const generateToken = (payload: any, expiresIn: string = '30d'): string => {
-  return jwt.sign(payload, config.jwt.secret, { expiresIn });
+export const generateToken = (payload: any, expiresIn: string | number = '30d'): string => {
+  const options: SignOptions = {
+    expiresIn: expiresIn as any
+  };
+  return jwt.sign(payload, config.jwt.secret, options);
 };
 
 export const verifyToken = (token: string): any => {

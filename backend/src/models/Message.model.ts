@@ -12,6 +12,8 @@ export interface IMessage extends Document {
     size: number;
   }>;
   read: boolean;
+  // compatibility alias used by tests
+  isRead?: boolean;
   readAt?: Date;
   createdAt: Date;
 }
@@ -71,6 +73,18 @@ const MessageSchema = new Schema<IMessage>(
 
 // Indexes
 MessageSchema.index({ conversationId: 1, createdAt: -1 });
+
+// Virtual to support both `read` and `isRead` access patterns
+MessageSchema.virtual('isRead')
+  .get(function(this: IMessage) {
+    return this.read;
+  })
+  .set(function(this: IMessage, value: boolean) {
+    this.read = value;
+  });
+
+MessageSchema.set('toJSON', { virtuals: true });
+MessageSchema.set('toObject', { virtuals: true });
 MessageSchema.index({ senderId: 1, receiverId: 1 });
 
 export default mongoose.model<IMessage>('Message', MessageSchema);

@@ -3,5 +3,6 @@ export const environment = {
   apiUrl: 'http://localhost:3000/api',
   socketUrl: 'http://localhost:3000',
   googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY',
-  stripePublicKey: 'YOUR_STRIPE_PUBLIC_KEY'
+  stripePublicKey: 'YOUR_STRIPE_PUBLIC_KEY',
+  googleClientId: 'YOUR_GOOGLE_CLIENT_ID_HERE'
 };

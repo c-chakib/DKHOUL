@@ -7,7 +7,8 @@ import {
   resetPassword,
   refreshToken,
   logout,
-  getCurrentUser
+  getCurrentUser,
+  googleAuth
 } from '../controllers/auth.controller';
 import { registerValidation, loginValidation } from '../utils/validators';
 import { validate } from '../middleware/validation.middleware';
@@ -18,10 +19,12 @@ const router = Router();
 // Public routes
 router.post('/register', registerValidation, validate, register);
 router.post('/login', loginValidation, validate, login);
+router.post('/google', googleAuth); // Google OAuth login
 router.get('/verify-email/:token', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
 router.post('/refresh-token', refreshToken);
+// Remove duplicate /refresh endpoint to keep one canonical path matching frontend tests
 
 // Protected routes
 router.post('/logout', authenticate, logout);

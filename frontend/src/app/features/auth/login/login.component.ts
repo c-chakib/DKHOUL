@@ -10,7 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 import Swal from 'sweetalert2';
+
+declare const google: any;
 
 @Component({
   selector: 'app-login',
@@ -43,6 +46,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.loadGoogleScript();
   }
 
   initForm(): void {
@@ -116,6 +120,74 @@ export class LoginComponent implements OnInit {
       return `${field.charAt(0).toUpperCase() + field.slice(1)} must be at least 8 characters`;
     }
     return '';
+  }
+
+  loadGoogleScript(): void {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      this.initializeGoogleSignIn();
+    };
+    document.head.appendChild(script);
+  }
+
+  initializeGoogleSignIn(): void {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: environment.googleClientId,
+        callback: (response: any) => this.handleGoogleCallback(response)
+      });
+    }
+  }
+
+  handleGoogleSignIn(): void {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.prompt();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Google Sign-In is not available. Please try again later.',
+      });
+    }
+  }
+
+  handleGoogleCallback(response: any): void {
+    this.loading = true;
+    const idToken = response.credential;
+
+    this.authService.googleLogin(idToken).subscribe({
+      next: (response) => {
+        this.loading = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Welcome!',
+          text: 'Login successful',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        
+        // Navigate based on user role
+        const role = this.authService.getUserRole();
+        if (role === 'admin') {
+          this.router.navigate(['/admin/dashboard']);
+        } else if (role === 'provider') {
+          this.router.navigate(['/dashboard/provider']);
+        } else {
+          this.router.navigate(['/dashboard/user']);
+        }
+      },
+      error: (error) => {
+        this.loading = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: error.error?.message || 'Google login failed. Please try again.',
+        });
+      }
+    });
   }
 }
 

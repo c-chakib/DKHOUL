@@ -7,26 +7,26 @@ import { generateConversationId } from '../utils/helpers';
 export const sendMessage = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const senderId = (req as any).user.userId;
-    const { receiverId, content, imageUrl } = req.body;
+    const { receiverId, content, attachments } = req.body;
 
-    if (!content && !imageUrl) {
-      return next(new AppError('Message must contain text or image', 400));
+    if (!content && (!attachments || attachments.length === 0)) {
+      return next(new AppError('Message must contain text or attachments', 400));
     }
 
     const conversationId = generateConversationId(senderId, receiverId);
 
     const message = await Message.create({
       conversationId,
-      sender: senderId,
-      receiver: receiverId,
+      senderId,
+      receiverId,
       content,
-      imageUrl,
-      isRead: false
+      attachments: attachments || [],
+      read: false
     });
 
     await message.populate([
-      { path: 'sender', select: 'firstName lastName photo' },
-      { path: 'receiver', select: 'firstName lastName photo' }
+      { path: 'senderId', select: 'profile.firstName profile.lastName profile.photo' },
+      { path: 'receiverId', select: 'profile.firstName profile.lastName profile.photo' }
     ]);
 
     // Emit socket event would be handled by socket.io
@@ -53,8 +53,8 @@ export const getConversation = async (req: Request, res: Response, next: NextFun
     const skip = (pageNum - 1) * limitNum;
 
     const messages = await Message.find({ conversationId })
-      .populate('sender', 'firstName lastName photo')
-      .populate('receiver', 'firstName lastName photo')
+      .populate('senderId', 'profile.firstName profile.lastName profile.photo')
+      .populate('receiverId', 'profile.firstName profile.lastName profile.photo')
       .sort('-createdAt')
       .skip(skip)
       .limit(limitNum);
@@ -65,11 +65,11 @@ export const getConversation = async (req: Request, res: Response, next: NextFun
     await Message.updateMany(
       {
         conversationId,
-        receiver: userId,
-        isRead: false
+        receiverId: userId,
+        read: false
       },
       {
-        isRead: true,
+        read: true,
         readAt: new Date()
       }
     );
@@ -95,12 +95,13 @@ export const getConversation = async (req: Request, res: Response, next: NextFun
 export const getConversations = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user.userId;
+    const userObjectId = new (require('mongoose').Types.ObjectId)(userId);
 
     // Get unique conversations
     const conversations = await Message.aggregate([
       {
         $match: {
-          $or: [{ sender: userId }, { receiver: userId }]
+          $or: [{ senderId: userObjectId }, { receiverId: userObjectId }]
         }
       },
       {
@@ -113,7 +114,7 @@ export const getConversations = async (req: Request, res: Response, next: NextFu
           unreadCount: {
             $sum: {
               $cond: [
-                { $and: [{ $eq: ['$receiver', userId] }, { $eq: ['$isRead', false] }] },
+                { $and: [{ $eq: ['$receiverId', userObjectId] }, { $eq: ['$read', false] }] },
                 1,
                 0
               ]
@@ -128,8 +129,8 @@ export const getConversations = async (req: Request, res: Response, next: NextFu
 
     // Populate sender and receiver
     await Message.populate(conversations, [
-      { path: 'lastMessage.sender', select: 'firstName lastName photo' },
-      { path: 'lastMessage.receiver', select: 'firstName lastName photo' }
+      { path: 'lastMessage.senderId', select: 'profile.firstName profile.lastName profile.photo' },
+      { path: 'lastMessage.receiverId', select: 'profile.firstName profile.lastName profile.photo' }
     ]);
 
     res.json({
@@ -153,11 +154,11 @@ export const markAsRead = async (req: Request, res: Response, next: NextFunction
     }
 
     // Check authorization
-    if (message.receiver.toString() !== userId) {
+    if (message.receiverId.toString() !== userId) {
       return next(new AppError('Not authorized to mark this message as read', 403));
     }
 
-    message.isRead = true;
+    message.read = true;
     message.readAt = new Date();
     await message.save();
 
@@ -182,7 +183,7 @@ export const deleteMessage = async (req: Request, res: Response, next: NextFunct
     }
 
     // Check authorization
-    if (message.sender.toString() !== userId) {
+    if (message.senderId.toString() !== userId) {
       return next(new AppError('Not authorized to delete this message', 403));
     }
 
@@ -203,8 +204,8 @@ export const getUnreadCount = async (req: Request, res: Response, next: NextFunc
     const userId = (req as any).user.userId;
 
     const count = await Message.countDocuments({
-      receiver: userId,
-      isRead: false
+      receiverId: userId,
+      read: false
     });
 
     res.json({

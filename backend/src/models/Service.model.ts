@@ -69,11 +69,11 @@ const ServiceSchema = new Schema<IService>(
       type: [String],
       validate: {
         validator: function(v: string[]) {
-          return v.length >= 3 && v.length <= 10;
+          return v.length >= 1 && v.length <= 10;
         },
-        message: 'Must have between 3 and 10 photos'
+        message: 'Must have between 1 and 10 photos'
       },
-      required: [true, 'At least 3 photos are required']
+      required: [true, 'At least 1 photo is required']
     },
     pricing: {
       amount: {

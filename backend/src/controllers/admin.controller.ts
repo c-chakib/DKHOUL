@@ -17,8 +17,8 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
     
     if (search) {
       query.$or = [
-        { firstName: { $regex: search, $options: 'i' } },
-        { lastName: { $regex: search, $options: 'i' } },
+        { 'profile.firstName': { $regex: search, $options: 'i' } },
+        { 'profile.lastName': { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } }
       ];
     }
@@ -63,12 +63,12 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     }
 
     // Get user statistics
-    const servicesCount = await Service.countDocuments({ provider: id });
-    const bookingsAsUser = await Booking.countDocuments({ user: id });
+    const servicesCount = await Service.countDocuments({ hostId: id });
+    const bookingsAsUser = await Booking.countDocuments({ touristId: id });
     
-    const services = await Service.find({ provider: id }).select('_id');
+    const services = await Service.find({ hostId: id }).select('_id');
     const serviceIds = services.map(s => s._id);
-    const bookingsAsProvider = await Booking.countDocuments({ service: { $in: serviceIds } });
+    const bookingsAsProvider = await Booking.countDocuments({ serviceId: { $in: serviceIds } });
 
     res.json({
       success: true,
@@ -92,14 +92,14 @@ export const updateUserStatus = async (req: Request, res: Response, next: NextFu
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!['active', 'suspended'].includes(status)) {
+    if (!['active', 'suspended', 'banned'].includes(status)) {
       return next(new AppError('Invalid status', 400));
     }
 
     const user = await User.findByIdAndUpdate(
       id,
-      { status },
-      { new: true }
+      { status, isActive: status === 'active' },
+      { new: true, runValidators: true }
     ).select('-password');
 
     if (!user) {
@@ -108,8 +108,46 @@ export const updateUserStatus = async (req: Request, res: Response, next: NextFu
 
     res.json({
       success: true,
-      message: `User ${status === 'suspended' ? 'suspended' : 'activated'} successfully`,
+      message: `User ${status === 'suspended' ? 'suspended' : status === 'banned' ? 'banned' : 'activated'} successfully`,
       data: { user }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Suspend user
+export const suspendUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    const user = await User.findById(id);
+    
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    // Prevent suspending admin accounts
+    if (user.role === 'admin') {
+      return next(new AppError('Cannot suspend admin accounts', 400));
+    }
+
+    user.status = 'suspended';
+    user.isActive = false;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'User suspended successfully',
+      data: { 
+        user: {
+          id: user._id,
+          email: user.email,
+          status: user.status,
+          reason
+        }
+      }
     });
   } catch (error) {
     next(error);
@@ -151,12 +189,46 @@ export const getAllServices = async (req: Request, res: Response, next: NextFunc
     const skip = (pageNum - 1) * limitNum;
 
     const services = await Service.find(query)
-      .populate('provider', 'firstName lastName email')
+      .populate('hostId', 'profile.firstName profile.lastName email')
       .sort('-createdAt')
       .skip(skip)
       .limit(limitNum);
 
     const total = await Service.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        services,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total,
+          pages: Math.ceil(total / limitNum)
+        }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get pending services (convenience endpoint)
+export const getPendingServices = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit = '20' } = req.query;
+
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const skip = (pageNum - 1) * limitNum;
+
+    const services = await Service.find({ status: 'pending' })
+      .populate('hostId', 'profile.firstName profile.lastName email')
+      .sort('-createdAt')
+      .skip(skip)
+      .limit(limitNum);
+
+    const total = await Service.countDocuments({ status: 'pending' });
 
     res.json({
       success: true,
@@ -206,6 +278,58 @@ export const updateServiceStatus = async (req: Request, res: Response, next: Nex
   }
 };
 
+// Approve service
+export const approveService = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const service = await Service.findByIdAndUpdate(
+      id,
+      { status: 'active' },
+      { new: true }
+    );
+
+    if (!service) {
+      return next(new AppError('Service not found', 404));
+    }
+
+    res.json({
+      success: true,
+      message: 'Service approved successfully',
+      data: { service }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Reject service
+export const rejectService = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    const updateData: any = { status: 'rejected' };
+    if (reason) {
+      updateData.rejectionReason = reason;
+    }
+
+    const service = await Service.findByIdAndUpdate(id, updateData, { new: true });
+
+    if (!service) {
+      return next(new AppError('Service not found', 404));
+    }
+
+    res.json({
+      success: true,
+      message: 'Service rejected successfully',
+      data: { service }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Delete service
 export const deleteService = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -240,8 +364,9 @@ export const getAllBookings = async (req: Request, res: Response, next: NextFunc
     const skip = (pageNum - 1) * limitNum;
 
     const bookings = await Booking.find(query)
-      .populate('service', 'title photos')
-      .populate('user', 'firstName lastName email')
+      .populate('serviceId', 'title photos')
+      .populate('touristId', 'profile.firstName profile.lastName email')
+      .populate('hostId', 'profile.firstName profile.lastName email')
       .sort('-createdAt')
       .skip(skip)
       .limit(limitNum);
@@ -278,10 +403,12 @@ export const getAllPayments = async (req: Request, res: Response, next: NextFunc
     const skip = (pageNum - 1) * limitNum;
 
     const payments = await Payment.find(query)
-      .populate('user', 'firstName lastName email')
       .populate({
-        path: 'booking',
-        populate: { path: 'service', select: 'title' }
+        path: 'bookingId',
+        populate: [
+          { path: 'serviceId', select: 'title' },
+          { path: 'touristId', select: 'profile.firstName profile.lastName email' }
+        ]
       })
       .sort('-createdAt')
       .skip(skip)
@@ -336,13 +463,13 @@ export const getPlatformStats = async (req: Request, res: Response, next: NextFu
       {
         $lookup: {
           from: 'bookings',
-          localField: 'booking',
+          localField: 'bookingId',
           foreignField: '_id',
           as: 'bookingData'
         }
       },
       { $unwind: '$bookingData' },
-      { $group: { _id: null, total: { $sum: '$bookingData.serviceFee' } } }
+      { $group: { _id: null, total: { $sum: '$bookingData.pricing.serviceFee' } } }
     ]);
 
     // Review statistics
@@ -354,29 +481,28 @@ export const getPlatformStats = async (req: Request, res: Response, next: NextFu
     res.json({
       success: true,
       data: {
-        users: {
-          total: totalUsers,
-          active: activeUsers,
-          providers: totalProviders,
-          verifiedProviders
-        },
-        services: {
-          total: totalServices,
-          active: activeServices,
-          pending: pendingServices
-        },
-        bookings: {
-          total: totalBookings,
-          completed: completedBookings,
-          pending: pendingBookings
-        },
-        revenue: {
-          total: totalRevenue[0]?.total || 0,
-          platformFees: platformFees[0]?.total || 0
-        },
-        reviews: {
-          total: totalReviews,
-          averageRating: averageRating[0]?.avg || 0
+        statistics: {
+          totalUsers,
+          activeUsers,
+          totalProviders,
+          verifiedProviders,
+          totalServices,
+          activeServices,
+          pendingServices,
+          totalBookings,
+          completedBookings,
+          pendingBookings,
+          totalRevenue: totalRevenue[0]?.total || 0,
+          platformFees: platformFees[0]?.total || 0,
+          totalReviews,
+          averageRating: averageRating[0]?.avg || 0,
+          // Also include organized structure
+          usersByRole: {
+            tourists: await User.countDocuments({ role: 'tourist' }),
+            hosts: await User.countDocuments({ role: 'host' }),
+            admins: await User.countDocuments({ role: 'admin' }),
+            providers: totalProviders
+          }
         }
       }
     });

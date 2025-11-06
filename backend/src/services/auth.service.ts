@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // Generate JWT token
 export const generateToken = (userId: string, email: string, role: string): string => {
-  return jwt.sign(
+  return (jwt.sign as any)(
     { userId, email, role },
     config.jwt.secret,
     { expiresIn: config.jwt.expiresIn }
@@ -15,7 +15,7 @@ export const generateToken = (userId: string, email: string, role: string): stri
 
 // Generate refresh token
 export const generateRefreshToken = (userId: string): string => {
-  return jwt.sign(
+  return (jwt.sign as any)(
     { userId },
     config.jwt.refreshSecret,
     { expiresIn: config.jwt.refreshExpiresIn }

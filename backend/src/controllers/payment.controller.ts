@@ -1,17 +1,42 @@
 import { Request, Response, NextFunction } from 'express';
-import Stripe from 'stripe';
 import Payment from '../models/Payment.model';
 import Booking from '../models/Booking.model';
 import { AppError } from '../middleware/error.middleware';
-import { config } from '../config/environment';
+import { getObjectIdString } from '../utils/helpers';
 
-const stripe = new Stripe(config.payment.stripe.secretKey || '', { apiVersion: '2024-12-18.acacia' });
+// Mock Stripe for demonstration - Replace with real Stripe when configured
+const mockStripe = {
+  paymentIntents: {
+    create: async (params: any) => ({
+      id: `pi_mock_${Date.now()}`,
+      client_secret: `pi_mock_${Date.now()}_secret_${Math.random().toString(36).substring(7)}`,
+      amount: params.amount,
+      currency: params.currency,
+      status: 'requires_payment_method',
+      metadata: params.metadata
+    }),
+    retrieve: async (id: string) => ({
+      id,
+      status: 'succeeded',
+      amount: 10000,
+      currency: 'mad'
+    })
+  },
+  refunds: {
+    create: async (params: any) => ({
+      id: `re_mock_${Date.now()}`,
+      payment_intent: params.payment_intent,
+      amount: params.amount,
+      status: 'succeeded'
+    })
+  }
+};
 
-// Create payment intent
+// Create payment intent (supports multiple payment methods)
 export const createPaymentIntent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user.userId;
-    const { bookingId } = req.body;
+    const { bookingId, paymentMethod = 'mock' } = req.body; // mock, cash, stripe
 
     // Get booking
     const booking = await Booking.findById(bookingId);
@@ -20,52 +45,110 @@ export const createPaymentIntent = async (req: Request, res: Response, next: Nex
     }
 
     // Check authorization
-    if (booking.user.toString() !== userId) {
+    if (getObjectIdString(booking.touristId) !== userId) {
       return next(new AppError('Not authorized to pay for this booking', 403));
     }
 
     // Check if already paid
-    const existingPayment = await Payment.findOne({ booking: bookingId });
+    const existingPayment = await Payment.findOne({ bookingId });
     if (existingPayment && existingPayment.status === 'completed') {
       return next(new AppError('Booking already paid', 400));
     }
 
-    // Create Stripe payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(booking.totalAmount * 100), // Convert to cents
-      currency: 'mad', // Moroccan Dirham
-      metadata: {
-        bookingId: booking._id.toString(),
-        userId
-      }
-    });
-
-    // Create or update payment record
     let payment;
-    if (existingPayment) {
-      existingPayment.transactionId = paymentIntent.id;
-      existingPayment.gatewayResponse = paymentIntent;
-      await existingPayment.save();
-      payment = existingPayment;
-    } else {
+    let paymentIntent: any = null;
+
+    // Handle different payment methods
+    if (paymentMethod === 'cash') {
+      // Cash on Delivery - No online payment needed
       payment = await Payment.create({
-        booking: bookingId,
-        user: userId,
-        amount: booking.totalAmount,
+        bookingId,
+        amount: booking.totalAmount || booking.pricing.totalAmount,
+        currency: 'MAD',
+        paymentMethod: 'cash',
+        status: 'pending', // Will be confirmed by host when cash is received
+        escrowStatus: 'not_applicable',
+        notes: 'Payment to be made in cash directly to host'
+      });
+
+      // Update booking status
+      await Booking.findByIdAndUpdate(bookingId, {
+        status: 'confirmed',
+        paymentId: payment._id
+      });
+
+      res.status(201).json({
+        success: true,
+        message: 'Booking confirmed! Please pay in cash to the host.',
+        data: {
+          payment,
+          paymentMethod: 'cash'
+        }
+      });
+
+    } else if (paymentMethod === 'mock') {
+      // Mock payment - Auto-succeeds for testing
+      payment = await Payment.create({
+        bookingId,
+        amount: booking.totalAmount || booking.pricing.totalAmount,
+        currency: 'MAD',
+        paymentMethod: 'mock',
+        gateway: {
+          transactionId: `mock_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+          gatewayResponse: { status: 'test_payment', mode: 'mock' }
+        },
+        status: 'completed', // Auto-complete for testing
+        escrowStatus: 'held',
+        paidAt: new Date()
+      });
+
+      // Update booking status
+      await Booking.findByIdAndUpdate(bookingId, {
+        status: 'confirmed',
+        paymentId: payment._id
+      });
+
+      res.status(201).json({
+        success: true,
+        message: 'Mock payment successful! (Test mode)',
+        data: {
+          payment,
+          paymentMethod: 'mock'
+        }
+      });
+
+    } else {
+      // Stripe/Online payment (for future integration)
+      paymentIntent = await mockStripe.paymentIntents.create({
+        amount: Math.round((booking.totalAmount || booking.pricing.totalAmount) * 100),
+        currency: 'mad',
+        metadata: {
+          bookingId: booking._id.toString(),
+          userId
+        }
+      });
+
+      payment = await Payment.create({
+        bookingId,
+        amount: booking.totalAmount || booking.pricing.totalAmount,
+        currency: 'MAD',
         paymentMethod: 'stripe',
-        transactionId: paymentIntent.id,
+        gateway: {
+          transactionId: paymentIntent.id,
+          gatewayResponse: paymentIntent
+        },
         status: 'pending',
-        gatewayResponse: paymentIntent
+        escrowStatus: 'held'
+      });
+
+      res.status(201).json({
+        success: true,
+        data: {
+          clientSecret: paymentIntent.client_secret,
+          payment
+        }
       });
     }
-
-    res.status(201).json({
-      success: true,
-      data: {
-        clientSecret: paymentIntent.client_secret,
-        payment
-      }
-    });
   } catch (error) {
     next(error);
   }
@@ -76,11 +159,11 @@ export const confirmPayment = async (req: Request, res: Response, next: NextFunc
   try {
     const { paymentIntentId } = req.body;
 
-    // Retrieve payment intent from Stripe
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    // Retrieve payment intent (mock for now)
+    const paymentIntent = await mockStripe.paymentIntents.retrieve(paymentIntentId);
 
     // Find payment record
-    const payment = await Payment.findOne({ transactionId: paymentIntentId });
+    const payment = await Payment.findOne({ 'gateway.transactionId': paymentIntentId });
     if (!payment) {
       return next(new AppError('Payment not found', 404));
     }
@@ -88,13 +171,13 @@ export const confirmPayment = async (req: Request, res: Response, next: NextFunc
     if (paymentIntent.status === 'succeeded') {
       payment.status = 'completed';
       payment.escrowStatus = 'held';
-      payment.completedAt = new Date();
+      payment.paidAt = new Date();
       await payment.save();
 
       // Update booking status
-      await Booking.findByIdAndUpdate(payment.booking, {
+      await Booking.findByIdAndUpdate(payment.bookingId, {
         status: 'confirmed',
-        payment: payment._id
+        paymentId: payment._id
       });
 
       res.json({
@@ -113,6 +196,47 @@ export const confirmPayment = async (req: Request, res: Response, next: NextFunc
   }
 };
 
+// Confirm cash payment received (Host only)
+export const confirmCashPayment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const userId = (req as any).user.userId;
+
+    const payment = await Payment.findById(id).populate('bookingId');
+    if (!payment) {
+      return next(new AppError('Payment not found', 404));
+    }
+
+    // Check if host owns this booking
+    const booking = payment.bookingId as any;
+    if (getObjectIdString(booking.hostId) !== userId) {
+      return next(new AppError('Only the host can confirm cash payment', 403));
+    }
+
+    if (payment.paymentMethod !== 'cash') {
+      return next(new AppError('This is not a cash payment', 400));
+    }
+
+    if (payment.status === 'completed') {
+      return next(new AppError('Payment already confirmed', 400));
+    }
+
+    // Confirm payment
+    payment.status = 'completed';
+    payment.paidAt = new Date();
+    payment.notes = (payment.notes || '') + ' | Confirmed by host on ' + new Date().toISOString();
+    await payment.save();
+
+    res.json({
+      success: true,
+      message: 'Cash payment confirmed successfully',
+      data: { payment }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get payment by ID
 export const getPaymentById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -120,16 +244,16 @@ export const getPaymentById = async (req: Request, res: Response, next: NextFunc
     const userId = (req as any).user.userId;
 
     const payment = await Payment.findById(id)
-      .populate('booking')
-      .populate('user', 'firstName lastName email');
+      .populate('bookingId');
 
     if (!payment) {
       return next(new AppError('Payment not found', 404));
     }
 
-    // Check authorization
+    // Check authorization (payment belongs to booking's tourist)
+    const booking = await Booking.findById(payment.bookingId);
     if (
-      payment.user.toString() !== userId &&
+      booking && getObjectIdString(booking.touristId) !== userId &&
       (req as any).user.role !== 'admin'
     ) {
       return next(new AppError('Not authorized to view this payment', 403));
@@ -150,7 +274,11 @@ export const getMyPayments = async (req: Request, res: Response, next: NextFunct
     const userId = (req as any).user.userId;
     const { status, page = '1', limit = '10' } = req.query;
 
-    const query: any = { user: userId };
+    // Find bookings where user is tourist, then find their payments
+    const bookings = await Booking.find({ touristId: userId }).select('_id');
+    const bookingIds = bookings.map(b => b._id);
+
+    const query: any = { bookingId: { $in: bookingIds } };
     if (status) query.status = status;
 
     const pageNum = parseInt(page as string);
@@ -159,8 +287,8 @@ export const getMyPayments = async (req: Request, res: Response, next: NextFunct
 
     const payments = await Payment.find(query)
       .populate({
-        path: 'booking',
-        populate: { path: 'service', select: 'title photos' }
+        path: 'bookingId',
+        populate: { path: 'serviceId', select: 'title photos' }
       })
       .sort('-createdAt')
       .skip(skip)
@@ -190,7 +318,7 @@ export const releasePayment = async (req: Request, res: Response, next: NextFunc
   try {
     const { id } = req.params;
 
-    const payment = await Payment.findById(id).populate('booking');
+    const payment = await Payment.findById(id).populate('bookingId');
     if (!payment) {
       return next(new AppError('Payment not found', 404));
     }
@@ -205,7 +333,7 @@ export const releasePayment = async (req: Request, res: Response, next: NextFunc
     }
 
     // Check if booking is completed
-    const booking = await Booking.findById(payment.booking);
+    const booking = await Booking.findById(payment.bookingId);
     if (booking?.status !== 'completed') {
       return next(new AppError('Booking not completed yet', 400));
     }
@@ -228,9 +356,16 @@ export const releasePayment = async (req: Request, res: Response, next: NextFunc
 export const refundPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { reason } = req.body;
+    const { paymentId, reason } = req.body;
+    
+    // Accept payment ID from either params or body
+    const paymentIdToUse = id || paymentId;
+    
+    if (!paymentIdToUse) {
+      return next(new AppError('Payment ID is required', 400));
+    }
 
-    const payment = await Payment.findById(id);
+    const payment = await Payment.findById(paymentIdToUse).populate('bookingId');
     if (!payment) {
       return next(new AppError('Payment not found', 404));
     }
@@ -242,23 +377,31 @@ export const refundPayment = async (req: Request, res: Response, next: NextFunct
     if (payment.escrowStatus === 'released') {
       return next(new AppError('Payment already released, cannot refund', 400));
     }
+    
+    // Check if booking can be refunded
+    const booking = await Booking.findById(payment.bookingId);
+    if (booking && booking.status !== 'cancelled' && booking.status !== 'pending') {
+      return next(new AppError('Active bookings cannot be refunded', 400));
+    }
 
-    // Create Stripe refund
-    if (payment.paymentMethod === 'stripe' && payment.transactionId) {
-      const refund = await stripe.refunds.create({
-        payment_intent: payment.transactionId,
-        reason: 'requested_by_customer'
+    // Create mock Stripe refund (replace with real Stripe when configured)
+    if (payment.paymentMethod === 'stripe') {
+      const transactionId = payment.gateway?.transactionId || 'mock_transaction_' + Date.now();
+      
+      const refund = await mockStripe.refunds.create({
+        payment_intent: transactionId,
+        amount: payment.amount * 100
       });
 
       payment.status = 'refunded';
       payment.escrowStatus = 'refunded';
       payment.refundedAt = new Date();
-      payment.refundReason = reason;
-      payment.gatewayResponse = { ...payment.gatewayResponse, refund };
+      payment.gateway = payment.gateway || {};
+      payment.gateway.gatewayResponse = { ...payment.gateway.gatewayResponse, refund, refundReason: reason };
       await payment.save();
 
       // Update booking
-      await Booking.findByIdAndUpdate(payment.booking, {
+      await Booking.findByIdAndUpdate(payment.bookingId, {
         status: 'cancelled',
         cancellationReason: reason
       });
@@ -276,38 +419,30 @@ export const refundPayment = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-// Webhook handler for Stripe events
+// Webhook handler for Stripe events (mock for demonstration)
 export const stripeWebhook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const sig = req.headers['stripe-signature'] as string;
-    const webhookSecret = config.stripe.webhookSecret;
-
-    let event: Stripe.Event;
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-    } catch (err: any) {
-      return next(new AppError(`Webhook Error: ${err.message}`, 400));
-    }
+    // Mock webhook handler - Replace with real Stripe webhook verification when configured
+    const event = req.body;
 
     // Handle the event
     switch (event.type) {
       case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        const paymentIntent = event.data.object;
         await Payment.findOneAndUpdate(
-          { transactionId: paymentIntent.id },
+          { 'gateway.transactionId': paymentIntent.id },
           {
             status: 'completed',
             escrowStatus: 'held',
-            completedAt: new Date()
+            paidAt: new Date()
           }
         );
         break;
 
       case 'payment_intent.payment_failed':
-        const failedPayment = event.data.object as Stripe.PaymentIntent;
+        const failedPayment = event.data.object;
         await Payment.findOneAndUpdate(
-          { transactionId: failedPayment.id },
+          { 'gateway.transactionId': failedPayment.id },
           { status: 'failed' }
         );
         break;
@@ -316,7 +451,7 @@ export const stripeWebhook = async (req: Request, res: Response, next: NextFunct
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    res.json({ received: true });
+    res.json({ received: true, message: 'Mock webhook processed' });
   } catch (error) {
     next(error);
   }

@@ -23,11 +23,11 @@ router.get('/search/location', searchByLocation);
 router.get('/provider/:providerId', getProviderServices);
 router.get('/:id', getServiceById);
 
-// Protected routes (Provider only)
+// Protected routes (Provider/Host only)
 router.post(
   '/',
   authenticate,
-  authorize('provider', 'admin'),
+  authorize('provider', 'host', 'admin'),
   upload.array('photos', 10),
   serviceValidation,
   validate,
@@ -37,7 +37,7 @@ router.post(
 router.put(
   '/:id',
   authenticate,
-  authorize('provider', 'admin'),
+  authorize('provider', 'host', 'admin'),
   upload.array('photos', 10),
   updateService
 );
@@ -51,14 +51,14 @@ router.delete(
 router.delete(
   '/:id/photo',
   authenticate,
-  authorize('provider', 'admin'),
+  authorize('provider', 'host', 'admin'),
   deleteServicePhoto
 );
 
 router.patch(
   '/:id/availability',
   authenticate,
-  authorize('provider', 'admin'),
+  authorize('provider', 'host', 'admin'),
   toggleAvailability
 );
 

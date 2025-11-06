@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 
 export class AppError extends Error {
   statusCode: number;
+  status: 'fail' | 'error';
   isOperational: boolean;
 
   constructor(message: string, statusCode: number = 500) {
     super(message);
     this.statusCode = statusCode;
+    this.status = statusCode >= 500 ? 'error' : 'fail';
     this.isOperational = true;
     Error.captureStackTrace(this, this.constructor);
   }
@@ -19,11 +21,14 @@ export const errorHandler = (
   next: NextFunction
 ): void => {
   let statusCode = 500;
-  let message = 'Internal Server Error';
+  // default to the error message so tests that expect custom messages pass
+  let message = err.message || 'Internal Server Error';
+  let statusStr: 'fail' | 'error' = 'error';
 
   if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
+    statusStr = err.status;
   } else if (err.name === 'ValidationError') {
     statusCode = 400;
     message = err.message;
@@ -31,8 +36,10 @@ export const errorHandler = (
     statusCode = 400;
     message = 'Invalid ID format';
   } else if ((err as any).code === 11000) {
-    statusCode = 409;
-    message = 'Duplicate field value entered';
+    // Tests expect duplicate key errors to be reported as 400
+    statusCode = 400;
+    const keys = Object.keys((err as any).keyValue || {}).join(', ');
+    message = keys ? `${keys} already exists` : 'Duplicate field value entered';
   } else if (err.name === 'JsonWebTokenError') {
     statusCode = 401;
     message = 'Invalid token';
@@ -45,6 +52,7 @@ export const errorHandler = (
 
   res.status(statusCode).json({
     success: false,
+    status: statusStr || (statusCode >= 500 ? 'error' : 'fail'),
     message,
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });

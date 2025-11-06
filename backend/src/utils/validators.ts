@@ -16,9 +16,10 @@ export const paginationValidators = [
 export const registerValidation: ValidationChain[] = [
   body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
-  body('profile.firstName').trim().notEmpty().withMessage('First name is required'),
-  body('profile.lastName').trim().notEmpty().withMessage('Last name is required'),
-  body('role').isIn(['tourist', 'host']).withMessage('Invalid role')
+  body('firstName').trim().notEmpty().withMessage('First name is required'),
+  body('lastName').trim().notEmpty().withMessage('Last name is required'),
+  body('phoneNumber').optional().trim(),
+  body('role').optional().isIn(['tourist', 'host', 'user', 'provider']).withMessage('Invalid role')
 ];
 
 export const loginValidation: ValidationChain[] = [

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import sharp from 'sharp';
@@ -20,15 +20,14 @@ export const uploadImage = async (file: Express.Multer.File): Promise<string> =>
     const fileName = `${uuidv4()}${fileExt}`;
     const key = `uploads/images/${fileName}`;
 
-    const command = new PutObjectCommand({
+    // Use v2 SDK client from config (s3.upload returns a managed upload)
+    await s3.upload({
       Bucket: bucketName,
       Key: key,
       Body: processedImage,
       ContentType: file.mimetype,
       ACL: 'public-read'
-    });
-
-    await s3.send(command);
+    }).promise();
 
     const imageUrl = `https://${bucketName}.s3.amazonaws.com/${key}`;
     return imageUrl;
@@ -57,12 +56,7 @@ export const deleteImage = async (imageUrl: string): Promise<void> => {
     const url = new URL(imageUrl);
     const key = url.pathname.substring(1); // Remove leading slash
 
-    const command = new DeleteObjectCommand({
-      Bucket: bucketName,
-      Key: key
-    });
-
-    await s3.send(command);
+    await s3.deleteObject({ Bucket: bucketName, Key: key }).promise();
     console.log('✅ Image deleted from S3:', key);
   } catch (error) {
     console.error('❌ Image deletion failed:', error);
@@ -88,15 +82,13 @@ export const uploadFile = async (file: Express.Multer.File): Promise<string> => 
     const fileName = `${uuidv4()}${fileExt}`;
     const key = `uploads/files/${fileName}`;
 
-    const command = new PutObjectCommand({
+    await s3.upload({
       Bucket: bucketName,
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
       ACL: 'public-read'
-    });
-
-    await s3.send(command);
+    }).promise();
 
     const fileUrl = `https://${bucketName}.s3.amazonaws.com/${key}`;
     return fileUrl;

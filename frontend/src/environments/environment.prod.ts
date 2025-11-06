@@ -3,5 +3,6 @@ export const environment = {
   apiUrl: 'https://api.dkhoul.com/api',
   socketUrl: 'https://api.dkhoul.com',
   googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY',
-  stripePublicKey: 'YOUR_STRIPE_PUBLIC_KEY'
+  stripePublicKey: 'YOUR_STRIPE_PUBLIC_KEY',
+  googleClientId: 'YOUR_GOOGLE_CLIENT_ID_HERE'
 };

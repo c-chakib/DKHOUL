@@ -17,22 +17,24 @@ const router = Router();
 // All routes are protected
 router.use(authenticate);
 
-// User bookings
+// User bookings (specific routes BEFORE dynamic :id route)
 router.post('/', bookingValidation, validate, createBooking);
-router.get('/my-bookings', getMyBookings);
+router.get('/my', getMyBookings);
 router.get('/provider-bookings', authorize('provider', 'admin'), getProviderBookings);
 router.get('/stats', authorize('provider', 'admin'), getBookingStats);
+
+// Dynamic route (must come AFTER specific routes)
 router.get('/:id', getBookingById);
 
 // Provider actions
 router.patch(
   '/:id/status',
-  authorize('provider', 'admin'),
+  authorize('provider', 'host', 'admin'),
   updateBookingStatus
 );
 
 // User actions
-router.patch('/:id/cancel', cancelBooking);
+router.post('/:id/cancel', cancelBooking);
 
 export default router;
 

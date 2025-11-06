@@ -1,7 +1,7 @@
 export interface User {
   _id: string;
   email: string;
-  role: 'tourist' | 'host' | 'admin';
+  role: 'tourist' | 'host' | 'admin' | 'provider';
   profile: {
     firstName: string;
     lastName: string;
@@ -13,6 +13,10 @@ export interface User {
       city: string;
       country: string;
     };
+  };
+  oauth?: {
+    googleId?: string;
+    facebookId?: string;
   };
   verification: {
     email: boolean;

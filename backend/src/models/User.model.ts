@@ -4,7 +4,19 @@ import bcrypt from 'bcryptjs';
 export interface IUser extends Document {
   email: string;
   password: string;
-  role: 'tourist' | 'host' | 'admin';
+  role: 'tourist' | 'host' | 'admin' | 'provider';
+  status?: 'active' | 'suspended' | 'banned';
+  // Compatibility aliases (virtuals) for tests that expect top-level fields
+  firstName?: string;
+  lastName?: string;
+  photo?: string;
+  phoneNumber?: string;
+  bio?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  languages?: string[];
+  verifiedProvider?: boolean;
   profile: {
     firstName: string;
     lastName: string;
@@ -52,7 +64,7 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['tourist', 'host', 'admin'],
+      enum: ['tourist', 'host', 'admin', 'provider'],
       default: 'tourist'
     },
     profile: {
@@ -87,6 +99,19 @@ const UserSchema = new Schema<IUser>(
       googleId: String,
       facebookId: String
     },
+    // Location information
+    address: {
+      type: String,
+      trim: true
+    },
+    city: {
+      type: String,
+      trim: true
+    },
+    country: {
+      type: String,
+      trim: true
+    },
     emailVerified: {
       type: Boolean,
       default: false
@@ -102,6 +127,11 @@ const UserSchema = new Schema<IUser>(
     isActive: {
       type: Boolean,
       default: true
+    },
+    status: {
+      type: String,
+      enum: ['active', 'suspended', 'banned'],
+      default: 'active'
     }
   },
   {
@@ -112,6 +142,35 @@ const UserSchema = new Schema<IUser>(
 // Index for search optimization
 UserSchema.index({ email: 1 });
 UserSchema.index({ 'profile.firstName': 'text', 'profile.lastName': 'text' });
+
+// Expose virtuals so tests that access `user.firstName` / `user.photo` work
+UserSchema.virtual('firstName').get(function(this: IUser) {
+  return this.profile?.firstName;
+});
+
+UserSchema.virtual('lastName').get(function(this: IUser) {
+  return this.profile?.lastName;
+});
+
+UserSchema.virtual('photo').get(function(this: IUser) {
+  return this.profile?.photo;
+});
+
+UserSchema.virtual('bio').get(function(this: IUser) {
+  return this.profile?.bio;
+});
+
+UserSchema.virtual('languages').get(function(this: IUser) {
+  return this.profile?.languages;
+});
+
+UserSchema.virtual('phoneNumber').get(function(this: IUser) {
+  return this.profile?.phone;
+});
+
+// Ensure virtuals are included when converting to JSON/object
+UserSchema.set('toJSON', { virtuals: true });
+UserSchema.set('toObject', { virtuals: true });
 
 // Hash password before saving
 UserSchema.pre('save', async function(next) {

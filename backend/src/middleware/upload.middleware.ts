@@ -21,10 +21,10 @@ export const uploadToS3 = multer({
     s3: s3,
     bucket: bucketName!,
     acl: 'public-read',
-    metadata: (req, file, cb) => {
+    metadata: (req: any, file: any, cb: any) => {
       cb(null, { fieldName: file.fieldname });
     },
-    key: (req, file, cb) => {
+    key: (req: any, file: any, cb: any) => {
       const ext = path.extname(file.originalname);
       const filename = `${uuidv4()}${ext}`;
       const folder = file.fieldname === 'photo' ? 'profiles' : 'services';

@@ -2,6 +2,15 @@ export const asyncHandler = (fn: Function) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
+// Helper to extract ObjectId as string, handling both populated and non-populated cases
+export const getObjectIdString = (obj: any): string | undefined => {
+  if (!obj) return undefined;
+  // If it's a populated object with _id
+  if (obj._id) return obj._id.toString();
+  // If it's already an ObjectId
+  return obj.toString();
+};
+
 export const formatDate = (date: Date): string => {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
