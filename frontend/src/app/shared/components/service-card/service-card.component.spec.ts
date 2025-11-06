@@ -10,10 +10,16 @@ describe('ServiceCardComponent', () => {
 
   const mockService = {
     _id: 'svc123',
-    title: 'Desert Tour',
+    name: 'Desert Tour',
+    description: 'Experience an amazing desert adventure',
     category: 'skills',
-    rating: { average: 4.3 },
-    pricing: { amount: 250 }
+    rating: 4.3,
+    reviews: [{}, {}, {}],
+    price: 250,
+    priceUnit: 'hour',
+    location: { city: 'Marrakech' },
+    host: { name: 'Ahmed', avatar: '/assets/test-avatar.png' },
+    images: ['/assets/test-image.png']
   };
 
   beforeEach(async () => {
