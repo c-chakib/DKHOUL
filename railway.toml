@@ -1,6 +1,8 @@
 [build]
 builder = "dockerfile"
-dockerfilePath = "Dockerfile"
+dockerfilePath = "backend/Dockerfile"
+dockerContext = "backend"
+watchPatterns = ["backend/**"]
 
 [deploy]
 startCommand = "npm start"
