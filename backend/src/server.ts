@@ -28,6 +28,27 @@ const startServer = async () => {
 
 startServer();
 
+// Graceful shutdown handler
+const gracefulShutdown = (signal: string) => {
+  console.log(`\n${signal} received. Starting graceful shutdown...`);
+  
+  server.close(() => {
+    console.log('✅ HTTP server closed');
+    console.log('✅ Graceful shutdown complete');
+    process.exit(0);
+  });
+
+  // Force shutdown after 10 seconds
+  setTimeout(() => {
+    console.error('⚠️ Forced shutdown after timeout');
+    process.exit(1);
+  }, 10000);
+};
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err: Error) => {
   console.log('UNHANDLED REJECTION! Shutting down...');
