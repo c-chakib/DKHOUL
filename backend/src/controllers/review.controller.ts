@@ -14,6 +14,7 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
       serviceId,
       reviewerType,
       ratings,
+      rating, // Support old single rating field
       comment
     } = req.body;
 
@@ -33,11 +34,23 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
       return next(new AppError('Service not found', 404));
     }
 
-    if (reviewerType === 'guest') {
+    // Auto-detect reviewer type if not provided
+    let detectedReviewerType = reviewerType;
+    if (!detectedReviewerType) {
+      if (getObjectIdString(booking.touristId) === userId) {
+        detectedReviewerType = 'tourist';
+      } else if (getObjectIdString(service.hostId) === userId) {
+        detectedReviewerType = 'host';
+      } else {
+        return next(new AppError('Not authorized to review this booking', 403));
+      }
+    }
+
+    if (detectedReviewerType === 'tourist' || detectedReviewerType === 'guest') {
       if (getObjectIdString(booking.touristId) !== userId) {
         return next(new AppError('Not authorized to review as guest', 403));
       }
-    } else if (reviewerType === 'host') {
+    } else if (detectedReviewerType === 'host') {
       if (getObjectIdString(service.hostId) !== userId) {
         return next(new AppError('Not authorized to review as host', 403));
       }
@@ -46,7 +59,7 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     // Check if review already exists
     const existingReview = await Review.findOne({
       bookingId: bookingId,
-      reviewerType
+      reviewerType: detectedReviewerType
     });
 
     if (existingReview) {
@@ -54,25 +67,28 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Determine reviewee (the person being reviewed)
-    const revieweeId = reviewerType === 'guest' ? service.hostId : booking.touristId;
+    const revieweeId = detectedReviewerType === 'tourist' || detectedReviewerType === 'guest' ? service.hostId : booking.touristId;
 
     // Create review with expiration (30 days to edit)
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
+
+    // Support both old simple rating and new ratings object
+    const reviewRatings = ratings || {
+      overall: rating || 5,
+      communication: rating || 5,
+      accuracy: rating || 5,
+      value: rating || 5,
+      cleanliness: rating || 5
+    };
 
     const review = await Review.create({
       bookingId,
       serviceId,
       reviewerId: userId,
       revieweeId,
-      reviewerType,
-      ratings: {
-        overall: ratings.overall,
-        communication: ratings.communication,
-        accuracy: ratings.accuracy,
-        value: ratings.value,
-        cleanliness: ratings.cleanliness
-      },
+      reviewerType: detectedReviewerType,
+      ratings: reviewRatings,
       comment,
       expiresAt
     });
@@ -85,7 +101,7 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     res.status(201).json({
       success: true,
       message: 'Review submitted successfully',
-      data: { review }
+      data: review
     });
   } catch (error) {
     next(error);

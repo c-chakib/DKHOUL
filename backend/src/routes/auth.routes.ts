@@ -23,7 +23,7 @@ router.post('/google', googleAuth); // Google OAuth login
 router.get('/verify-email/:token', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
-router.post('/refresh-token', refreshToken);
+router.post('/refresh', refreshToken); // Changed from /refresh-token to match test expectations
 // Remove duplicate /refresh endpoint to keep one canonical path matching frontend tests
 
 // Protected routes

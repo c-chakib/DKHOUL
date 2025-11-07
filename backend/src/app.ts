@@ -23,10 +23,23 @@ const app: Application = express();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:4200',
+
+// Flexible CORS: allow single or comma-separated origins, plus Vercel previews by default
+const rawOrigins = process.env.CLIENT_URL || 'http://localhost:4200';
+const allowedOrigins = rawOrigins.split(',').map(o => o.trim()).filter(Boolean);
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    // Allow server-to-server or curl without origin
+    if (!origin) return callback(null, true);
+    // Exact match against allowed list
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow Vercel preview domains automatically
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+    return callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
-}));
+};
+app.use(cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({

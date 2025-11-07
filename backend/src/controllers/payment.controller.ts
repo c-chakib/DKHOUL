@@ -88,18 +88,26 @@ export const createPaymentIntent = async (req: Request, res: Response, next: Nex
 
     } else if (paymentMethod === 'mock') {
       // Mock payment - Auto-succeeds for testing
+      paymentIntent = await mockStripe.paymentIntents.create({
+        amount: Math.round((booking.totalAmount || booking.pricing.totalAmount) * 100),
+        currency: 'mad',
+        metadata: {
+          bookingId: booking._id.toString(),
+          userId
+        }
+      });
+
       payment = await Payment.create({
         bookingId,
         amount: booking.totalAmount || booking.pricing.totalAmount,
         currency: 'MAD',
         paymentMethod: 'mock',
         gateway: {
-          transactionId: `mock_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+          transactionId: paymentIntent.id,
           gatewayResponse: { status: 'test_payment', mode: 'mock' }
         },
-        status: 'completed', // Auto-complete for testing
+        status: 'pending', // Start as pending for realistic flow
         escrowStatus: 'held',
-        paidAt: new Date()
       });
 
       // Update booking status
@@ -108,11 +116,12 @@ export const createPaymentIntent = async (req: Request, res: Response, next: Nex
         paymentId: payment._id
       });
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
-        message: 'Mock payment successful! (Test mode)',
+        message: 'Payment intent created successfully',
         data: {
           payment,
+          clientSecret: paymentIntent.client_secret,
           paymentMethod: 'mock'
         }
       });

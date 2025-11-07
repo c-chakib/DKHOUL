@@ -19,7 +19,7 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class HomeComponent implements OnInit {
   
-  // DKHOUL's 3 Main Categories (FROM PFE)
+  // DKHOUL's 3 Main Categories
   mainCategories = [
     { 
       icon: 'home', 
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
     }
   ];
 
-  // Featured service subcategories (MICRO-SERVICES FROM PFE)
+  // Featured service subcategories
   featuredCategories = [
     { icon: 'luggage', name: 'Stockage bagages', count: 85, category: 'Space', price: '20-30 DH/bagage', description: 'Garde sécurisée de vos valises' },
     { icon: 'shower', name: 'Douche express', count: 45, category: 'Space', price: '30-50 DH', description: 'Salle de bain + serviette propre' },
@@ -113,7 +113,7 @@ export class HomeComponent implements OnInit {
     }
   ];
 
-  // Value Proposition (FROM PFE)
+  // Value Proposition
   valueProps = [
     {
       icon: 'savings',

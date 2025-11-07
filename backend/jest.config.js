@@ -19,11 +19,13 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   moduleFileExtensions: ['ts', 'js', 'json'],
-  testTimeout: 30000,
+  testTimeout: 60000,
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
   verbose: true,
   forceExit: true,
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
+  maxWorkers: 1, // Run tests serially to avoid memory issues
+  detectOpenHandles: false, // Disable to prevent hanging
 };

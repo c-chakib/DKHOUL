@@ -110,4 +110,20 @@ const ReviewSchema = new Schema<IReview>(
 ReviewSchema.index({ bookingId: 1, reviewerType: 1 }, { unique: true });
 ReviewSchema.index({ serviceId: 1, createdAt: -1 });
 
+// Virtual for backward compatibility: `rating` → `ratings.overall`
+ReviewSchema.virtual('rating')
+  .get(function(this: IReview) {
+    return this.ratings?.overall;
+  })
+  .set(function(this: IReview, value: number) {
+    if (!this.ratings) {
+      this.ratings = { overall: value, communication: value, accuracy: value, value: value };
+    } else {
+      this.ratings.overall = value;
+    }
+  });
+
+ReviewSchema.set('toJSON', { virtuals: true });
+ReviewSchema.set('toObject', { virtuals: true });
+
 export default mongoose.model<IReview>('Review', ReviewSchema);

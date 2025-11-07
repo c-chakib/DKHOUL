@@ -8,30 +8,44 @@ let mongoServer: MongoMemoryServer;
 jest.setTimeout(120000);
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create({
-    instance: {
-      storageEngine: 'wiredTiger',
-    },
-    binary: {
-      // Increase download timeout for slow connections
-      downloadDir: './node_modules/.cache/mongodb-memory-server/mongodb-binaries'
-    }
-  });
-  const mongoUri = mongoServer.getUri();
-  await mongoose.connect(mongoUri);
-}, 120000); // 2-minute timeout for beforeAll
+  try {
+    mongoServer = await MongoMemoryServer.create({
+      instance: {
+        storageEngine: 'wiredTiger',
+      },
+      binary: {
+        version: '6.0.9', // Use specific stable version
+        downloadDir: './node_modules/.cache/mongodb-memory-server/mongodb-binaries',
+      },
+    });
+    const mongoUri = mongoServer.getUri();
+    await mongoose.connect(mongoUri, {
+      connectTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 30000,
+    });
+  } catch (error) {
+    console.error('Failed to start MongoDB Memory Server:', error);
+    throw error;
+  }
+}, 180000); // 3-minute timeout for beforeAll
 
 afterAll(async () => {
-  await mongoose.disconnect();
+  try {
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.disconnect();
+    }
+  } catch (err) {
+    console.error('Error disconnecting mongoose:', err);
+  }
+  
   if (mongoServer) {
-    // stop may be undefined if creation failed; guard to avoid crashing
     try {
-      await mongoServer.stop();
+      await mongoServer.stop({ doCleanup: true, force: true });
     } catch (err) {
-      // ignore
+      console.error('Error stopping mongo server:', err);
     }
   }
-});
+}, 30000);
 
 afterEach(async () => {
   const collections = mongoose.connection.collections;
