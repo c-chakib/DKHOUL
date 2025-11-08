@@ -1,72 +1,322 @@
-/* Modern DKHOUL Global Styles with Google Material Design */
+/* ============================================
+   GOOGLE MATERIAL DESIGN 3 - GLOBAL STYLES
+   ============================================ */
 
-// Import Google Material Design Components
+/* Import Google Fonts - Roboto (Material Design Standard) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Import Material Components Web */
 @import 'material-components-web/material-components-web';
 
-// Import Angular Material for compatibility with existing components
+/* Import Angular Material for compatibility */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-// Modern CSS Reset
-* {
+/* ============================================
+   CSS RESET
+   ============================================ */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-// Root variables for consistent theming
+/* ============================================
+   MATERIAL DESIGN 3 COLOR SYSTEM
+   ============================================ */
 :root {
-  --primary-color: #2563eb;
-  --primary-dark: #1d4ed8;
-  --primary-light: #3b82f6;
-  --secondary-color: #10b981;
-  --accent-color: #f59e0b;
-  --background: #ffffff;
-  --background-alt: #f8fafc;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --border-color: #e2e8f0;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Primary Color Palette (Indigo) */
+  --md-sys-color-primary: #3F51B5;
+  --md-sys-color-primary-container: #E8EAF6;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-on-primary-container: #1A237E;
+  
+  /* Secondary Color Palette (Amber) */
+  --md-sys-color-secondary: #FFC107;
+  --md-sys-color-secondary-container: #FFF8E1;
+  --md-sys-color-on-secondary: #000000;
+  --md-sys-color-on-secondary-container: #FF6F00;
+  
+  /* Tertiary Color Palette (Teal) */
+  --md-sys-color-tertiary: #009688;
+  --md-sys-color-tertiary-container: #E0F2F1;
+  --md-sys-color-on-tertiary: #FFFFFF;
+  --md-sys-color-on-tertiary-container: #004D40;
+  
+  /* Error Color */
+  --md-sys-color-error: #B00020;
+  --md-sys-color-error-container: #FDECEA;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-on-error-container: #690005;
+  
+  /* Surface Colors */
+  --md-sys-color-surface: #FFFFFF;
+  --md-sys-color-surface-variant: #F5F5F5;
+  --md-sys-color-on-surface: #1C1B1F;
+  --md-sys-color-on-surface-variant: #49454F;
+  
+  /* Background Colors */
+  --md-sys-color-background: #FEFBFF;
+  --md-sys-color-on-background: #1C1B1F;
+  
+  /* Outline & Borders */
+  --md-sys-color-outline: #79747E;
+  --md-sys-color-outline-variant: #CAC4D0;
+  
+  /* Shadow & Overlay */
+  --md-sys-color-shadow: rgba(0, 0, 0, 0.3);
+  --md-sys-color-scrim: rgba(0, 0, 0, 0.5);
+  
+  /* State Layers (for hover, focus, pressed) */
+  --md-sys-state-hover-opacity: 0.08;
+  --md-sys-state-focus-opacity: 0.12;
+  --md-sys-state-pressed-opacity: 0.12;
+  
+  /* Material Design Elevation Shadows */
+  --md-elevation-z0: none;
+  --md-elevation-z1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  --md-elevation-z2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  --md-elevation-z3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+  --md-elevation-z4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px 0px rgba(0, 0, 0, 0.3);
+  --md-elevation-z5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px 0px rgba(0, 0, 0, 0.3);
+  
+  /* Material Design Shape (Border Radius) */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+  
+  /* Material Design Motion (Easing) */
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --md-sys-motion-easing-decelerated: cubic-bezier(0.0, 0.0, 0.2, 1.0);
+  --md-sys-motion-easing-accelerated: cubic-bezier(0.3, 0.0, 1.0, 1.0);
+  
+  /* Material Design Spacing (8dp Grid System) */
+  --md-sys-spacing-1: 4px;
+  --md-sys-spacing-2: 8px;
+  --md-sys-spacing-3: 12px;
+  --md-sys-spacing-4: 16px;
+  --md-sys-spacing-5: 20px;
+  --md-sys-spacing-6: 24px;
+  --md-sys-spacing-7: 28px;
+  --md-sys-spacing-8: 32px;
+  --md-sys-spacing-10: 40px;
+  --md-sys-spacing-12: 48px;
+  --md-sys-spacing-16: 64px;
+  --md-sys-spacing-20: 80px;
+  --md-sys-spacing-24: 96px;
 }
 
-html, body {
+/* ============================================
+   MATERIAL DESIGN TYPOGRAPHY
+   ============================================ */
+html {
   height: 100%;
-  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
+  height: 100%;
   margin: 0;
-  background-color: var(--background);
-  color: var(--text-primary);
-  line-height: 1.6;
+  padding: 0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+  background-color: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
 }
 
-// Modern custom scrollbar
+/* Material Design Typography Scale */
+.md-typescale-display-large {
+  font-family: 'Roboto', sans-serif;
+  font-size: 57px;
+  font-weight: 400;
+  line-height: 64px;
+  letter-spacing: -0.25px;
+}
+
+.md-typescale-display-medium {
+  font-family: 'Roboto', sans-serif;
+  font-size: 45px;
+  font-weight: 400;
+  line-height: 52px;
+  letter-spacing: 0px;
+}
+
+.md-typescale-display-small {
+  font-family: 'Roboto', sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 44px;
+  letter-spacing: 0px;
+}
+
+.md-typescale-headline-large {
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  letter-spacing: 0px;
+}
+
+.md-typescale-headline-medium {
+  font-family: 'Roboto', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 36px;
+  letter-spacing: 0px;
+}
+
+.md-typescale-headline-small {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0px;
+}
+
+.md-typescale-title-large {
+  font-family: 'Roboto', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: 0px;
+}
+
+.md-typescale-title-medium {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+}
+
+.md-typescale-title-small {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+}
+
+.md-typescale-body-large {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+}
+
+.md-typescale-body-medium {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
+.md-typescale-body-small {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+}
+
+.md-typescale-label-large {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+}
+
+.md-typescale-label-medium {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+}
+
+.md-typescale-label-small {
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   MATERIAL DESIGN ELEVATION UTILITIES
+   ============================================ */
+.elevation-z0 {
+  box-shadow: var(--md-elevation-z0);
+}
+
+.elevation-z1 {
+  box-shadow: var(--md-elevation-z1);
+  transition: box-shadow 280ms var(--md-sys-motion-easing-standard);
+}
+
+.elevation-z2 {
+  box-shadow: var(--md-elevation-z2);
+  transition: box-shadow 280ms var(--md-sys-motion-easing-standard);
+}
+
+.elevation-z3 {
+  box-shadow: var(--md-elevation-z3);
+  transition: box-shadow 280ms var(--md-sys-motion-easing-standard);
+}
+
+.elevation-z4 {
+  box-shadow: var(--md-elevation-z4);
+  transition: box-shadow 280ms var(--md-sys-motion-easing-standard);
+}
+
+.elevation-z5 {
+  box-shadow: var(--md-elevation-z5);
+  transition: box-shadow 280ms var(--md-sys-motion-easing-standard);
+}
+
+/* Elevation with hover effect */
+.elevation-hover {
+  transition: box-shadow 280ms var(--md-sys-motion-easing-standard);
+}
+
+.elevation-hover:hover {
+  box-shadow: var(--md-elevation-z4);
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR (Material Design Style)
+   ============================================ */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background-alt);
+  background: var(--md-sys-color-surface-variant);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-secondary);
-  border-radius: 5px;
-  transition: background 0.2s;
+  background: var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-corner-full);
+  border: 2px solid var(--md-sys-color-surface-variant);
+  transition: background 200ms var(--md-sys-motion-easing-standard);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-primary);
+  background: var(--md-sys-color-on-surface-variant);
 }
 
 // Utility classes

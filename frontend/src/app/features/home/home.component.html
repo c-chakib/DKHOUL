@@ -1,168 +1,226 @@
-<!-- Hero Section -->
-<section class="hero">
-  <div class="hero-content">
-    <h1 class="hero-title">
-      Micro-Services Touristiques Authentiques
-      <span class="highlight">par des Marocains</span>
-    </h1>
-    <p class="hero-subtitle">
-      <strong>50-300 DH</strong> au lieu de 400-2000 DH ailleurs. Stockez vos bagages (20 DH), prenez une douche (30 DH), 
-      apprenez la cuisine marocaine (200 DH), ou explorez la médina avec un local (100 DH/h). 
-      <strong>DKHOUL</strong> connecte voyageurs et Marocains pour des services pratiques, abordables et authentiques.
-    </p>
-    <div class="hero-stats-inline">
-      <span class="stat-highlight">🎯 Prix 50-70% moins chers</span>
-      <span class="stat-separator">•</span>
-      <span class="stat-highlight">✨ 100% authentique</span>
-      <span class="stat-separator">•</span>
-      <span class="stat-highlight">💰 80% revenus aux hôtes</span>
-    </div>
-    <div class="hero-actions">
-      <button mat-raised-button color="primary" class="cta-button" (click)="navigateToServices()">
-        <mat-icon>explore</mat-icon>
-        Explorer les Micro-Services
-      </button>
-      <button mat-stroked-button class="secondary-button" (click)="navigateToBecomeProvider()">
-        <mat-icon>add_business</mat-icon>
-        Devenir Hôte - Gagnez 50-300 DH/jour
-      </button>
-    </div>
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-number">580+</span>
-        <span class="stat-label">Hôtes Marocains</span>
+<!-- Hero Section - Material Design 3 -->
+<section class="md-hero">
+  <div class="md-hero__container">
+    <div class="md-hero__content">
+      <h1 class="md-hero__title md-typescale-display-medium">
+        Micro-Services Touristiques Authentiques
+        <span class="md-hero__title-highlight">par des Marocains</span>
+      </h1>
+      <p class="md-hero__subtitle md-typescale-body-large">
+        <strong class="md-hero__price">50-300 DH</strong> au lieu de 400-2000 DH ailleurs. Stockez vos bagages (20 DH), prenez une douche (30 DH), 
+        apprenez la cuisine marocaine (200 DH), ou explorez la médina avec un local (100 DH/h). 
+        <strong>DKHOUL</strong> connecte voyageurs et Marocains pour des services pratiques, abordables et authentiques.
+      </p>
+      
+      <div class="md-hero__badges">
+        <span class="md-badge md-badge--primary">🎯 Prix 50-70% moins chers</span>
+        <span class="md-badge md-badge--secondary">✨ 100% authentique</span>
+        <span class="md-badge md-badge--tertiary">💰 80% revenus aux hôtes</span>
       </div>
-      <div class="stat">
-        <span class="stat-number">10K+</span>
-        <span class="stat-label">Voyageurs Aidés</span>
+      
+      <div class="md-hero__actions">
+        <button class="md-btn md-btn--filled md-btn--primary" (click)="navigateToServices()">
+          <span class="material-icons md-btn__icon">explore</span>
+          <span class="md-btn__label">Explorer les Micro-Services</span>
+        </button>
+        <button class="md-btn md-btn--outlined md-btn--secondary" (click)="navigateToBecomeProvider()">
+          <span class="material-icons md-btn__icon">add_business</span>
+          <span class="md-btn__label">Devenir Hôte - Gagnez 50-300 DH/jour</span>
+        </button>
       </div>
-      <div class="stat">
-        <span class="stat-number">5K+</span>
-        <span class="stat-label">Services Fournis</span>
-      </div>
-    </div>
-  </div>
-  <div class="hero-image">
-    <img src="picture/overall/Gemini_Generated_Image_9keka9keka9keka9.png" alt="Services DKHOUL" class="hero-photo">
-  </div>
-</section>
-
-<!-- Image Gallery Section -->
-<section class="image-gallery">
-  <div class="section-header">
-    <h2>Découvrez l'Expérience DKHOUL</h2>
-    <p>Services authentiques par des locaux, pour les voyageurs</p>
-  </div>
-  <div class="gallery-grid">
-    <div class="gallery-item">
-      <img src="picture/overall/Gemini_Generated_Image_4si8lw4si8lw4si8.png" alt="Services DKHOUL" loading="lazy">
-      <div class="gallery-overlay">
-        <h3>Services Pratiques</h3>
-        <p>Stockage, douches, bagages</p>
-      </div>
-    </div>
-    <div class="gallery-item">
-      <img src="picture/overall/Gemini_Generated_Image_b94gjrb94gjrb94g.png" alt="Expériences locales" loading="lazy">
-      <div class="gallery-overlay">
-        <h3>Expériences Locales</h3>
-        <p>Cuisine, artisanat, culture</p>
-      </div>
-    </div>
-    <div class="gallery-item">
-      <img src="picture/overall/Gemini_Generated_Image_bbfwmdbbfwmdbbfw.png" alt="Visites guidées" loading="lazy">
-      <div class="gallery-overlay">
-        <h3>Guides Locaux</h3>
-        <p>Explorez avec un Marocain</p>
-      </div>
-    </div>
-    <div class="gallery-item">
-      <img src="picture/overall/Gemini_Generated_Image_i1bvcoi1bvcoi1bv.png" alt="Hébergement" loading="lazy">
-      <div class="gallery-overlay">
-        <h3>Espaces Uniques</h3>
-        <p>Logements authentiques</p>
-      </div>
-    </div>
-    <div class="gallery-item">
-      <img src="picture/overall/Gemini_Generated_Image_lhlkz1lhlkz1lhlk.png" alt="Transport local" loading="lazy">
-      <div class="gallery-overlay">
-        <h3>Transport Local</h3>
-        <p>Déplacements faciles</p>
-      </div>
-    </div>
-    <div class="gallery-item">
-      <img src="picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png" alt="Événements" loading="lazy">
-      <div class="gallery-overlay">
-        <h3>Événements</h3>
-        <p>Célébrations locales</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Main 3 Categories -->
-<section class="main-categories">
-  <div class="section-header">
-    <h2>Les 3 Catégories DKHOUL</h2>
-    <p>Monétise ton espace, vends ton savoir-faire, loue ton temps</p>
-  </div>
-  <div class="main-categories-grid">
-    <mat-card class="main-category-card" *ngFor="let category of mainCategories">
-      <div class="category-header">
-        <div class="category-icon-large">
-          <mat-icon>{{ category.icon }}</mat-icon>
+      
+      <div class="md-hero__stats">
+        <div class="md-stat-card elevation-z2">
+          <span class="md-stat-card__number md-typescale-headline-large">580+</span>
+          <span class="md-stat-card__label md-typescale-label-medium">Hôtes Marocains</span>
         </div>
-        <span class="category-tagline">{{ category.tagline }}</span>
+        <div class="md-stat-card elevation-z2">
+          <span class="md-stat-card__number md-typescale-headline-large">10K+</span>
+          <span class="md-stat-card__label md-typescale-label-medium">Voyageurs Aidés</span>
+        </div>
+        <div class="md-stat-card elevation-z2">
+          <span class="md-stat-card__number md-typescale-headline-large">5K+</span>
+          <span class="md-stat-card__label md-typescale-label-medium">Services Fournis</span>
+        </div>
       </div>
-      <h3>{{ category.name }}</h3>
-      <p class="category-price">{{ category.priceRange }}</p>
-      <p class="category-description">{{ category.description }}</p>
-      <p class="category-count">{{ category.count }}+ hôtes actifs</p>
-      <div class="subcategories">
-        <span class="subcategory-chip" *ngFor="let sub of category.subcategories">{{ sub }}</span>
+    </div>
+    
+    <div class="md-hero__image-wrapper">
+      <div class="md-hero__image elevation-z3">
+        <img src="picture/overall/Gemini_Generated_Image_9keka9keka9keka9.png" alt="Services DKHOUL" class="md-hero__img">
       </div>
-      <div class="category-examples">
-        <p class="examples-title">Exemples populaires:</p>
-        <ul>
-          <li *ngFor="let example of category.examples">{{ example }}</li>
+    </div>
+  </div>
+</section>
+
+<!-- Image Gallery Section - Material Design 3 -->
+<section class="md-gallery">
+  <div class="md-section-header">
+    <h2 class="md-section-header__title md-typescale-headline-large">Découvrez l'Expérience DKHOUL</h2>
+    <p class="md-section-header__subtitle md-typescale-body-large">Services authentiques par des locaux, pour les voyageurs</p>
+  </div>
+  
+  <div class="md-gallery__grid">
+    <div class="md-gallery-card elevation-z2 elevation-hover">
+      <div class="md-gallery-card__media">
+        <img src="picture/overall/Gemini_Generated_Image_4si8lw4si8lw4si8.png" alt="Services DKHOUL" loading="lazy" class="md-gallery-card__image">
+      </div>
+      <div class="md-gallery-card__overlay">
+        <h3 class="md-gallery-card__title md-typescale-title-large">Services Pratiques</h3>
+        <p class="md-gallery-card__description md-typescale-body-medium">Stockage, douches, bagages</p>
+      </div>
+    </div>
+    
+    <div class="md-gallery-card elevation-z2 elevation-hover">
+      <div class="md-gallery-card__media">
+        <img src="picture/overall/Gemini_Generated_Image_b94gjrb94gjrb94g.png" alt="Expériences locales" loading="lazy" class="md-gallery-card__image">
+      </div>
+      <div class="md-gallery-card__overlay">
+        <h3 class="md-gallery-card__title md-typescale-title-large">Expériences Locales</h3>
+        <p class="md-gallery-card__description md-typescale-body-medium">Cuisine, artisanat, culture</p>
+      </div>
+    </div>
+    
+    <div class="md-gallery-card elevation-z2 elevation-hover">
+      <div class="md-gallery-card__media">
+        <img src="picture/overall/Gemini_Generated_Image_bbfwmdbbfwmdbbfw.png" alt="Visites guidées" loading="lazy" class="md-gallery-card__image">
+      </div>
+      <div class="md-gallery-card__overlay">
+        <h3 class="md-gallery-card__title md-typescale-title-large">Guides Locaux</h3>
+        <p class="md-gallery-card__description md-typescale-body-medium">Explorez avec un Marocain</p>
+      </div>
+    </div>
+    
+    <div class="md-gallery-card elevation-z2 elevation-hover">
+      <div class="md-gallery-card__media">
+        <img src="picture/overall/Gemini_Generated_Image_i1bvcoi1bvcoi1bv.png" alt="Hébergement" loading="lazy" class="md-gallery-card__image">
+      </div>
+      <div class="md-gallery-card__overlay">
+        <h3 class="md-gallery-card__title md-typescale-title-large">Espaces Uniques</h3>
+        <p class="md-gallery-card__description md-typescale-body-medium">Logements authentiques</p>
+      </div>
+    </div>
+    
+    <div class="md-gallery-card elevation-z2 elevation-hover">
+      <div class="md-gallery-card__media">
+        <img src="picture/overall/Gemini_Generated_Image_lhlkz1lhlkz1lhlk.png" alt="Transport local" loading="lazy" class="md-gallery-card__image">
+      </div>
+      <div class="md-gallery-card__overlay">
+        <h3 class="md-gallery-card__title md-typescale-title-large">Transport Local</h3>
+        <p class="md-gallery-card__description md-typescale-body-medium">Déplacements faciles</p>
+      </div>
+    </div>
+    
+    <div class="md-gallery-card elevation-z2 elevation-hover">
+      <div class="md-gallery-card__media">
+        <img src="picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png" alt="Événements" loading="lazy" class="md-gallery-card__image">
+      </div>
+      <div class="md-gallery-card__overlay">
+        <h3 class="md-gallery-card__title md-typescale-title-large">Événements</h3>
+        <p class="md-gallery-card__description md-typescale-body-medium">Célébrations locales</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main 3 Categories - Material Design 3 -->
+<section class="md-main-categories">
+  <div class="md-section-header">
+    <h2 class="md-section-header__title md-typescale-headline-large">Les 3 Catégories DKHOUL</h2>
+    <p class="md-section-header__subtitle md-typescale-body-large">Monétise ton espace, vends ton savoir-faire, loue ton temps</p>
+  </div>
+  
+  <div class="md-category-grid md-category-grid--large">
+    <div class="md-category-card md-category-card--featured elevation-z3" *ngFor="let category of mainCategories">
+      <div class="md-category-card__header">
+        <div class="md-category-card__icon-wrapper">
+          <span class="material-icons md-category-card__icon">{{ category.icon }}</span>
+        </div>
+        <span class="md-chip md-chip--small md-chip--elevated">{{ category.tagline }}</span>
+      </div>
+      
+      <h3 class="md-category-card__title md-typescale-title-large">{{ category.name }}</h3>
+      <p class="md-category-card__price md-typescale-title-medium">{{ category.priceRange }}</p>
+      <p class="md-category-card__description md-typescale-body-medium">{{ category.description }}</p>
+      
+      <div class="md-category-card__meta">
+        <span class="material-icons md-category-card__meta-icon">group</span>
+        <span class="md-typescale-body-small">{{ category.count }}+ hôtes actifs</span>
+      </div>
+      
+      <div class="md-category-card__chips">
+        <span class="md-chip md-chip--outlined" *ngFor="let sub of category.subcategories">{{ sub }}</span>
+      </div>
+      
+      <div class="md-category-card__examples">
+        <p class="md-category-card__examples-title md-typescale-label-large">Exemples populaires:</p>
+        <ul class="md-category-card__examples-list">
+          <li class="md-typescale-body-small" *ngFor="let example of category.examples">
+            <span class="material-icons md-category-card__check-icon">check_circle</span>
+            {{ example }}
+          </li>
         </ul>
       </div>
-      <button mat-raised-button color="primary" (click)="navigateToServices()">
-        Découvrir {{ category.name }}
+      
+      <button class="md-btn md-btn--filled md-btn--primary md-category-card__action" (click)="navigateToServices()">
+        <span class="md-btn__label">Découvrir {{ category.name }}</span>
+        <span class="material-icons md-btn__icon-trailing">arrow_forward</span>
       </button>
-    </mat-card>
+    </div>
   </div>
 </section>
 
-<!-- Featured Categories -->
-<section class="categories">
-  <div class="section-header">
-    <h2>Micro-Services les Plus Demandés</h2>
-    <p>Services pratiques, authentiques et abordables</p>
+<!-- Featured Categories - Material Design 3 -->
+<section class="md-featured-categories">
+  <div class="md-section-header">
+    <h2 class="md-section-header__title md-typescale-headline-large">Micro-Services les Plus Demandés</h2>
+    <p class="md-section-header__subtitle md-typescale-body-large">Services pratiques, authentiques et abordables</p>
   </div>
-  <div class="categories-grid">
-    <mat-card class="category-card" *ngFor="let category of featuredCategories">
-      <mat-icon class="category-icon">{{ category.icon }}</mat-icon>
-      <h3>{{ category.name }}</h3>
-      <p class="service-price">{{ category.price }}</p>
-      <p class="service-description">{{ category.description }}</p>
-      <p class="service-hosts">{{ category.count }} hôtes disponibles</p>
-      <span class="category-badge">{{ category.category }}</span>
-    </mat-card>
+  
+  <div class="md-category-grid">
+    <div class="md-service-card elevation-z2 elevation-hover" *ngFor="let category of featuredCategories">
+      <div class="md-service-card__icon-wrapper">
+        <span class="material-icons md-service-card__icon">{{ category.icon }}</span>
+      </div>
+      
+      <h3 class="md-service-card__title md-typescale-title-medium">{{ category.name }}</h3>
+      
+      <div class="md-service-card__price-wrapper">
+        <span class="material-icons md-service-card__price-icon">payments</span>
+        <span class="md-service-card__price md-typescale-title-small">{{ category.price }}</span>
+      </div>
+      
+      <p class="md-service-card__description md-typescale-body-medium">{{ category.description }}</p>
+      
+      <div class="md-service-card__hosts">
+        <span class="material-icons md-service-card__hosts-icon">person</span>
+        <span class="md-typescale-body-small">{{ category.count }} hôtes disponibles</span>
+      </div>
+      
+      <span class="md-chip md-chip--filled md-chip--accent">{{ category.category }}</span>
+    </div>
   </div>
 </section>
 
-<!-- How It Works -->
-<section class="how-it-works">
-  <div class="section-header">
-    <h2>Comment Fonctionne DKHOUL</h2>
-    <p>Réservez votre micro-service en 4 étapes simples</p>
+<!-- How It Works - Material Design 3 -->
+<section class="md-how-it-works">
+  <div class="md-section-header">
+    <h2 class="md-section-header__title md-typescale-headline-large">Comment Fonctionne DKHOUL</h2>
+    <p class="md-section-header__subtitle md-typescale-body-large">Réservez votre micro-service en 4 étapes simples</p>
   </div>
-  <div class="steps-container">
-    <div class="step" *ngFor="let step of howItWorks">
-      <div class="step-number">{{ step.step }}</div>
-      <mat-icon class="step-icon">{{ step.icon }}</mat-icon>
-      <h3>{{ step.title }}</h3>
-      <p>{{ step.description }}</p>
+  
+  <div class="md-steps">
+    <div class="md-step-card elevation-z2" *ngFor="let step of howItWorks">
+      <div class="md-step-card__number">
+        <span class="md-typescale-title-large">{{ step.step }}</span>
+      </div>
+      
+      <div class="md-step-card__icon-wrapper">
+        <span class="material-icons md-step-card__icon">{{ step.icon }}</span>
+      </div>
+      
+      <h3 class="md-step-card__title md-typescale-title-medium">{{ step.title }}</h3>
+      <p class="md-step-card__description md-typescale-body-medium">{{ step.description }}</p>
     </div>
   </div>
 </section>
