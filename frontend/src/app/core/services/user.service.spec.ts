@@ -5,7 +5,7 @@ import { UserService } from './user.service';
 describe('UserService', () => {
   let service: UserService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:5000/api/users';
+  const apiUrl = 'http://localhost:3000/api/users';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

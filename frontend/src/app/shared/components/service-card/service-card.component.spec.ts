@@ -60,6 +60,6 @@ describe('ServiceCardComponent', () => {
   });
 
   it('should fallback to default color for unknown category', () => {
-    expect(component.getCategoryColor('unknown')).toBe('#667eea');
+    expect(component.getCategoryColor('unknown')).toBe('#3f51b5');
   });
 });

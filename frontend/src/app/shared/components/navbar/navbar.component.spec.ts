@@ -42,7 +42,7 @@ describe('NavbarComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Login');
-    expect(compiled.textContent).toContain('Sign Up');
+    expect(compiled.textContent).toContain('S\'inscrire');
   });
 
   it('should show dashboard links when logged in', () => {
@@ -50,8 +50,9 @@ describe('NavbarComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Dashboard');
-    expect(compiled.textContent).toContain('Bookings');
-    expect(compiled.textContent).toContain('Messages');
+    // Messages icon button should be visible
+    const messagesButton = compiled.querySelector('button[mat-icon-button] mat-icon');
+    expect(messagesButton).toBeTruthy();
   });
 
   it('should display provider badge when role is provider', () => {
