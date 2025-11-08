@@ -41,7 +41,7 @@
     max-width: 1400px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr auto;
+    grid-template-columns: 2fr 1fr 1fr auto auto;
     gap: 16px;
     align-items: center;
 
@@ -51,6 +51,31 @@
 
     .filter-field {
       width: 100%;
+    }
+
+    /* View Mode Toggle - Figma Inspired */
+    .view-mode-toggle {
+      mat-button-toggle-group {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+
+        mat-button-toggle {
+          border: none;
+          
+          mat-icon {
+            color: #64748b;
+          }
+
+          &.mat-button-toggle-checked {
+            background-color: #3f51b5;
+            
+            mat-icon {
+              color: #ffffff;
+            }
+          }
+        }
+      }
     }
 
     .clear-btn {
@@ -159,9 +184,64 @@
 
   .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 24px;
     margin-bottom: 40px;
+    transition: all 0.3s ease;
+
+    /* Grid View Mode (default) */
+    &.grid-view {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+
+    /* List View Mode - Figma Inspired */
+    &.list-view {
+      grid-template-columns: 1fr;
+
+      .service-card {
+        display: flex;
+        flex-direction: row;
+        max-height: 200px;
+
+        .service-image {
+          width: 280px;
+          height: 100%;
+          flex-shrink: 0;
+        }
+
+        mat-card-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 24px;
+          
+          h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+          }
+
+          .description {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+          }
+
+          .service-meta {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+        }
+
+        &:hover {
+          transform: translateX(4px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+      }
+    }
 
     .service-card {
       cursor: pointer;

@@ -45,6 +45,18 @@
         <mat-icon matPrefix>payments</mat-icon>
       </mat-form-field>
 
+      <!-- View Mode Toggle - Figma Inspired -->
+      <div class="view-mode-toggle">
+        <mat-button-toggle-group [(ngModel)]="viewMode" (ngModelChange)="onViewModeChange()" aria-label="View mode">
+          <mat-button-toggle value="grid" aria-label="Grid view">
+            <mat-icon>grid_view</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="list" aria-label="List view">
+            <mat-icon>view_list</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
       <!-- Clear Filters Button -->
       <button mat-raised-button color="accent" (click)="clearFilters()" class="clear-btn">
         <mat-icon>clear_all</mat-icon>
@@ -105,8 +117,8 @@
       <p>Loading services...</p>
     </div>
 
-    <!-- Services Grid -->
-    <div class="services-grid" *ngIf="!loading && filteredServices.length > 0">
+    <!-- Services Grid/List - Toggle Support -->
+    <div class="services-grid" [class.grid-view]="viewMode === 'grid'" [class.list-view]="viewMode === 'list'" *ngIf="!loading && filteredServices.length > 0">
       <mat-card 
         *ngFor="let service of getPaginatedServices()" 
         class="service-card"

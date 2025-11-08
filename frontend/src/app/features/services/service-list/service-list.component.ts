@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ServiceService } from '../../../core/services/service.service';
 
 @Component({
@@ -28,7 +29,8 @@ import { ServiceService } from '../../../core/services/service.service';
     MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatButtonToggleModule
   ],
   templateUrl: './service-list.component.html',
   styleUrl: './service-list.component.scss'
@@ -37,6 +39,9 @@ export class ServiceListComponent implements OnInit {
   services: any[] = [];
   filteredServices: any[] = [];
   loading = false;
+  
+  // View Mode - Figma Feature
+  viewMode: 'grid' | 'list' = 'grid';
   
   // Filters
   searchQuery = '';
@@ -74,10 +79,6 @@ export class ServiceListComponent implements OnInit {
     private serviceService: ServiceService,
     private router: Router
   ) {}
-
-  ngOnInit(): void {
-    this.loadServices();
-  }
 
   loadServices(): void {
     this.loading = true;
@@ -175,6 +176,21 @@ export class ServiceListComponent implements OnInit {
   onRatingChange(rating: number): void {
     this.minRating = rating;
     this.applyFilters();
+  }
+
+  onViewModeChange(): void {
+    // Save to localStorage for persistence
+    localStorage.setItem('serviceViewMode', this.viewMode);
+    console.log('View mode changed to:', this.viewMode);
+  }
+
+  ngOnInit(): void {
+    // Load saved view mode from localStorage
+    const savedViewMode = localStorage.getItem('serviceViewMode') as 'grid' | 'list';
+    if (savedViewMode) {
+      this.viewMode = savedViewMode;
+    }
+    this.loadServices();
   }
 
   clearFilters(): void {
