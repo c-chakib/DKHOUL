@@ -2,23 +2,50 @@
   <!-- Hero Section -->
   <section class="md-gateway-hero">
     <div class="md-gradient-bg"></div>
+    
+    <!-- Header inside hero -->
+    <div class="md-hero-header">
+      <div class="md-container">
+        <div class="md-logo-wrapper">
+          <div class="md-logo-icon">
+            <span class="arabic-letter">د</span>
+          </div>
+          <div class="md-logo-text">
+            <div class="md-brand-name">DKHOUL</div>
+            <div class="md-brand-tagline">Welcome to Morocco</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="md-container">
       <div class="md-hero-content">
+        <!-- Badge with icon -->
         <div class="md-hero-badge">
-          <mat-icon>stars</mat-icon>
-          <span>Bienvenue sur DKHOUL</span>
+          <mat-icon>rocket_launch</mat-icon>
+          <span>Projet Innovant • Innovation Award 2025</span>
         </div>
         
         <h1 class="md-hero-title">
-          Transformons Chaque Marocain<br/>
-          en <span class="md-gradient-text">Micro-Entrepreneur Touristique</span>
+          Connecter 15M de touristes<br/>
+          <span class="md-gradient-text">avec les Marocains</span>
         </h1>
         
         <p class="md-hero-description">
-          DKHOUL révolutionne le tourisme local au Maroc. 15 millions de touristes par an, 
-          80 milliards DH de marché, et la Coupe du Monde 2030 qui approche. 
-          <strong>Choisissez votre parcours :</strong>
+          La première marketplace qui permet aux Marocains de monétiser leurs espaces, compétences et temps
         </p>
+        
+        <!-- Quick stats in hero -->
+        <div class="md-hero-stats">
+          <div class="md-hero-stat">
+            <mat-icon>people</mat-icon>
+            <span>500+ Hosts actifs</span>
+          </div>
+          <div class="md-hero-stat">
+            <mat-icon>trending_up</mat-icon>
+            <span>100M DH projeté en 2030</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -28,164 +55,155 @@
     <div class="md-container">
       <div class="md-cards-grid">
         
-        <!-- Investor Card -->
-        <div class="md-gateway-card md-investor-card" (click)="navigateToInvestor()">
-          <div class="md-card-gradient md-investor-gradient"></div>
+        <!-- Platform Demo Card -->
+        <div class="md-gateway-card" (click)="navigateToDemo()">
+          <!-- Image with overlay -->
+          <div class="md-card-image">
+            <img src="picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png" alt="Platform Demo" />
+            <div class="md-image-overlay"></div>
+            <div class="md-image-badge">
+              <mat-icon>visibility</mat-icon>
+              <span>Démo Interactive</span>
+            </div>
+          </div>
+          
           <div class="md-card-content">
-            <div class="md-card-icon md-investor-icon">
+            <h2 class="md-card-title">Explorer la Plateforme</h2>
+            
+            <p class="md-card-description">
+              Découvrez comment DKHOUL fonctionne : parcourez les services, consultez les profils des Hosts, 
+              et explorez l'expérience utilisateur complète.
+            </p>
+            
+            <ul class="md-card-list">
+              <li>
+                <div class="md-bullet"></div>
+                <span>Navigation interactive de la marketplace</span>
+              </li>
+              <li>
+                <div class="md-bullet"></div>
+                <span>Recherche et filtres de services</span>
+              </li>
+              <li>
+                <div class="md-bullet"></div>
+                <span>Pages détaillées et processus de réservation</span>
+              </li>
+            </ul>
+            
+            <button mat-raised-button class="md-card-cta md-primary-cta">
+              <span>Voir la Démo</span>
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Investor Pitch Card -->
+        <div class="md-gateway-card" (click)="navigateToInvestor()">
+          <!-- Image with overlay -->
+          <div class="md-card-image">
+            <img src="picture/overall/Gemini_Generated_Image_sszal4sszal4ssza.png" alt="Investor Pitch" />
+            <div class="md-image-overlay"></div>
+            <div class="md-image-badge md-accent-badge">
               <mat-icon>trending_up</mat-icon>
+              <span>Opportunité d'Investissement</span>
             </div>
-            
-            <div class="md-card-badge">Pour Investisseurs</div>
-            
-            <h2 class="md-card-title">Opportunité d'Investissement</h2>
-            
-            <p class="md-card-description">
-              Rejoignez la révolution du tourisme local au Maroc. Une plateforme scalable 
-              avec un potentiel de croissance exceptionnel.
-            </p>
-            
-            <div class="md-card-metrics">
-              <div class="md-metric-item">
-                <div class="md-metric-value">12M DH</div>
-                <div class="md-metric-label">Revenus Année 3</div>
-              </div>
-              <div class="md-metric-divider"></div>
-              <div class="md-metric-item">
-                <div class="md-metric-value">100M+ DH</div>
-                <div class="md-metric-label">Potentiel CM 2030</div>
-              </div>
-              <div class="md-metric-divider"></div>
-              <div class="md-metric-item">
-                <div class="md-metric-value">ROI 10x</div>
-                <div class="md-metric-label">En 3 ans</div>
-              </div>
-            </div>
-            
-            <div class="md-card-highlights">
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>15M touristes/an au Maroc</span>
-              </div>
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>80Mds DH marché touristique</span>
-              </div>
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>Coupe du Monde 2030 = catalyst</span>
-              </div>
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>Break-even Année 2</span>
-              </div>
-            </div>
-            
-            <button mat-raised-button class="md-card-cta md-investor-cta">
-              <span>Découvrir le Pitch</span>
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
           </div>
           
-          <div class="md-card-hover-overlay"></div>
-        </div>
-        
-        <!-- Marketplace Card -->
-        <div class="md-gateway-card md-marketplace-card" (click)="navigateToDemo()">
-          <div class="md-card-gradient md-marketplace-gradient"></div>
           <div class="md-card-content">
-            <div class="md-card-icon md-marketplace-icon">
-              <mat-icon>explore</mat-icon>
-            </div>
-            
-            <div class="md-card-badge">Pour Voyageurs & Hôtes</div>
-            
-            <h2 class="md-card-title">Marketplace DKHOUL</h2>
+            <h2 class="md-card-title">Dossier Investisseur</h2>
             
             <p class="md-card-description">
-              Explorez des expériences authentiques avec des hôtes locaux vérifiés. 
-              Spaces, Skills & Connect à travers tout le Maroc.
+              Découvrez l'opportunité d'investissement : marché, modèle économique, projections financières 
+              et impact social de DKHOUL.
             </p>
             
-            <div class="md-card-metrics">
-              <div class="md-metric-item">
-                <div class="md-metric-value">580+</div>
-                <div class="md-metric-label">Hôtes Vérifiés</div>
-              </div>
-              <div class="md-metric-divider"></div>
-              <div class="md-metric-item">
-                <div class="md-metric-value">10K+</div>
-                <div class="md-metric-label">Voyageurs</div>
-              </div>
-              <div class="md-metric-divider"></div>
-              <div class="md-metric-item">
-                <div class="md-metric-value">98%</div>
-                <div class="md-metric-label">Satisfaction</div>
-              </div>
-            </div>
+            <ul class="md-card-list">
+              <li>
+                <div class="md-bullet md-accent-bullet"></div>
+                <span>Problématique et opportunité de marché</span>
+              </li>
+              <li>
+                <div class="md-bullet md-accent-bullet"></div>
+                <span>Modèle économique et projections financières</span>
+              </li>
+              <li>
+                <div class="md-bullet md-accent-bullet"></div>
+                <span>Demande de financement : 500,000 DH</span>
+              </li>
+            </ul>
             
-            <div class="md-card-highlights">
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>Espaces uniques (Riads, Studios)</span>
-              </div>
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>Nouvelles compétences (Cuisine, Artisanat)</span>
-              </div>
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>Expériences culturelles authentiques</span>
-              </div>
-              <div class="md-highlight-item">
-                <mat-icon>check_circle</mat-icon>
-                <span>Réservation instantanée sécurisée</span>
-              </div>
-            </div>
-            
-            <button mat-raised-button class="md-card-cta md-marketplace-cta">
-              <span>Explorer les Services</span>
+            <button mat-raised-button class="md-card-cta md-accent-cta">
+              <span>Voir le Pitch</span>
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
-          
-          <div class="md-card-hover-overlay"></div>
         </div>
         
+      </div>
+      
+      <!-- Stats Bar - Figma style -->
+      <div class="md-stats-bar">
+        <div class="md-stat-item">
+          <div class="md-stat-value">15M</div>
+          <div class="md-stat-label">Touristes/an</div>
+        </div>
+        <div class="md-stat-item">
+          <div class="md-stat-value">500K DH</div>
+          <div class="md-stat-label">Recherchés</div>
+        </div>
+        <div class="md-stat-item">
+          <div class="md-stat-value">100M+</div>
+          <div class="md-stat-label">Revenus 2030</div>
+        </div>
+        <div class="md-stat-item">
+          <div class="md-stat-value">20%</div>
+          <div class="md-stat-label">Commission</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Mission Section -->
-  <section class="md-mission-section">
+  <!-- Why DKHOUL Section - Figma style -->
+  <section class="md-why-section">
     <div class="md-container">
-      <div class="md-mission-content">
-        <span class="md-section-badge">Notre Mission</span>
-        <h2 class="md-section-title">
-          Connecter les Touristes aux Marocains,<br/>
-          Créer de la Valeur pour Tous
-        </h2>
-        <p class="md-section-description">
-          DKHOUL permet aux Marocains de monétiser leurs espaces, compétences et temps 
-          en offrant des micro-services aux touristes. Une plateforme inclusive qui génère 
-          des revenus locaux et offre des expériences authentiques.
-        </p>
+      <div class="md-why-card">
+        <h3 class="md-why-title">Pourquoi DKHOUL ?</h3>
         
-        <div class="md-mission-stats">
-          <div class="md-mission-stat">
-            <mat-icon>public</mat-icon>
-            <div class="md-stat-value">15M</div>
-            <div class="md-stat-label">Touristes/an au Maroc</div>
+        <div class="md-why-grid">
+          <div class="md-why-item">
+            <div class="md-why-icon md-primary-icon">
+              <mat-icon>people</mat-icon>
+            </div>
+            <h4>Impact Social Massif</h4>
+            <p>
+              Permet aux Marocains ordinaires de bénéficier directement du tourisme et de 
+              générer des revenus complémentaires
+            </p>
+            <div class="md-why-badge">5000 DH/mois par Host</div>
           </div>
-          <div class="md-mission-stat">
-            <mat-icon>people</mat-icon>
-            <div class="md-stat-value">500</div>
-            <div class="md-stat-label">Objectif Hôtes Année 1</div>
+          
+          <div class="md-why-item">
+            <div class="md-why-icon md-secondary-icon">
+              <mat-icon>trending_up</mat-icon>
+            </div>
+            <h4>Marché en Croissance</h4>
+            <p>
+              15M touristes annuels au Maroc avec des événements majeurs à venir 
+              (Coupe du Monde 2030, CAN 2025)
+            </p>
+            <div class="md-why-badge">+12% croissance/an</div>
           </div>
-          <div class="md-mission-stat">
-            <mat-icon>sports_soccer</mat-icon>
-            <div class="md-stat-value">2030</div>
-            <div class="md-stat-label">Coupe du Monde</div>
+          
+          <div class="md-why-item">
+            <div class="md-why-icon md-accent-icon">
+              <mat-icon>rocket_launch</mat-icon>
+            </div>
+            <h4>Première au Maroc</h4>
+            <p>
+              Unique plateforme de micro-services touristiques permettant de monétiser 
+              espaces, compétences et temps
+            </p>
+            <div class="md-why-badge">Position de leader</div>
           </div>
         </div>
       </div>
