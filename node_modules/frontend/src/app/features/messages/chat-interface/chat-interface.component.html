@@ -1,0 +1,55 @@
+<div class="chat-container" *ngIf="!loading">
+  <!-- Chat Header -->
+  <div class="chat-header">
+    <img [src]="otherUser?.avatar || '/assets/default-avatar.png'" [alt]="otherUser?.name" class="avatar">
+    <div class="user-info">
+      <h3>{{ otherUser?.name }}</h3>
+      <p>{{ otherUser?.role }}</p>
+    </div>
+  </div>
+
+  <!-- Messages Container -->
+  <div #messagesContainer class="messages-container">
+    <div *ngFor="let message of messages" 
+         class="message" 
+         [ngClass]="{'own-message': isOwnMessage(message), 'other-message': !isOwnMessage(message)}">
+      <img [src]="message.sender.avatar || '/assets/default-avatar.png'" 
+           [alt]="message.sender.name" 
+           class="message-avatar"
+           *ngIf="!isOwnMessage(message)">
+      <div class="message-bubble">
+        <p>{{ message.content }}</p>
+        <span class="timestamp">{{ message.createdAt | date:'short' }}</span>
+      </div>
+      <img [src]="message.sender.avatar || '/assets/default-avatar.png'" 
+           [alt]="message.sender.name" 
+           class="message-avatar"
+           *ngIf="isOwnMessage(message)">
+    </div>
+
+    <div class="empty-state" *ngIf="messages.length === 0">
+      <mat-icon>chat</mat-icon>
+      <p>No messages yet. Start the conversation!</p>
+    </div>
+  </div>
+
+  <!-- Message Input -->
+  <div class="message-input">
+    <mat-form-field appearance="outline" class="input-field">
+      <input matInput 
+             [(ngModel)]="newMessage" 
+             (keyup.enter)="sendMessage()" 
+             placeholder="Type a message..." 
+             [disabled]="sending">
+    </mat-form-field>
+    <button mat-fab color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim() || sending">
+      <mat-icon *ngIf="!sending">send</mat-icon>
+      <mat-spinner *ngIf="sending" diameter="24"></mat-spinner>
+    </button>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+  <p>Loading conversation...</p>
+</div>

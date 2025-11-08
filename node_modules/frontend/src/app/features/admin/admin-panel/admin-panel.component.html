@@ -1,0 +1,87 @@
+<div class="admin-panel" *ngIf="!loading">
+  <div class="header">
+    <h1>Admin Dashboard</h1>
+    <p>Manage your platform from here</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <mat-card class="stat-card users">
+      <mat-icon>people</mat-icon>
+      <h3>Total Users</h3>
+      <p class="stat-number">{{ stats.totalUsers }}</p>
+      <button mat-button color="primary" (click)="navigateTo('/admin/users')">Manage</button>
+    </mat-card>
+
+    <mat-card class="stat-card services">
+      <mat-icon>business</mat-icon>
+      <h3>Total Services</h3>
+      <p class="stat-number">{{ stats.totalServices }}</p>
+      <button mat-button color="primary" (click)="navigateTo('/admin/services')">Manage</button>
+    </mat-card>
+
+    <mat-card class="stat-card bookings">
+      <mat-icon>event</mat-icon>
+      <h3>Total Bookings</h3>
+      <p class="stat-number">{{ stats.totalBookings }}</p>
+      <button mat-button color="primary" (click)="navigateTo('/admin/bookings')">Manage</button>
+    </mat-card>
+
+    <mat-card class="stat-card revenue">
+      <mat-icon>attach_money</mat-icon>
+      <h3>Total Revenue</h3>
+      <p class="stat-number">${{ stats.totalRevenue.toFixed(2) }}</p>
+      <button mat-button color="primary" (click)="navigateTo('/admin/payments')">View</button>
+    </mat-card>
+
+    <mat-card class="stat-card pending">
+      <mat-icon>pending_actions</mat-icon>
+      <h3>Pending Approvals</h3>
+      <p class="stat-number">{{ stats.pendingApprovals }}</p>
+      <button mat-button color="warn" (click)="navigateTo('/admin/services')">Review</button>
+    </mat-card>
+
+    <mat-card class="stat-card disputes">
+      <mat-icon>gavel</mat-icon>
+      <h3>Active Disputes</h3>
+      <p class="stat-number">{{ stats.activeDisputes }}</p>
+      <button mat-button color="warn" (click)="navigateTo('/admin/disputes')">Resolve</button>
+    </mat-card>
+  </div>
+
+  <!-- Quick Actions -->
+  <mat-card class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+      <button mat-raised-button color="primary" (click)="navigateTo('/admin/users')">
+        <mat-icon>people</mat-icon>
+        User Management
+      </button>
+      <button mat-raised-button color="primary" (click)="navigateTo('/admin/services')">
+        <mat-icon>business</mat-icon>
+        Service Management
+      </button>
+      <button mat-raised-button color="primary" (click)="navigateTo('/admin/bookings')">
+        <mat-icon>event</mat-icon>
+        Booking Management
+      </button>
+      <button mat-raised-button color="primary" (click)="navigateTo('/admin/payments')">
+        <mat-icon>payment</mat-icon>
+        Payment Management
+      </button>
+      <button mat-raised-button color="accent" (click)="navigateTo('/admin/disputes')">
+        <mat-icon>gavel</mat-icon>
+        Dispute Resolution
+      </button>
+      <button mat-raised-button (click)="navigateTo('/admin/stats')">
+        <mat-icon>analytics</mat-icon>
+        Analytics & Reports
+      </button>
+    </div>
+  </mat-card>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+  <p>Loading admin dashboard...</p>
+</div>
