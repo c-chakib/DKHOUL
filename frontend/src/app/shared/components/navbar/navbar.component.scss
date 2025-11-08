@@ -32,9 +32,9 @@
   }
 
   .logo-image {
-    height: 40px;
+    height: 45px;
     width: auto;
-    filter: brightness(0) invert(1); // Make logo white on colored toolbar
+    object-fit: contain;
   }
 
   .logo-text {
