@@ -1,256 +1,267 @@
 <div class="landing-container">
   <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero-gradient"></div>
-    <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <mat-icon>explore</mat-icon>
-          <span>Plateforme Marketplace #1 au Maroc</span>
+  <section class="md-gateway-hero">
+    <div class="md-gradient-bg"></div>
+    <div class="md-container">
+      <div class="md-hero-content">
+        <div class="md-hero-badge">
+          <mat-icon>stars</mat-icon>
+          <span>Bienvenue sur DKHOUL</span>
         </div>
         
-        <h1 class="hero-title">
-          Découvrez le Maroc Authentique avec
-          <span class="gradient-text">DKHOUL</span>
+        <h1 class="md-hero-title">
+          Transformons Chaque Marocain<br/>
+          en <span class="md-gradient-text">Micro-Entrepreneur Touristique</span>
         </h1>
         
-        <p class="hero-description">
-          Explorez Spaces (espaces uniques), Skills (nouvelles compétences), 
-          et Connect (expériences culturelles) avec des hôtes locaux vérifiés à travers tout le Maroc.
+        <p class="md-hero-description">
+          DKHOUL révolutionne le tourisme local au Maroc. 15 millions de touristes par an, 
+          80 milliards DH de marché, et la Coupe du Monde 2030 qui approche. 
+          <strong>Choisissez votre parcours :</strong>
         </p>
-
-        <div class="hero-cta">
-          <button mat-raised-button color="primary" class="cta-primary" (click)="navigateToDemo()">
-            <mat-icon>explore</mat-icon>
-            Explorer les Expériences
-          </button>
-          <button mat-stroked-button class="cta-secondary" (click)="navigateToInvestor()">
-            <mat-icon>trending_up</mat-icon>
-            Opportunité d'investissement
-          </button>
-        </div>
-
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-value">580+</span>
-            <span class="stat-label">Hôtes vérifiés</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-value">10K+</span>
-            <span class="stat-label">Voyageurs satisfaits</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-value">98%</span>
-            <span class="stat-label">Satisfaction client</span>
-          </div>
-        </div>
       </div>
+    </div>
+  </section>
 
-      <div class="hero-image">
-        <div class="floating-card card-1">
-          <mat-icon>home</mat-icon>
-          <span>Spaces - Riads</span>
-        </div>
-        <div class="floating-card card-2">
-          <mat-icon>school</mat-icon>
-          <span>Skills - Cuisine</span>
-        </div>
-        <div class="floating-card card-3">
-          <mat-icon>groups</mat-icon>
-          <span>Connect - Culture</span>
-        </div>
-        <div class="hero-mockup">
-          <div class="mockup-screen">
-            <div class="mockup-header"></div>
-            <div class="mockup-content">
-              <div class="mockup-card"></div>
-              <div class="mockup-card"></div>
-              <div class="mockup-card"></div>
+  <!-- Gateway Cards Section -->
+  <section class="md-gateway-cards">
+    <div class="md-container">
+      <div class="md-cards-grid">
+        
+        <!-- Investor Card -->
+        <div class="md-gateway-card md-investor-card" (click)="navigateToInvestor()">
+          <div class="md-card-gradient md-investor-gradient"></div>
+          <div class="md-card-content">
+            <div class="md-card-icon md-investor-icon">
+              <mat-icon>trending_up</mat-icon>
             </div>
+            
+            <div class="md-card-badge">Pour Investisseurs</div>
+            
+            <h2 class="md-card-title">Opportunité d'Investissement</h2>
+            
+            <p class="md-card-description">
+              Rejoignez la révolution du tourisme local au Maroc. Une plateforme scalable 
+              avec un potentiel de croissance exceptionnel.
+            </p>
+            
+            <div class="md-card-metrics">
+              <div class="md-metric-item">
+                <div class="md-metric-value">12M DH</div>
+                <div class="md-metric-label">Revenus Année 3</div>
+              </div>
+              <div class="md-metric-divider"></div>
+              <div class="md-metric-item">
+                <div class="md-metric-value">100M+ DH</div>
+                <div class="md-metric-label">Potentiel CM 2030</div>
+              </div>
+              <div class="md-metric-divider"></div>
+              <div class="md-metric-item">
+                <div class="md-metric-value">ROI 10x</div>
+                <div class="md-metric-label">En 3 ans</div>
+              </div>
+            </div>
+            
+            <div class="md-card-highlights">
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>15M touristes/an au Maroc</span>
+              </div>
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>80Mds DH marché touristique</span>
+              </div>
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Coupe du Monde 2030 = catalyst</span>
+              </div>
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Break-even Année 2</span>
+              </div>
+            </div>
+            
+            <button mat-raised-button class="md-card-cta md-investor-cta">
+              <span>Découvrir le Pitch</span>
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+          
+          <div class="md-card-hover-overlay"></div>
+        </div>
+        
+        <!-- Marketplace Card -->
+        <div class="md-gateway-card md-marketplace-card" (click)="navigateToDemo()">
+          <div class="md-card-gradient md-marketplace-gradient"></div>
+          <div class="md-card-content">
+            <div class="md-card-icon md-marketplace-icon">
+              <mat-icon>explore</mat-icon>
+            </div>
+            
+            <div class="md-card-badge">Pour Voyageurs & Hôtes</div>
+            
+            <h2 class="md-card-title">Marketplace DKHOUL</h2>
+            
+            <p class="md-card-description">
+              Explorez des expériences authentiques avec des hôtes locaux vérifiés. 
+              Spaces, Skills & Connect à travers tout le Maroc.
+            </p>
+            
+            <div class="md-card-metrics">
+              <div class="md-metric-item">
+                <div class="md-metric-value">580+</div>
+                <div class="md-metric-label">Hôtes Vérifiés</div>
+              </div>
+              <div class="md-metric-divider"></div>
+              <div class="md-metric-item">
+                <div class="md-metric-value">10K+</div>
+                <div class="md-metric-label">Voyageurs</div>
+              </div>
+              <div class="md-metric-divider"></div>
+              <div class="md-metric-item">
+                <div class="md-metric-value">98%</div>
+                <div class="md-metric-label">Satisfaction</div>
+              </div>
+            </div>
+            
+            <div class="md-card-highlights">
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Espaces uniques (Riads, Studios)</span>
+              </div>
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Nouvelles compétences (Cuisine, Artisanat)</span>
+              </div>
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Expériences culturelles authentiques</span>
+              </div>
+              <div class="md-highlight-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Réservation instantanée sécurisée</span>
+              </div>
+            </div>
+            
+            <button mat-raised-button class="md-card-cta md-marketplace-cta">
+              <span>Explorer les Services</span>
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+          
+          <div class="md-card-hover-overlay"></div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
+  <section class="md-mission-section">
+    <div class="md-container">
+      <div class="md-mission-content">
+        <span class="md-section-badge">Notre Mission</span>
+        <h2 class="md-section-title">
+          Connecter les Touristes aux Marocains,<br/>
+          Créer de la Valeur pour Tous
+        </h2>
+        <p class="md-section-description">
+          DKHOUL permet aux Marocains de monétiser leurs espaces, compétences et temps 
+          en offrant des micro-services aux touristes. Une plateforme inclusive qui génère 
+          des revenus locaux et offre des expériences authentiques.
+        </p>
+        
+        <div class="md-mission-stats">
+          <div class="md-mission-stat">
+            <mat-icon>public</mat-icon>
+            <div class="md-stat-value">15M</div>
+            <div class="md-stat-label">Touristes/an au Maroc</div>
+          </div>
+          <div class="md-mission-stat">
+            <mat-icon>people</mat-icon>
+            <div class="md-stat-value">500</div>
+            <div class="md-stat-label">Objectif Hôtes Année 1</div>
+          </div>
+          <div class="md-mission-stat">
+            <mat-icon>sports_soccer</mat-icon>
+            <div class="md-stat-value">2030</div>
+            <div class="md-stat-label">Coupe du Monde</div>
           </div>
         </div>
       </div>
     </div>
-
-    <button class="scroll-indicator" (click)="scrollToFeatures()">
-      <mat-icon>keyboard_arrow_down</mat-icon>
-    </button>
   </section>
 
-  <!-- Features Section -->
-  <section id="features" class="features-section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">Nos 3 Catégories</span>
-        <h2 class="section-title">Spaces, Skills & Connect</h2>
-        <p class="section-description">
-          Trois façons uniques de découvrir le Maroc authentique
+  <!-- Categories Preview Section -->
+  <section class="md-categories-section">
+    <div class="md-container">
+      <div class="md-section-header">
+        <span class="md-section-badge">Nos 3 Catégories</span>
+        <h2 class="md-section-title">Spaces, Skills & Connect</h2>
+        <p class="md-section-description">
+          Trois façons uniques de découvrir et monétiser le Maroc authentique
         </p>
       </div>
 
-      <div class="features-grid">
-        <mat-card class="feature-card">
-          <div class="feature-icon">
+      <div class="md-categories-grid">
+        <div class="md-category-card">
+          <div class="md-category-icon md-spaces-icon">
             <mat-icon>home</mat-icon>
           </div>
-          <h3>Spaces - Espaces Uniques</h3>
-          <p>Louez des riads traditionnels, appartements confortables, studios créatifs, ou espaces événementiels à travers le Maroc.</p>
-        </mat-card>
+          <h3>Spaces - Espaces</h3>
+          <p>Riads, appartements, studios créatifs, espaces événementiels</p>
+        </div>
 
-        <mat-card class="feature-card">
-          <div class="feature-icon">
+        <div class="md-category-card">
+          <div class="md-category-icon md-skills-icon">
             <mat-icon>school</mat-icon>
           </div>
-          <h3>Skills - Nouvelles Compétences</h3>
-          <p>Apprenez la cuisine marocaine, l'artisanat traditionnel, les langues, les arts et la musique avec des experts locaux.</p>
-        </mat-card>
+          <h3>Skills - Compétences</h3>
+          <p>Cuisine marocaine, artisanat, darija, calligraphie arabe</p>
+        </div>
 
-        <mat-card class="feature-card">
-          <div class="feature-icon">
+        <div class="md-category-card">
+          <div class="md-category-icon md-connect-icon">
             <mat-icon>groups</mat-icon>
           </div>
-          <h3>Connect - Expériences Culturelles</h3>
-          <p>Participez à des visites guidées authentiques, événements locaux, rencontres culturelles et activités de groupe.</p>
-        </mat-card>
-
-        <mat-card class="feature-card">
-          <div class="feature-icon">
-            <mat-icon>verified_user</mat-icon>
-          </div>
-          <h3>Hôtes Vérifiés</h3>
-          <p>Tous nos hôtes sont soigneusement vérifiés avec identité confirmée et évaluations authentiques de la communauté.</p>
-        </mat-card>
-
-        <mat-card class="feature-card">
-          <div class="feature-icon">
-            <mat-icon>event_available</mat-icon>
-          </div>
-          <h3>Réservation Instantanée</h3>
-          <p>Réservez votre expérience en quelques clics avec confirmation immédiate et calendrier en temps réel.</p>
-        </mat-card>
-
-        <mat-card class="feature-card">
-          <div class="feature-icon">
-            <mat-icon>payment</mat-icon>
-          </div>
-          <h3>Paiement Sécurisé</h3>
-          <p>Transactions 100% sécurisées avec Stripe, protection acheteur et système d'escrow pour votre tranquillité.</p>
-        </mat-card>
-      </div>
-    </div>
-  </section>
-
-  <!-- How It Works Section -->
-  <section class="how-it-works-section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">Processus</span>
-        <h2 class="section-title">Comment réserver votre expérience?</h2>
-      </div>
-
-      <div class="steps-container">
-        <div class="step-item">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h3>Recherchez un service</h3>
-            <p>Parcourez notre catalogue ou utilisez la recherche pour trouver exactement ce dont vous avez besoin.</p>
-          </div>
-        </div>
-
-        <div class="step-connector"></div>
-
-        <div class="step-item">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h3>Comparez et choisissez</h3>
-            <p>Consultez les profils, avis et tarifs des prestataires pour faire le meilleur choix.</p>
-          </div>
-        </div>
-
-        <div class="step-connector"></div>
-
-        <div class="step-item">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h3>Réservez en ligne</h3>
-            <p>Sélectionnez date et horaire, effectuez le paiement sécurisé et recevez votre confirmation.</p>
-          </div>
-        </div>
-
-        <div class="step-connector"></div>
-
-        <div class="step-item">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <h3>Profitez du service</h3>
-            <p>Le prestataire intervient au moment convenu. Évaluez ensuite votre expérience.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-card">
-        <div class="cta-content">
-          <h2>Prêt à commencer?</h2>
-          <p>Rejoignez des milliers d'utilisateurs satisfaits qui utilisent DKHOUL chaque jour</p>
-        </div>
-        <div class="cta-actions">
-          <button mat-raised-button color="primary" (click)="navigateToDemo()">
-            Essayer maintenant
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-          <button mat-stroked-button (click)="navigateToInvestor()">
-            Devenir investisseur
-          </button>
+          <h3>Connect - Expériences</h3>
+          <p>Visites guidées, événements culturels, rencontres authentiques</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="landing-footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="footer-logo">
+  <footer class="md-gateway-footer">
+    <div class="md-container">
+      <div class="md-footer-content">
+        <div class="md-footer-brand">
+          <div class="md-footer-logo">
             <mat-icon>handyman</mat-icon>
             <span>DKHOUL</span>
           </div>
-          <p>La plateforme qui connecte les clients aux meilleurs services locaux au Maroc.</p>
+          <p>Transformons chaque Marocain en micro-entrepreneur touristique.</p>
         </div>
 
-        <div class="footer-links">
-          <div class="footer-column">
+        <div class="md-footer-links">
+          <div class="md-footer-column">
             <h4>Plateforme</h4>
-            <a routerLink="/home">Accueil</a>
+            <a routerLink="/home">Marketplace</a>
             <a routerLink="/services">Services</a>
-            <a routerLink="/auth/register">S'inscrire</a>
+            <a routerLink="/auth/register">Devenir Hôte</a>
           </div>
 
-          <div class="footer-column">
+          <div class="md-footer-column">
             <h4>Entreprise</h4>
-            <a (click)="navigateToInvestor()">Investisseurs</a>
+            <a routerLink="/investor">Investisseurs</a>
             <a href="#">À propos</a>
             <a href="#">Contact</a>
-          </div>
-
-          <div class="footer-column">
-            <h4>Légal</h4>
-            <a href="#">CGU</a>
-            <a href="#">Confidentialité</a>
-            <a href="#">Mentions légales</a>
           </div>
         </div>
       </div>
 
-      <div class="footer-bottom">
-        <p>&copy; 2025 DKHOUL. Tous droits réservés.</p>
+      <div class="md-footer-bottom">
+        <p>&copy; 2025 DKHOUL. Tous droits réservés. Prêt pour la Coupe du Monde 2030.</p>
       </div>
     </div>
   </footer>
