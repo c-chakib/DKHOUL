@@ -26,10 +26,11 @@ router.use(authenticate);
 
 router.post('/create-intent', createPaymentIntent);
 router.post('/confirm', confirmPayment);
-router.get('/my-payments', getMyPayments);
-router.post('/:id/confirm-cash', authorize('host', 'provider', 'admin'), confirmCashPayment);
+router.get('/my-payments', getMyPayments); // Must come before /:id
+router.get('/my', getMyPayments); // Alias for backward compatibility
 router.post('/refund', refundPayment); // Support body-based refund
-router.get('/:id', getPaymentById);
+router.post('/:id/confirm-cash', authorize('host', 'provider', 'admin'), confirmCashPayment);
+router.get('/:id', getPaymentById); // Parametric route must come after specific routes
 
 // Admin routes
 router.post('/:id/release', authorize('admin'), releasePayment);

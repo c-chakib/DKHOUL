@@ -93,3 +93,34 @@ export const createTestBooking = async (serviceId: string, touristId: string, ho
     status: 'pending'
   });
 };
+
+export const createTestReview = async (
+  bookingId: string,
+  serviceId: string,
+  reviewerId: string,
+  revieweeId: string,
+  reviewerType: 'tourist' | 'host' = 'tourist',
+  rating: number = 5
+) => {
+  const Review = require('../../models/Review.model').default;
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 90); // Reviews expire after 90 days
+  
+  return await Review.create({
+    bookingId,
+    serviceId,
+    reviewerId,
+    revieweeId,
+    reviewerType,
+    ratings: {
+      overall: rating,
+      communication: rating,
+      accuracy: rating,
+      value: rating,
+      cleanliness: rating
+    },
+    comment: 'This is a test review comment with sufficient length.',
+    photos: [],
+    expiresAt
+  });
+};

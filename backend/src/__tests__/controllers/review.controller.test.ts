@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../app';
-import { createTestUser, generateTestToken, createTestService, createTestBooking } from '../utils/testHelpers';
+import { createTestUser, generateTestToken, createTestService, createTestBooking, createTestReview } from '../utils/testHelpers';
 import Review from '../../models/Review.model';
 import Booking from '../../models/Booking.model';
 
@@ -66,13 +66,14 @@ describe('Review Controller', () => {
       await booking.save();
       
       // Create first review
-      await Review.create({
-        bookingId: booking._id,
-        serviceId: service._id,
-        reviewerId: tourist._id,
-        rating: 5,
-        comment: 'First review'
-      });
+      await createTestReview(
+        booking._id.toString(),
+        service._id.toString(),
+        tourist._id.toString(),
+        host._id.toString(),
+        'tourist',
+        5
+      );
       
       const token = generateTestToken(tourist._id.toString(), tourist.email, tourist.role);
 
