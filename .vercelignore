@@ -1,15 +1,12 @@
 # Backend (not deployed to Vercel)
 backend/
 
-# Dependencies
+# Dependencies (only root node_modules, not frontend source)
 node_modules/
-frontend/node_modules/
-backend/node_modules/
 
 # Build artifacts
 frontend/dist/
 frontend/.angular/
-backend/dist/
 
 # Test coverage
 frontend/coverage/
