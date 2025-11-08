@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "dkhoul-monorepo",
   "version": "1.0.0",
   "private": true,
@@ -7,7 +7,7 @@
     "backend"
   ],
   "scripts": {
-    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build && cd .. && node post-build.js",
     "test": "cd frontend && npm test && cd ../backend && npm test",
     "start:frontend": "cd frontend && npm start",
     "start:backend": "cd backend && npm run dev"
