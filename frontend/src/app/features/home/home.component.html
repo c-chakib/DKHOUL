@@ -322,6 +322,52 @@
   </div>
 </section>
 
+<!-- Testimonials Section - Figma Inspired -->
+<section class="md-testimonials">
+  <div class="md-section-header">
+    <h2 class="md-section-header__title md-typescale-headline-large">Ce Que Disent Nos Utilisateurs</h2>
+    <p class="md-section-header__subtitle md-typescale-body-large">Des expériences authentiques partagées par nos voyageurs</p>
+  </div>
+  
+  <div class="md-testimonials__grid">
+    <mat-card class="md-testimonial-card elevation-z2 elevation-hover" *ngFor="let testimonial of testimonials">
+      <!-- Rating Stars -->
+      <div class="md-testimonial__rating">
+        <mat-icon *ngFor="let star of [1,2,3,4,5]" 
+                  [class.filled]="star <= testimonial.rating"
+                  class="star-icon">
+          {{ star <= testimonial.rating ? 'star' : 'star_border' }}
+        </mat-icon>
+      </div>
+      
+      <!-- Testimonial Text -->
+      <p class="md-testimonial__text md-typescale-body-large">
+        "{{ testimonial.text }}"
+      </p>
+      
+      <!-- User Info -->
+      <div class="md-testimonial__user">
+        <div class="md-testimonial__avatar">
+          <span class="md-typescale-title-medium">{{ testimonial.initials }}</span>
+        </div>
+        <div class="md-testimonial__info">
+          <p class="md-testimonial__name md-typescale-title-small">{{ testimonial.name }}</p>
+          <p class="md-testimonial__country md-typescale-body-small">
+            <mat-icon class="location-icon">location_on</mat-icon>
+            {{ testimonial.country }}
+          </p>
+        </div>
+      </div>
+      
+      <!-- Service Badge -->
+      <div class="md-testimonial__badge">
+        <mat-icon>{{ testimonial.serviceIcon }}</mat-icon>
+        <span>{{ testimonial.serviceType }}</span>
+      </div>
+    </mat-card>
+  </div>
+</section>
+
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-content">

@@ -92,24 +92,61 @@ export class HomeComponent implements OnInit {
     }
   ];
 
+  // Testimonials - Figma Inspired
   testimonials = [
     {
-      name: 'Youssef Alami',
+      name: 'Sophie Martin',
+      country: 'France',
+      initials: 'SM',
       rating: 5,
-      text: 'J\'ai découvert un magnifique riad à Marrakech via Spaces. L\'hôte était incroyable et l\'expérience authentique!',
-      avatar: 'YA'
+      text: 'J\'ai stocké mes bagages chez Ahmed pendant 4h. Service impeccable, 20 DH seulement ! Bien mieux que les consignes d\'hôtels.',
+      serviceType: 'Stockage Bagages',
+      serviceIcon: 'luggage'
     },
     {
-      name: 'Sara Bennani',
+      name: 'John Smith',
+      country: 'États-Unis',
+      initials: 'JS',
       rating: 5,
-      text: 'Les cours de cuisine marocaine m\'ont permis d\'apprendre les secrets des tajines. Une expérience inoubliable!',
-      avatar: 'SB'
+      text: 'Le cours de cuisine marocaine chez Fatima était incroyable. J\'ai appris à faire un tajine authentique pour 200 DH. Expérience unique !',
+      serviceType: 'Cours Cuisine',
+      serviceIcon: 'restaurant'
     },
     {
-      name: 'Mehdi Tazi',
+      name: 'Maria Garcia',
+      country: 'Espagne',
+      initials: 'MG',
       rating: 5,
-      text: 'La visite guidée de la médina de Fès était exceptionnelle. Notre guide local connaissait tous les secrets.',
-      avatar: 'MT'
+      text: 'Youssef m\'a accompagnée dans les souks de Marrakech. Meilleurs prix, conseils locaux, 100 DH pour 2h. Un guide parfait !',
+      serviceType: 'Guide Souk',
+      serviceIcon: 'shopping_bag'
+    },
+    {
+      name: 'Hans Mueller',
+      country: 'Allemagne',
+      initials: 'HM',
+      rating: 5,
+      text: 'Douche express après une nuit de train, 30 DH. Propre, accueil chaleureux. Service génial que je ne trouvais nulle part !',
+      serviceType: 'Douche Express',
+      serviceIcon: 'shower'
+    },
+    {
+      name: 'Sakura Tanaka',
+      country: 'Japon',
+      initials: 'ST',
+      rating: 5,
+      text: 'Cours de darija avec Mehdi. En 3 sessions, je peux commander au restaurant et négocier. 150 DH/session, excellent rapport qualité-prix.',
+      serviceType: 'Cours Darija',
+      serviceIcon: 'translate'
+    },
+    {
+      name: 'Emma Brown',
+      country: 'Royaume-Uni',
+      initials: 'EB',
+      rating: 5,
+      text: 'Wifi + espace coworking chez Karim pour 50 DH. Meilleur que les cafés, calme et connexion rapide. Parfait pour nomades digitaux !',
+      serviceType: 'Coworking',
+      serviceIcon: 'wifi'
     }
   ];
 
