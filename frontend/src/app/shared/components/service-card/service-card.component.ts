@@ -15,11 +15,19 @@ import { MatChipsModule } from '@angular/material/chips';
 })
 export class ServiceCardComponent {
   @Input() service: any;
+  isFavorite = false; // TODO: Connect to favorites service
 
   constructor(private router: Router) {}
 
   viewService(): void {
     this.router.navigate(['/services', this.service._id]);
+  }
+
+  toggleFavorite(event: Event): void {
+    event.stopPropagation();
+    this.isFavorite = !this.isFavorite;
+    // TODO: Implement favorites API call
+    console.log('Favorite toggled:', this.isFavorite, 'for service:', this.service._id);
   }
 
   getRatingStars(rating: number): number[] {
@@ -28,10 +36,10 @@ export class ServiceCardComponent {
 
   getCategoryColor(category: string): string {
     const colors: { [key: string]: string } = {
-      'space': '#667eea',
-      'skills': '#f093fb',
-      'connect': '#4facfe'
+      'space': '#3f51b5',
+      'skills': '#0277bd',
+      'connect': '#c2185b'
     };
-    return colors[category.toLowerCase()] || '#667eea';
+    return colors[category.toLowerCase()] || '#3f51b5';
   }
 }
