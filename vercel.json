@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "npm run build --prefix ./frontend && node post-build.js",
-  "outputDirectory": "frontend/dist",
-  "installCommand": "npm install --prefix ./frontend --legacy-peer-deps",
+  "buildCommand": "npm run build && node ../post-build.js",
+  "outputDirectory": "dist",
+  "installCommand": "npm install --legacy-peer-deps",
   "framework": null,
+  "rootDirectory": "frontend",
   "env": {
     "NODE_VERSION": "20"
   },
