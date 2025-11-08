@@ -29,6 +29,8 @@ export class NavbarComponent implements OnInit {
   isLoggedIn = false;
   currentUser: any = null;
   unreadMessages = 3; // This should come from a service
+  currentLanguage = 'fr'; // Default language
+  isMobileMenuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -41,6 +43,18 @@ export class NavbarComponent implements OnInit {
       this.isLoggedIn = !!user;
       this.currentUser = user;
     });
+  }
+
+  changeLanguage(lang: string): void {
+    this.currentLanguage = lang;
+    // TODO: Implement actual language change logic with i18n
+    console.log('Language changed to:', lang);
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    // TODO: Implement mobile menu functionality
+    console.log('Mobile menu toggled:', this.isMobileMenuOpen);
   }
 
   navigateToHome(): void {

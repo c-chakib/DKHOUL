@@ -1,103 +1,132 @@
-<mat-toolbar color="primary" class="navbar">
+<!-- Navbar - Figma Inspired Design -->
+<header class="navbar-figma">
   <div class="navbar-container">
-    <!-- Logo -->
-    <div class="logo" (click)="navigateToHome()">
-      <img src="picture/overall/logo.png" alt="DKHOUL" class="logo-image">
-      <span class="logo-text">DKHOUL</span>
-    </div>
+    <!-- Logo with Arabic Letter - Figma Style -->
+    <button class="navbar-logo" (click)="navigateToHome()">
+      <div class="logo-icon">
+        <span class="arabic-letter">د</span>
+      </div>
+      <div class="logo-text">
+        <div class="brand-name">DKHOUL</div>
+        <div class="brand-tagline">Platform Demo</div>
+      </div>
+    </button>
 
-    <!-- Navigation Links -->
-    <nav class="nav-links">
-      <button mat-button routerLink="/home" routerLinkActive="active">
-        <mat-icon>home</mat-icon>
-        Home
+    <!-- Desktop Navigation -->
+    <nav class="nav-links-desktop">
+      <button class="nav-link" routerLink="/home" routerLinkActive="active">
+        Accueil
       </button>
-      <button mat-button routerLink="/services" routerLinkActive="active">
-        <mat-icon>search</mat-icon>
-        Browse Services
+      <button class="nav-link" routerLink="/services" routerLinkActive="active">
+        Explorer
       </button>
-      
-      <!-- Logged In User Links -->
-      <ng-container *ngIf="isLoggedIn">
-        <button mat-button routerLink="/dashboard" routerLinkActive="active">
-          <mat-icon>dashboard</mat-icon>
-          Dashboard
-        </button>
-        <button mat-button routerLink="/bookings" routerLinkActive="active">
-          <mat-icon>event</mat-icon>
-          Bookings
-        </button>
-        <button mat-button routerLink="/messages" routerLinkActive="active" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0">
-          <mat-icon>chat</mat-icon>
-          Messages
-        </button>
-      </ng-container>
+      <button class="nav-link" routerLink="/dashboard" routerLinkActive="active" *ngIf="isLoggedIn">
+        Dashboard
+      </button>
+      <button class="nav-link" routerLink="/services/create" routerLinkActive="active" *ngIf="isProvider() || isAdmin()">
+        Devenir Host
+      </button>
+      <button class="nav-link investor-link" routerLink="/investor" routerLinkActive="active">
+        Investisseurs
+      </button>
     </nav>
 
-    <!-- Right Side Actions -->
+    <!-- Right Actions -->
     <div class="nav-actions">
+      <!-- Language Selector -->
+      <button mat-icon-button [matMenuTriggerFor]="langMenu" class="icon-button">
+        <mat-icon>language</mat-icon>
+      </button>
+      <mat-menu #langMenu="matMenu" class="language-menu">
+        <button mat-menu-item (click)="changeLanguage('fr')">
+          <span class="flag">🇫🇷</span>
+          <span>Français</span>
+        </button>
+        <button mat-menu-item (click)="changeLanguage('ar')">
+          <span class="flag">🇲🇦</span>
+          <span>العربية</span>
+        </button>
+        <button mat-menu-item (click)="changeLanguage('en')">
+          <span class="flag">🇬🇧</span>
+          <span>English</span>
+        </button>
+      </mat-menu>
+
+      <!-- Messages (Logged In) -->
+      <button mat-icon-button class="icon-button" (click)="navigateToMessages()" *ngIf="isLoggedIn" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0">
+        <mat-icon>chat_bubble_outline</mat-icon>
+      </button>
+
+      <!-- Favorites (Logged In) -->
+      <button mat-icon-button class="icon-button" *ngIf="isLoggedIn">
+        <mat-icon>favorite_border</mat-icon>
+      </button>
+
       <!-- Not Logged In -->
       <ng-container *ngIf="!isLoggedIn">
-        <button mat-button (click)="navigateToLogin()">
-          <mat-icon>login</mat-icon>
+        <button mat-button class="login-button" (click)="navigateToLogin()">
           Login
         </button>
-        <button mat-raised-button color="accent" (click)="navigateToRegister()">
-          <mat-icon>person_add</mat-icon>
-          Sign Up
+        <button mat-raised-button class="signup-button" (click)="navigateToRegister()">
+          S'inscrire
         </button>
       </ng-container>
 
-      <!-- Logged In User Menu -->
-      <ng-container *ngIf="isLoggedIn">
-        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-        <mat-menu #userMenu="matMenu" class="user-menu">
-          <div class="user-info">
-            <div class="user-avatar">
-              <mat-icon>account_circle</mat-icon>
-            </div>
-            <div class="user-details">
-              <p class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</p>
-              <p class="user-email">{{ currentUser?.email }}</p>
-              <span class="user-badge" [class.provider]="isProvider()" [class.admin]="isAdmin()">
-                {{ isAdmin() ? 'Admin' : isProvider() ? 'Provider' : 'Customer' }}
-              </span>
-            </div>
+      <!-- User Menu (Logged In) -->
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar-button" *ngIf="isLoggedIn">
+        <div class="user-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+      </button>
+      <mat-menu #userMenu="matMenu" class="user-menu-figma">
+        <div class="user-menu-header">
+          <div class="user-avatar-large">
+            <mat-icon>account_circle</mat-icon>
           </div>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="navigateToProfile()">
-            <mat-icon>person</mat-icon>
-            <span>My Profile</span>
-          </button>
-          <button mat-menu-item (click)="navigateToDashboard()">
-            <mat-icon>dashboard</mat-icon>
-            <span>Dashboard</span>
-          </button>
-          <button mat-menu-item (click)="navigateToBookings()">
-            <mat-icon>event</mat-icon>
-            <span>My Bookings</span>
-          </button>
-          <button mat-menu-item (click)="navigateToMessages()">
-            <mat-icon [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0">chat</mat-icon>
-            <span>Messages</span>
-          </button>
-          <button mat-menu-item *ngIf="isProvider()" routerLink="/services/create">
-            <mat-icon>add_business</mat-icon>
-            <span>Create Service</span>
-          </button>
-          <button mat-menu-item *ngIf="isAdmin()" (click)="navigateToAdmin()">
-            <mat-icon>admin_panel_settings</mat-icon>
-            <span>Admin Panel</span>
-          </button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon color="warn">logout</mat-icon>
-            <span>Logout</span>
-          </button>
-        </mat-menu>
-      </ng-container>
+          <div class="user-info">
+            <p class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</p>
+            <p class="user-email">{{ currentUser?.email }}</p>
+            <span class="user-badge" [class.provider]="isProvider()" [class.admin]="isAdmin()">
+              {{ isAdmin() ? 'Admin' : isProvider() ? 'Host' : 'Voyageur' }}
+            </span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="navigateToProfile()">
+          <mat-icon>person_outline</mat-icon>
+          <span>Mon Profil</span>
+        </button>
+        <button mat-menu-item *ngIf="isProvider() || isAdmin()" (click)="navigateToDashboard()">
+          <mat-icon>dashboard</mat-icon>
+          <span>Mes Services</span>
+        </button>
+        <button mat-menu-item (click)="navigateToBookings()">
+          <mat-icon>event_note</mat-icon>
+          <span>Mes Réservations</span>
+        </button>
+        <button mat-menu-item (click)="navigateToMessages()">
+          <mat-icon [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0">chat_bubble_outline</mat-icon>
+          <span>Messages</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Paramètres</span>
+        </button>
+        <button mat-menu-item *ngIf="isAdmin()" (click)="navigateToAdmin()">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>Admin Panel</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="logout-item" (click)="logout()">
+          <mat-icon color="warn">logout</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
+
+      <!-- Mobile Menu -->
+      <button mat-icon-button class="mobile-menu-button" (click)="toggleMobileMenu()">
+        <mat-icon>menu</mat-icon>
+      </button>
     </div>
   </div>
-</mat-toolbar>
+</header>
