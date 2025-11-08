@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm --prefix frontend run build && node post-build.js",
+  "buildCommand": "(cd frontend && npm run build) && node post-build.js",
   "outputDirectory": "frontend/dist",
   "installCommand": "npm install --legacy-peer-deps || true",
   "framework": null,
