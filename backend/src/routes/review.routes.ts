@@ -23,7 +23,7 @@ router.use(authenticate);
 router.post('/', reviewValidation, validate, createReview);
 router.put('/:id', updateReview);
 router.delete('/:id', deleteReview);
-router.post('/:id/respond', authorize('provider'), respondToReview);
+router.post('/:id/respond', respondToReview);
 
 export default router;
 

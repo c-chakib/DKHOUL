@@ -2,8 +2,20 @@ import request from 'supertest';
 import app from '../../app';
 import { createTestUser, generateTestToken } from '../utils/testHelpers';
 import User from '../../models/User.model';
+import * as uploadService from '../../services/upload.service';
+
+// Mock the upload service
+jest.mock('../../services/upload.service');
+
+const mockedUploadImage = uploadService.uploadImage as jest.MockedFunction<typeof uploadService.uploadImage>;
+const mockedDeleteImage = uploadService.deleteImage as jest.MockedFunction<typeof uploadService.deleteImage>;
 
 describe('User Controller', () => {
+  beforeEach(() => {
+    // Reset mocks before each test
+    mockedUploadImage.mockResolvedValue('https://example.com/test-photo.jpg');
+    mockedDeleteImage.mockResolvedValue();
+  });
   describe('GET /api/users/profile', () => {
     it('should get own profile', async () => {
       const user = await createTestUser('tourist');
@@ -177,7 +189,7 @@ describe('User Controller', () => {
   describe('DELETE /api/users/photo', () => {
     it('should delete profile photo', async () => {
       const user = await createTestUser('tourist');
-      user.photo = 'https://example.com/photo.jpg';
+      user.profile.photo = 'https://example.com/photo.jpg';
       await user.save();
       
       const token = generateTestToken(user._id.toString(), user.email, user.role);
@@ -190,7 +202,7 @@ describe('User Controller', () => {
       expect(response.body.success).toBe(true);
       
       const updatedUser = await User.findById(user._id);
-      expect(updatedUser?.photo).toBeUndefined();
+      expect(updatedUser?.profile.photo).toBe('https://via.placeholder.com/150');
     });
 
     it('should handle deletion when no photo exists', async () => {

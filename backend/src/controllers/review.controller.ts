@@ -119,37 +119,32 @@ export const getServiceReviews = async (req: Request, res: Response, next: NextF
     const skip = (pageNum - 1) * limitNum;
 
     const reviews = await Review.find({
-      service: serviceId,
-      reviewerType: 'guest'
+      serviceId: serviceId
     })
-      .populate('reviewer', 'firstName lastName photo')
-      .populate('hostResponse.respondedBy', 'firstName lastName')
+      .populate('reviewerId', 'profile.firstName profile.lastName profile.photo')
       .sort(sort as string)
       .skip(skip)
       .limit(limitNum);
 
-    const total = await Review.countDocuments({ service: serviceId, reviewerType: 'guest' });
+    const total = await Review.countDocuments({ serviceId: serviceId });
 
-    // Calculate average ratings
-    const avgRatings = await Review.aggregate([
-      { $match: { service: serviceId, reviewerType: 'guest' } },
+    // Calculate average overall rating
+    const avgRatingsAgg = await Review.aggregate([
+      { $match: { serviceId: new (require('mongoose').Types.ObjectId)(serviceId as string) } },
       {
         $group: {
           _id: null,
-          overall: { $avg: '$ratings.overall' },
-          communication: { $avg: '$ratings.communication' },
-          accuracy: { $avg: '$ratings.accuracy' },
-          value: { $avg: '$ratings.value' },
-          cleanliness: { $avg: '$ratings.cleanliness' }
+          averageRating: { $avg: '$ratings.overall' }
         }
       }
     ]);
+    const averageRating = avgRatingsAgg[0]?.averageRating || 0;
 
     res.json({
       success: true,
       data: {
         reviews,
-        averageRatings: avgRatings[0] || null,
+        averageRating,
         pagination: {
           page: pageNum,
           limit: limitNum,
@@ -299,7 +294,7 @@ export const respondToReview = async (req: Request, res: Response, next: NextFun
     res.json({
       success: true,
       message: 'Response submitted successfully',
-      data: { review }
+      data: { response: review.response }
     });
   } catch (error) {
     next(error);

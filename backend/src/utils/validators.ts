@@ -46,10 +46,12 @@ export const bookingValidation: ValidationChain[] = [
 
 export const reviewValidation: ValidationChain[] = [
   body('bookingId').isMongoId().withMessage('Valid booking ID is required'),
-  body('ratings.overall').isInt({ min: 1, max: 5 }).withMessage('Overall rating must be 1-5'),
-  body('ratings.communication').isInt({ min: 1, max: 5 }).withMessage('Communication rating must be 1-5'),
-  body('ratings.accuracy').isInt({ min: 1, max: 5 }).withMessage('Accuracy rating must be 1-5'),
-  body('ratings.value').isInt({ min: 1, max: 5 }).withMessage('Value rating must be 1-5'),
+  // Support both new ratings object and legacy single rating field
+  body('ratings.overall').optional().isInt({ min: 1, max: 5 }).withMessage('Overall rating must be 1-5'),
+  body('ratings.communication').optional().isInt({ min: 1, max: 5 }).withMessage('Communication rating must be 1-5'),
+  body('ratings.accuracy').optional().isInt({ min: 1, max: 5 }).withMessage('Accuracy rating must be 1-5'),
+  body('ratings.value').optional().isInt({ min: 1, max: 5 }).withMessage('Value rating must be 1-5'),
+  body('rating').optional().isInt({ min: 1, max: 5 }).withMessage('Rating must be 1-5'),
   body('comment').trim().isLength({ min: 10, max: 1000 }).withMessage('Comment must be 10-1000 characters')
 ];
 

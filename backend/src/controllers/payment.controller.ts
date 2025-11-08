@@ -259,13 +259,17 @@ export const getPaymentById = async (req: Request, res: Response, next: NextFunc
       return next(new AppError('Payment not found', 404));
     }
 
-    // Check authorization (payment belongs to booking's tourist)
-    const booking = await Booking.findById(payment.bookingId);
-    if (
-      booking && getObjectIdString(booking.touristId) !== userId &&
-      (req as any).user.role !== 'admin'
-    ) {
-      return next(new AppError('Not authorized to view this payment', 403));
+    // Check authorization (payment belongs to booking's tourist or host)
+    const booking = await Booking.findById(payment.bookingId).populate('serviceId');
+    if (booking) {
+      const service: any = booking.serviceId;
+      const isTourist = getObjectIdString(booking.touristId) === userId;
+      const isHost = service && getObjectIdString(service.hostId) === userId;
+      const isAdmin = (req as any).user.role === 'admin';
+      
+      if (!isTourist && !isHost && !isAdmin) {
+        return next(new AppError('Not authorized to view this payment', 403));
+      }
     }
 
     res.json({
@@ -387,9 +391,9 @@ export const refundPayment = async (req: Request, res: Response, next: NextFunct
       return next(new AppError('Payment already released, cannot refund', 400));
     }
     
-    // Check if booking can be refunded
+    // Check if booking can be refunded (only cancelled bookings can be refunded)
     const booking = await Booking.findById(payment.bookingId);
-    if (booking && booking.status !== 'cancelled' && booking.status !== 'pending') {
+    if (booking && booking.status !== 'cancelled') {
       return next(new AppError('Active bookings cannot be refunded', 400));
     }
 

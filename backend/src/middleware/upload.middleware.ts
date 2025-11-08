@@ -3,6 +3,8 @@ import multerS3 from 'multer-s3';
 import { s3, bucketName } from '../config/aws';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
+import fs from 'fs';
+import { AppError } from './error.middleware';
 
 // File filter for images
 const imageFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
@@ -11,7 +13,8 @@ const imageFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterC
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'));
+    // Use AppError so our error handler returns 400 not 500
+    cb(new AppError('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.', 400));
   }
 };
 
@@ -40,7 +43,15 @@ export const uploadToS3 = multer({
 // Upload to local storage (for development)
 const localStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    const dir = 'uploads/';
+    try {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    } catch (e) {
+      return cb(e as any, dir);
+    }
+    cb(null, dir);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);

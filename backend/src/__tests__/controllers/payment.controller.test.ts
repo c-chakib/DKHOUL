@@ -70,9 +70,9 @@ describe('Payment Controller', () => {
       
       // Create existing payment
       await Payment.create({
-        booking: booking._id,
-        user: tourist._id,
+        bookingId: booking._id,
         amount: booking.totalAmount,
+        currency: 'MAD',
         paymentMethod: 'stripe',
         transactionId: 'pi_test123',
         status: 'completed'
@@ -110,9 +110,9 @@ describe('Payment Controller', () => {
       const booking = await createTestBooking(service._id, tourist._id, host._id);
       
       const payment = await Payment.create({
-        booking: booking._id,
-        user: tourist._id,
+        bookingId: booking._id,
         amount: booking.totalAmount,
+        currency: 'MAD',
         paymentMethod: 'stripe',
         transactionId: 'pi_test456',
         status: 'completed'
@@ -121,7 +121,7 @@ describe('Payment Controller', () => {
       const token = generateTestToken(tourist._id.toString(), tourist.email, tourist.role);
 
       const response = await request(app)
-        .get(`/api/payments/${booking._id}`)
+        .get(`/api/payments/${payment._id}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
@@ -136,10 +136,10 @@ describe('Payment Controller', () => {
       const service = await createTestService(host._id);
       const booking = await createTestBooking(service._id, tourist._id, host._id);
       
-      await Payment.create({
-        booking: booking._id,
-        user: tourist._id,
+      const payment = await Payment.create({
+        bookingId: booking._id,
         amount: booking.totalAmount,
+        currency: 'MAD',
         paymentMethod: 'stripe',
         transactionId: 'pi_test789',
         status: 'completed'
@@ -148,7 +148,7 @@ describe('Payment Controller', () => {
       const token = generateTestToken(host._id.toString(), host.email, host.role);
 
       const response = await request(app)
-        .get(`/api/payments/${booking._id}`)
+        .get(`/api/payments/${payment._id}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
@@ -162,10 +162,10 @@ describe('Payment Controller', () => {
       const service = await createTestService(host._id);
       const booking = await createTestBooking(service._id, tourist._id, host._id);
       
-      await Payment.create({
-        booking: booking._id,
-        user: tourist._id,
+      const payment = await Payment.create({
+        bookingId: booking._id,
         amount: booking.totalAmount,
+        currency: 'MAD',
         paymentMethod: 'stripe',
         status: 'completed'
       });
@@ -173,7 +173,7 @@ describe('Payment Controller', () => {
       const token = generateTestToken(otherUser._id.toString(), otherUser.email, otherUser.role);
 
       const response = await request(app)
-        .get(`/api/payments/${booking._id}`)
+        .get(`/api/payments/${payment._id}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
@@ -190,16 +190,16 @@ describe('Payment Controller', () => {
       
       await Payment.create([
         {
-          booking: booking1._id,
-          user: tourist._id,
+          bookingId: booking1._id,
           amount: 100,
+          currency: 'MAD',
           paymentMethod: 'stripe',
           status: 'completed'
         },
         {
-          booking: booking2._id,
-          user: tourist._id,
+          bookingId: booking2._id,
           amount: 200,
+          currency: 'MAD',
           paymentMethod: 'stripe',
           status: 'pending'
         }
@@ -223,9 +223,9 @@ describe('Payment Controller', () => {
       const booking = await createTestBooking(service._id, tourist._id, host._id);
       
       await Payment.create({
-        booking: booking._id,
-        user: tourist._id,
+        bookingId: booking._id,
         amount: 100,
+        currency: 'MAD',
         paymentMethod: 'stripe',
         status: 'completed'
       });
@@ -250,9 +250,9 @@ describe('Payment Controller', () => {
       for (let i = 0; i < 5; i++) {
         const booking = await createTestBooking(service._id, tourist._id, host._id);
         await Payment.create({
-          booking: booking._id,
-          user: tourist._id,
+          bookingId: booking._id,
           amount: 100,
+          currency: 'MAD',
           paymentMethod: 'stripe',
           status: 'completed'
         });
@@ -282,9 +282,9 @@ describe('Payment Controller', () => {
       await booking.save();
       
       const payment = await Payment.create({
-        booking: booking._id,
-        user: tourist._id,
+        bookingId: booking._id,
         amount: 100,
+        currency: 'MAD',
         paymentMethod: 'stripe',
         transactionId: 'pi_refund123',
         status: 'completed'
@@ -311,9 +311,9 @@ describe('Payment Controller', () => {
       const booking = await createTestBooking(service._id, tourist._id, host._id);
       
       const payment = await Payment.create({
-        booking: booking._id,
-        user: tourist._id,
+        bookingId: booking._id,
         amount: 100,
+        currency: 'MAD',
         paymentMethod: 'stripe',
         status: 'completed'
       });

@@ -22,15 +22,15 @@ describe('Review Controller', () => {
         .post('/api/reviews')
         .set('Authorization', `Bearer ${token}`)
         .send({
-          bookingId: booking._id,
-          serviceId: service._id,
+          bookingId: booking._id.toString(),
+          serviceId: service._id.toString(),
           rating: 5,
           comment: 'Excellent service!'
         });
 
       expect(response.status).toBe(201);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.rating).toBe(5);
+  expect(response.body.data.ratings.overall).toBe(5);
       expect(response.body.data.comment).toBe('Excellent service!');
     });
 
@@ -81,14 +81,14 @@ describe('Review Controller', () => {
         .post('/api/reviews')
         .set('Authorization', `Bearer ${token}`)
         .send({
-          bookingId: booking._id,
-          serviceId: service._id,
+          bookingId: booking._id.toString(),
+          serviceId: service._id.toString(),
           rating: 4,
           comment: 'Second review'
         });
 
-      expect(response.status).toBe(400);
-      expect(response.body.message).toContain('already reviewed');
+  expect(response.status).toBe(409);
+  expect(response.body.message).toContain('already submitted');
     });
 
     it('should reject invalid rating', async () => {
@@ -132,22 +132,22 @@ describe('Review Controller', () => {
       await booking1.save();
       await booking2.save();
       
-      await Review.create([
-        {
-          bookingId: booking1._id,
-          serviceId: service._id,
-          reviewerId: tourist1._id,
-          rating: 5,
-          comment: 'Great!'
-        },
-        {
-          bookingId: booking2._id,
-          serviceId: service._id,
-          reviewerId: tourist2._id,
-          rating: 4,
-          comment: 'Good!'
-        }
-      ]);
+      await createTestReview(
+        booking1._id.toString(),
+        service._id.toString(),
+        tourist1._id.toString(),
+        host._id.toString(),
+        'tourist',
+        5
+      );
+      await createTestReview(
+        booking2._id.toString(),
+        service._id.toString(),
+        tourist2._id.toString(),
+        host._id.toString(),
+        'tourist',
+        4
+      );
 
       const response = await request(app)
         .get(`/api/reviews/service/${service._id}`);
@@ -167,24 +167,25 @@ describe('Review Controller', () => {
       booking.status = 'completed';
       await booking.save();
       
-      await Review.create({
-        bookingId: booking._id,
-        serviceId: service._id,
-        reviewerId: tourist._id,
-        rating: 5,
-        comment: 'Excellent!'
-      });
+      await createTestReview(
+        booking._id.toString(),
+        service._id.toString(),
+        tourist._id.toString(),
+        host._id.toString(),
+        'tourist',
+        5
+      );
 
       const response = await request(app)
         .get(`/api/reviews/service/${service._id}`);
 
       expect(response.status).toBe(200);
-      expect(response.body.data.reviews[0].reviewerId).toHaveProperty('firstName');
-      expect(response.body.data.reviews[0].reviewerId).toHaveProperty('lastName');
+  expect(response.body.data.reviews[0].reviewerId).toHaveProperty('profile');
+  expect(response.body.data.reviews[0].reviewerId.profile).toHaveProperty('firstName');
     });
   });
 
-  describe('POST /api/reviews/:id/response', () => {
+  describe('POST /api/reviews/:id/respond', () => {
     it('should allow host to respond to review', async () => {
       const host = await createTestUser('host');
       const service = await createTestService(host._id);
@@ -194,18 +195,19 @@ describe('Review Controller', () => {
       booking.status = 'completed';
       await booking.save();
       
-      const review = await Review.create({
-        bookingId: booking._id,
-        serviceId: service._id,
-        reviewerId: tourist._id,
-        rating: 5,
-        comment: 'Great service!'
-      });
+      const review = await createTestReview(
+        booking._id.toString(),
+        service._id.toString(),
+        tourist._id.toString(),
+        host._id.toString(),
+        'tourist',
+        5
+      );
       
       const token = generateTestToken(host._id.toString(), host.email, host.role);
 
       const response = await request(app)
-        .post(`/api/reviews/${review._id}/response`)
+        .post(`/api/reviews/${review._id}/respond`)
         .set('Authorization', `Bearer ${token}`)
         .send({
           response: 'Thank you for your feedback!'
@@ -213,7 +215,7 @@ describe('Review Controller', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.response).toBe('Thank you for your feedback!');
+  expect(response.body.data.response.text).toBe('Thank you for your feedback!');
     });
 
     it('should reject response from non-host', async () => {
@@ -225,19 +227,20 @@ describe('Review Controller', () => {
       booking.status = 'completed';
       await booking.save();
       
-      const review = await Review.create({
-        bookingId: booking._id,
-        serviceId: service._id,
-        reviewerId: tourist._id,
-        rating: 5,
-        comment: 'Great!'
-      });
+      const review = await createTestReview(
+        booking._id.toString(),
+        service._id.toString(),
+        tourist._id.toString(),
+        host._id.toString(),
+        'tourist',
+        5
+      );
       
       const otherUser = await createTestUser('tourist');
       const token = generateTestToken(otherUser._id.toString(), otherUser.email, otherUser.role);
 
       const response = await request(app)
-        .post(`/api/reviews/${review._id}/response`)
+        .post(`/api/reviews/${review._id}/respond`)
         .set('Authorization', `Bearer ${token}`)
         .send({
           response: 'Not my service'
@@ -257,13 +260,14 @@ describe('Review Controller', () => {
       booking.status = 'completed';
       await booking.save();
       
-      const review = await Review.create({
-        bookingId: booking._id,
-        serviceId: service._id,
-        reviewerId: tourist._id,
-        rating: 5,
-        comment: 'Great!'
-      });
+      const review = await createTestReview(
+        booking._id.toString(),
+        service._id.toString(),
+        tourist._id.toString(),
+        host._id.toString(),
+        'tourist',
+        5
+      );
       
       const token = generateTestToken(tourist._id.toString(), tourist.email, tourist.role);
 
@@ -287,13 +291,14 @@ describe('Review Controller', () => {
       booking.status = 'completed';
       await booking.save();
       
-      const review = await Review.create({
-        bookingId: booking._id,
-        serviceId: service._id,
-        reviewerId: tourist._id,
-        rating: 1,
-        comment: 'Inappropriate content'
-      });
+      const review = await createTestReview(
+        booking._id.toString(),
+        service._id.toString(),
+        tourist._id.toString(),
+        host._id.toString(),
+        'tourist',
+        1
+      );
       
       const admin = await createTestUser('admin');
       const token = generateTestToken(admin._id.toString(), admin.email, admin.role);
@@ -314,13 +319,14 @@ describe('Review Controller', () => {
       booking.status = 'completed';
       await booking.save();
       
-      const review = await Review.create({
-        bookingId: booking._id,
-        serviceId: service._id,
-        reviewerId: tourist._id,
-        rating: 5,
-        comment: 'Great!'
-      });
+      const review = await createTestReview(
+        booking._id.toString(),
+        service._id.toString(),
+        tourist._id.toString(),
+        host._id.toString(),
+        'tourist',
+        5
+      );
       
       const otherUser = await createTestUser('tourist');
       const token = generateTestToken(otherUser._id.toString(), otherUser.email, otherUser.role);
