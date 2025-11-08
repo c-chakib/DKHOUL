@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && node ../post-build.js",
+  "buildCommand": "echo '=== DIAGNOSTIC START ===' && pwd && echo '--- Current directory contents:' && ls -la && echo '--- Parent directory contents:' && ls -la .. && echo '--- Looking for post-build.js:' && ls -la ../post-build.js && echo '=== RUNNING BUILD ===' && npm run build && echo '=== BUILD COMPLETE ===' && echo '--- Dist contents:' && ls -la dist/ && echo '--- Dist/browser contents (if exists):' && ls -la dist/browser/ || echo 'No browser folder' && echo '=== RUNNING POST-BUILD ===' && node ../post-build.js && echo '=== POST-BUILD COMPLETE ===' && echo '--- Final dist contents:' && ls -la dist/",
   "outputDirectory": "dist",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": null,
