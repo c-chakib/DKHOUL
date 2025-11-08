@@ -824,3 +824,102 @@ body {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18) !important;
   }
 }
+
+/* ============================================
+   TOAST NOTIFICATIONS - FIGMA INSPIRED
+   ============================================ */
+.toast-notification {
+  margin-bottom: 16px !important;
+  margin-right: 16px !important;
+  
+  .mat-mdc-snack-bar-container {
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    padding: 16px 20px !important;
+    min-width: 320px !important;
+    max-width: 480px !important;
+  }
+
+  .mdc-snackbar__label {
+    font-size: 0.9375rem !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+  }
+
+  .mat-mdc-snack-bar-action {
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important;
+  }
+}
+
+/* Success Toast */
+.toast-success {
+  .mat-mdc-snack-bar-container {
+    background-color: #10b981 !important;
+    color: #ffffff !important;
+  }
+
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+  }
+
+  .mdc-snackbar__label::before {
+    content: '✓ ';
+    font-weight: 700;
+    margin-right: 8px;
+  }
+}
+
+/* Error Toast */
+.toast-error {
+  .mat-mdc-snack-bar-container {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+  }
+
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+  }
+
+  .mdc-snackbar__label::before {
+    content: '✕ ';
+    font-weight: 700;
+    margin-right: 8px;
+  }
+}
+
+/* Info Toast */
+.toast-info {
+  .mat-mdc-snack-bar-container {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+  }
+
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+  }
+
+  .mdc-snackbar__label::before {
+    content: 'ℹ ';
+    font-weight: 700;
+    margin-right: 8px;
+  }
+}
+
+/* Warning Toast */
+.toast-warning {
+  .mat-mdc-snack-bar-container {
+    background-color: #f59e0b !important;
+    color: #ffffff !important;
+  }
+
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+  }
+
+  .mdc-snackbar__label::before {
+    content: '⚠ ';
+    font-weight: 700;
+    margin-right: 8px;
+  }
+}
