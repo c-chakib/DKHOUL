@@ -35,6 +35,38 @@
           La première marketplace qui permet aux Marocains de monétiser leurs espaces, compétences et temps
         </p>
         
+        <!-- Search Bar - Figma Inspired -->
+        <div class="md-hero-search">
+          <div class="md-search-container">
+            <mat-icon class="md-search-icon">search</mat-icon>
+            <input 
+              type="text" 
+              class="md-search-input" 
+              placeholder="Rechercher des espaces, cours, ou services..."
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()"
+            />
+            <button mat-raised-button class="md-search-button" (click)="onSearch()">
+              <mat-icon>arrow_forward</mat-icon>
+              <span>Rechercher</span>
+            </button>
+          </div>
+          <div class="md-search-suggestions">
+            <button mat-button class="md-suggestion" (click)="searchByCategory('space')">
+              <mat-icon>home</mat-icon>
+              Espaces
+            </button>
+            <button mat-button class="md-suggestion" (click)="searchByCategory('skills')">
+              <mat-icon>school</mat-icon>
+              Compétences
+            </button>
+            <button mat-button class="md-suggestion" (click)="searchByCategory('connect')">
+              <mat-icon>people</mat-icon>
+              Connexions
+            </button>
+          </div>
+        </div>
+        
         <!-- Quick stats in hero -->
         <div class="md-hero-stats">
           <div class="md-hero-stat">

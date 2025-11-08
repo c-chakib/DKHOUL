@@ -143,6 +143,122 @@
     }
   }
 
+  /* Search Bar - Figma Inspired */
+  .md-hero-search {
+    max-width: 800px;
+    margin: 48px auto 32px;
+
+    .md-search-container {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 8px 8px 8px 20px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+      transition: all 0.3s ease;
+
+      &:focus-within {
+        box-shadow: 0 12px 48px rgba(31, 38, 135, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .md-search-icon {
+        color: #64748b;
+        margin-right: 12px;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .md-search-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        color: #1a237e;
+        background: transparent;
+        padding: 12px 16px;
+
+        &::placeholder {
+          color: #94a3b8;
+        }
+      }
+
+      .md-search-button {
+        background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+        color: #ffffff;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+        transition: all 0.2s ease;
+
+        mat-icon {
+          margin-right: 8px;
+        }
+
+        &:hover {
+          background: linear-gradient(135deg, #303f9f 0%, #0d1642 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(63, 81, 181, 0.4);
+        }
+      }
+    }
+
+    .md-search-suggestions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+
+      .md-suggestion {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.2s ease;
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.4);
+          transform: translateY(-2px);
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      .md-search-container {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+
+        .md-search-input {
+          width: 100%;
+        }
+
+        .md-search-button {
+          width: 100%;
+        }
+      }
+    }
+  }
+
   .md-hero-stats {
     display: flex;
     align-items: center;
