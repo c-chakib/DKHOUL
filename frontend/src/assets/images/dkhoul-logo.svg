@@ -1,0 +1,14 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Arch -->
+  <path d="M100 20C80 20 65 35 65 55V145C65 165 80 180 100 180C120 180 135 165 135 145V55C135 35 120 20 100 20Z" fill="#D97652"/>
+  
+  <!-- Inner Shape - Dark Blue -->
+  <path d="M90 50C78 50 70 58 70 70V130C70 142 78 150 90 150C95 150 100 148 103 145C106 148 111 150 116 150C128 150 136 142 136 130V70C136 58 128 50 116 50C111 50 106 52 103 55C100 52 95 50 90 50Z" fill="#2E3B6F"/>
+  
+  <!-- Yellow Accent "D" -->
+  <ellipse cx="110" cy="95" rx="12" ry="20" fill="#F7B731"/>
+  
+  <!-- White Border -->
+  <path d="M85 45C75 48 68 58 68 70V130C68 142 75 152 85 155" stroke="white" stroke-width="3" fill="none"/>
+  <path d="M115 45C125 48 132 58 132 70V130C132 142 125 152 115 155" stroke="white" stroke-width="3" fill="none"/>
+</svg>
