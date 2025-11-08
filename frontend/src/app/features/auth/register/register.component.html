@@ -1,69 +1,93 @@
-<div class="register-container">
-  <div class="register-card-wrapper">
-    <mat-card class="register-card">
-      <mat-card-header>
-        <div class="logo">
-          <h1>DKHOUL</h1>
-          <p class="tagline">Join Morocco's Premier Marketplace</p>
+<!-- Register Page - Material Design 3 -->
+<div class="md-auth md-auth--register">
+  <div class="md-auth__container md-auth__container--single">
+    <!-- Register Card -->
+    <div class="md-auth-card md-auth-card--stepper elevation-z3">
+      <!-- Header -->
+      <div class="md-auth-card__header">
+        <div class="md-auth-card__logo">
+          <h1 class="md-typescale-headline-large">DKHOUL</h1>
+          <p class="md-auth-card__tagline md-typescale-body-medium">Join Morocco's Premier Marketplace</p>
         </div>
-      </mat-card-header>
+      </div>
 
-      <mat-card-content>
-        <h2>Create Your Account</h2>
-        <p class="subtitle">Start your journey with us today</p>
+      <!-- Content -->
+      <div class="md-auth-card__content">
+        <h2 class="md-auth-card__title md-typescale-headline-medium">Create Your Account</h2>
+        <p class="md-auth-card__subtitle md-typescale-body-large">Start your journey with us today</p>
 
-        <mat-stepper linear #stepper>
+        <!-- Material Design Stepper -->
+        <mat-stepper linear #stepper class="md-stepper">
           <!-- Step 1: Personal Information -->
           <mat-step [stepControl]="personalInfoForm">
-            <form [formGroup]="personalInfoForm">
+            <form [formGroup]="personalInfoForm" class="md-form">
               <ng-template matStepLabel>Personal Info</ng-template>
               
-              <div class="step-content">
-                <h3>Tell us about yourself</h3>
+              <div class="md-step-content">
+                <h3 class="md-step-content__title md-typescale-title-large">Tell us about yourself</h3>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>First Name</mat-label>
-                  <input 
-                    matInput 
-                    formControlName="firstName"
-                    placeholder="Enter your first name"
-                  >
-                  <mat-icon matPrefix>person</mat-icon>
-                  <mat-error *ngIf="personalInfoForm.get('firstName')?.invalid && personalInfoForm.get('firstName')?.touched">
+                <!-- First Name -->
+                <div class="md-form-field">
+                  <label for="firstName" class="md-form-field__label md-typescale-body-small">First Name</label>
+                  <div class="md-form-field__input-wrapper">
+                    <span class="material-icons md-form-field__icon">person</span>
+                    <input 
+                      id="firstName"
+                      type="text"
+                      formControlName="firstName"
+                      placeholder="Enter your first name"
+                      class="md-form-field__input"
+                      [class.md-form-field__input--error]="personalInfoForm.get('firstName')?.invalid && personalInfoForm.get('firstName')?.touched"
+                    >
+                  </div>
+                  <span class="md-form-field__error md-typescale-body-small" *ngIf="personalInfoForm.get('firstName')?.invalid && personalInfoForm.get('firstName')?.touched">
                     {{ getErrorMessage(personalInfoForm, 'firstName') }}
-                  </mat-error>
-                </mat-form-field>
+                  </span>
+                </div>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Last Name</mat-label>
-                  <input 
-                    matInput 
-                    formControlName="lastName"
-                    placeholder="Enter your last name"
-                  >
-                  <mat-icon matPrefix>person_outline</mat-icon>
-                  <mat-error *ngIf="personalInfoForm.get('lastName')?.invalid && personalInfoForm.get('lastName')?.touched">
+                <!-- Last Name -->
+                <div class="md-form-field">
+                  <label for="lastName" class="md-form-field__label md-typescale-body-small">Last Name</label>
+                  <div class="md-form-field__input-wrapper">
+                    <span class="material-icons md-form-field__icon">person_outline</span>
+                    <input 
+                      id="lastName"
+                      type="text"
+                      formControlName="lastName"
+                      placeholder="Enter your last name"
+                      class="md-form-field__input"
+                      [class.md-form-field__input--error]="personalInfoForm.get('lastName')?.invalid && personalInfoForm.get('lastName')?.touched"
+                    >
+                  </div>
+                  <span class="md-form-field__error md-typescale-body-small" *ngIf="personalInfoForm.get('lastName')?.invalid && personalInfoForm.get('lastName')?.touched">
                     {{ getErrorMessage(personalInfoForm, 'lastName') }}
-                  </mat-error>
-                </mat-form-field>
+                  </span>
+                </div>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Phone Number</mat-label>
-                  <input 
-                    matInput 
-                    formControlName="phoneNumber"
-                    placeholder="+212 6XX XXX XXX"
-                  >
-                  <mat-icon matPrefix>phone</mat-icon>
-                  <mat-error *ngIf="personalInfoForm.get('phoneNumber')?.invalid && personalInfoForm.get('phoneNumber')?.touched">
+                <!-- Phone Number -->
+                <div class="md-form-field">
+                  <label for="phoneNumber" class="md-form-field__label md-typescale-body-small">Phone Number</label>
+                  <div class="md-form-field__input-wrapper">
+                    <span class="material-icons md-form-field__icon">phone</span>
+                    <input 
+                      id="phoneNumber"
+                      type="tel"
+                      formControlName="phoneNumber"
+                      placeholder="+212 6XX XXX XXX"
+                      class="md-form-field__input"
+                      [class.md-form-field__input--error]="personalInfoForm.get('phoneNumber')?.invalid && personalInfoForm.get('phoneNumber')?.touched"
+                    >
+                  </div>
+                  <span class="md-form-field__error md-typescale-body-small" *ngIf="personalInfoForm.get('phoneNumber')?.invalid && personalInfoForm.get('phoneNumber')?.touched">
                     {{ getErrorMessage(personalInfoForm, 'phoneNumber') }}
-                  </mat-error>
-                </mat-form-field>
+                  </span>
+                </div>
 
-                <div class="stepper-buttons">
-                  <button mat-raised-button color="primary" matStepperNext type="button">
-                    Next
-                    <mat-icon>arrow_forward</mat-icon>
+                <!-- Step Navigation -->
+                <div class="md-stepper-actions">
+                  <button type="button" matStepperNext class="md-btn md-btn--filled md-btn--primary">
+                    <span class="md-btn__label">Next</span>
+                    <span class="material-icons md-btn__icon-trailing">arrow_forward</span>
                   </button>
                 </div>
               </div>
@@ -72,118 +96,139 @@
 
           <!-- Step 2: Account Information -->
           <mat-step [stepControl]="accountInfoForm">
-            <form [formGroup]="accountInfoForm">
+            <form [formGroup]="accountInfoForm" class="md-form">
               <ng-template matStepLabel>Account Info</ng-template>
               
-              <div class="step-content">
-                <h3>Setup your account</h3>
+              <div class="md-step-content">
+                <h3 class="md-step-content__title md-typescale-title-large">Setup your account</h3>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Email Address</mat-label>
-                  <input 
-                    matInput 
-                    type="email"
-                    formControlName="email"
-                    placeholder="Enter your email"
-                  >
-                  <mat-icon matPrefix>email</mat-icon>
-                  <mat-error *ngIf="accountInfoForm.get('email')?.invalid && accountInfoForm.get('email')?.touched">
+                <!-- Email -->
+                <div class="md-form-field">
+                  <label for="email" class="md-form-field__label md-typescale-body-small">Email Address</label>
+                  <div class="md-form-field__input-wrapper">
+                    <span class="material-icons md-form-field__icon">email</span>
+                    <input 
+                      id="email"
+                      type="email"
+                      formControlName="email"
+                      placeholder="Enter your email"
+                      class="md-form-field__input"
+                      [class.md-form-field__input--error]="accountInfoForm.get('email')?.invalid && accountInfoForm.get('email')?.touched"
+                    >
+                  </div>
+                  <span class="md-form-field__error md-typescale-body-small" *ngIf="accountInfoForm.get('email')?.invalid && accountInfoForm.get('email')?.touched">
                     {{ getErrorMessage(accountInfoForm, 'email') }}
-                  </mat-error>
-                </mat-form-field>
+                  </span>
+                </div>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>I want to</mat-label>
-                  <mat-select formControlName="role">
-                    <mat-option *ngFor="let role of roles" [value]="role.value">
-                      {{ role.label }}
-                    </mat-option>
-                  </mat-select>
-                  <mat-icon matPrefix>badge</mat-icon>
-                </mat-form-field>
+                <!-- Role Selection -->
+                <div class="md-form-field">
+                  <label for="role" class="md-form-field__label md-typescale-body-small">I want to</label>
+                  <div class="md-form-field__input-wrapper">
+                    <span class="material-icons md-form-field__icon">badge</span>
+                    <select 
+                      id="role"
+                      formControlName="role"
+                      class="md-form-field__input md-form-field__select"
+                    >
+                      <option value="" disabled>Select your role</option>
+                      <option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</option>
+                    </select>
+                  </div>
+                </div>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Password</mat-label>
-                  <input 
-                    matInput 
-                    [type]="hidePassword ? 'password' : 'text'"
-                    formControlName="password"
-                    placeholder="Create a strong password"
-                  >
-                  <mat-icon matPrefix>lock</mat-icon>
-                  <button 
-                    mat-icon-button 
-                    matSuffix 
-                    type="button"
-                    (click)="hidePassword = !hidePassword"
-                  >
-                    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                  </button>
-                  <mat-error *ngIf="accountInfoForm.get('password')?.invalid && accountInfoForm.get('password')?.touched">
+                <!-- Password -->
+                <div class="md-form-field">
+                  <label for="password" class="md-form-field__label md-typescale-body-small">Password</label>
+                  <div class="md-form-field__input-wrapper">
+                    <span class="material-icons md-form-field__icon">lock</span>
+                    <input 
+                      id="password"
+                      [type]="hidePassword ? 'password' : 'text'"
+                      formControlName="password"
+                      placeholder="Create a strong password"
+                      class="md-form-field__input"
+                      [class.md-form-field__input--error]="accountInfoForm.get('password')?.invalid && accountInfoForm.get('password')?.touched"
+                    >
+                    <button 
+                      type="button"
+                      class="md-form-field__toggle-btn"
+                      (click)="hidePassword = !hidePassword"
+                    >
+                      <span class="material-icons">{{ hidePassword ? 'visibility_off' : 'visibility' }}</span>
+                    </button>
+                  </div>
+                  <span class="md-form-field__error md-typescale-body-small" *ngIf="accountInfoForm.get('password')?.invalid && accountInfoForm.get('password')?.touched">
                     {{ getErrorMessage(accountInfoForm, 'password') }}
-                  </mat-error>
-                </mat-form-field>
+                  </span>
+                </div>
 
                 <!-- Password Strength Indicator -->
-                <div class="password-strength" *ngIf="accountInfoForm.get('password')?.value">
-                  <div class="strength-bar">
+                <div class="md-password-strength" *ngIf="accountInfoForm.get('password')?.value">
+                  <div class="md-password-strength__bar">
                     <div 
-                      class="strength-fill" 
+                      class="md-password-strength__fill"
                       [style.width.%]="getPasswordStrength().value"
-                      [style.background-color]="getPasswordStrength().color"
+                      [attr.data-strength]="getPasswordStrength().label"
                     ></div>
                   </div>
-                  <span 
-                    class="strength-label"
-                    [style.color]="getPasswordStrength().color"
-                  >
+                  <span class="md-password-strength__label md-typescale-label-small">
                     {{ getPasswordStrength().label }}
                   </span>
                 </div>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Confirm Password</mat-label>
-                  <input 
-                    matInput 
-                    [type]="hideConfirmPassword ? 'password' : 'text'"
-                    formControlName="confirmPassword"
-                    placeholder="Re-enter your password"
-                  >
-                  <mat-icon matPrefix>lock_outline</mat-icon>
-                  <button 
-                    mat-icon-button 
-                    matSuffix 
-                    type="button"
-                    (click)="hideConfirmPassword = !hideConfirmPassword"
-                  >
-                    <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                  </button>
-                  <mat-error *ngIf="accountInfoForm.get('confirmPassword')?.touched">
+                <!-- Confirm Password -->
+                <div class="md-form-field">
+                  <label for="confirmPassword" class="md-form-field__label md-typescale-body-small">Confirm Password</label>
+                  <div class="md-form-field__input-wrapper">
+                    <span class="material-icons md-form-field__icon">lock_outline</span>
+                    <input 
+                      id="confirmPassword"
+                      [type]="hideConfirmPassword ? 'password' : 'text'"
+                      formControlName="confirmPassword"
+                      placeholder="Re-enter your password"
+                      class="md-form-field__input"
+                      [class.md-form-field__input--error]="accountInfoForm.get('confirmPassword')?.invalid && accountInfoForm.get('confirmPassword')?.touched"
+                    >
+                    <button 
+                      type="button"
+                      class="md-form-field__toggle-btn"
+                      (click)="hideConfirmPassword = !hideConfirmPassword"
+                    >
+                      <span class="material-icons">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</span>
+                    </button>
+                  </div>
+                  <span class="md-form-field__error md-typescale-body-small" *ngIf="accountInfoForm.get('confirmPassword')?.touched">
                     {{ getErrorMessage(accountInfoForm, 'confirmPassword') }}
-                  </mat-error>
-                </mat-form-field>
-
-                <div class="terms-checkbox">
-                  <mat-checkbox formControlName="agreeToTerms">
-                    I agree to the <a href="/terms" target="_blank">Terms of Service</a> and 
-                    <a href="/privacy" target="_blank">Privacy Policy</a>
-                  </mat-checkbox>
+                  </span>
                 </div>
 
-                <div class="stepper-buttons">
-                  <button mat-stroked-button matStepperPrevious type="button">
-                    <mat-icon>arrow_back</mat-icon>
-                    Back
+                <!-- Terms Agreement -->
+                <label class="md-checkbox">
+                  <input type="checkbox" formControlName="agreeToTerms" class="md-checkbox__input">
+                  <span class="md-checkbox__label md-typescale-body-medium">
+                    I agree to the <a href="/terms" target="_blank" class="md-link">Terms of Service</a> and 
+                    <a href="/privacy" target="_blank" class="md-link">Privacy Policy</a>
+                  </span>
+                </label>
+
+                <!-- Step Navigation -->
+                <div class="md-stepper-actions md-stepper-actions--double">
+                  <button type="button" matStepperPrevious class="md-btn md-btn--outlined">
+                    <span class="material-icons md-btn__icon">arrow_back</span>
+                    <span class="md-btn__label">Back</span>
                   </button>
                   <button 
-                    mat-raised-button 
-                    color="primary" 
+                    type="button"
+                    class="md-btn md-btn--filled md-btn--primary"
                     (click)="onSubmit()"
                     [disabled]="loading || accountInfoForm.invalid"
-                    type="button"
+                    [class.md-btn--loading]="loading"
                   >
-                    <span *ngIf="!loading">Create Account</span>
-                    <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+                    <span class="md-btn__label" *ngIf="!loading">Create Account</span>
+                    <span class="md-btn__loader" *ngIf="loading">
+                      <span class="md-spinner"></span>
+                    </span>
                   </button>
                 </div>
               </div>
@@ -192,35 +237,49 @@
         </mat-stepper>
 
         <!-- Login Link -->
-        <div class="login-link">
-          <p>Already have an account? <a routerLink="/auth/login">Sign In</a></p>
+        <div class="md-auth-card__footer">
+          <p class="md-typescale-body-medium">
+            Already have an account? 
+            <a routerLink="/auth/login" class="md-link md-link--bold">Sign In</a>
+          </p>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
 
     <!-- Benefits Section -->
-    <div class="benefits-section">
-      <h3>Why Join DKHOUL?</h3>
-      <div class="benefits-grid">
-        <div class="benefit">
-          <mat-icon>verified</mat-icon>
-          <h4>Verified Services</h4>
-          <p>All providers are verified for your safety</p>
+    <div class="md-benefits">
+      <h3 class="md-benefits__title md-typescale-headline-small">Why Join DKHOUL?</h3>
+      <div class="md-benefits__grid">
+        <div class="md-benefit-card elevation-z2">
+          <div class="md-benefit-card__icon-wrapper">
+            <span class="material-icons md-benefit-card__icon">verified</span>
+          </div>
+          <h4 class="md-benefit-card__title md-typescale-title-medium">Verified Services</h4>
+          <p class="md-benefit-card__description md-typescale-body-medium">All providers are verified for your safety</p>
         </div>
-        <div class="benefit">
-          <mat-icon>payment</mat-icon>
-          <h4>Secure Payments</h4>
-          <p>Protected transactions with escrow</p>
+        
+        <div class="md-benefit-card elevation-z2">
+          <div class="md-benefit-card__icon-wrapper">
+            <span class="material-icons md-benefit-card__icon">payment</span>
+          </div>
+          <h4 class="md-benefit-card__title md-typescale-title-medium">Secure Payments</h4>
+          <p class="md-benefit-card__description md-typescale-body-medium">Protected transactions with escrow</p>
         </div>
-        <div class="benefit">
-          <mat-icon>star</mat-icon>
-          <h4>Quality Guaranteed</h4>
-          <p>Read reviews from real customers</p>
+        
+        <div class="md-benefit-card elevation-z2">
+          <div class="md-benefit-card__icon-wrapper">
+            <span class="material-icons md-benefit-card__icon">star</span>
+          </div>
+          <h4 class="md-benefit-card__title md-typescale-title-medium">Quality Guaranteed</h4>
+          <p class="md-benefit-card__description md-typescale-body-medium">Read reviews from real customers</p>
         </div>
-        <div class="benefit">
-          <mat-icon>support</mat-icon>
-          <h4>24/7 Support</h4>
-          <p>We're always here to help</p>
+        
+        <div class="md-benefit-card elevation-z2">
+          <div class="md-benefit-card__icon-wrapper">
+            <span class="material-icons md-benefit-card__icon">support</span>
+          </div>
+          <h4 class="md-benefit-card__title md-typescale-title-medium">24/7 Support</h4>
+          <p class="md-benefit-card__description md-typescale-body-medium">We're always here to help</p>
         </div>
       </div>
     </div>
