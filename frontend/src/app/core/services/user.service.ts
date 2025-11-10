@@ -53,4 +53,9 @@ export class UserService {
   getProfile(): Observable<{ success: boolean; data: User }> {
     return this.http.get<{ success: boolean; data: User }>(`${this.apiUrl}/profile`);
   }
+
+  getAllUsers(limit?: number): Observable<{ success: boolean; data: User[] }> {
+    const params = limit ? { limit: limit.toString() } : {};
+    return this.http.get<{ success: boolean; data: User[] }>(this.apiUrl, { params });
+  }
 }

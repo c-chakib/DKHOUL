@@ -40,34 +40,18 @@ export const uploadToS3 = multer({
   }
 });
 
-// Upload to local storage (for development)
-const localStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = 'uploads/';
-    try {
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-    } catch (e) {
-      return cb(e as any, dir);
-    }
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const filename = `${uuidv4()}${ext}`;
-    cb(null, filename);
-  }
-});
+// Upload to memory (for development) - stores file in buffer
+const memoryStorage = multer.memoryStorage();
 
-export const uploadToLocal = multer({
-  storage: localStorage,
+export const uploadToMemory = multer({
+  storage: memoryStorage,
   fileFilter: imageFilter,
   limits: {
     fileSize: 5 * 1024 * 1024
   }
 });
 
-// Default upload (use S3 in production, local in development)
-export const upload = process.env.NODE_ENV === 'production' ? uploadToS3 : uploadToLocal;
+// Default upload - use memory storage for both dev and prod
+// The upload service will handle saving to S3 or local filesystem
+export const upload = uploadToMemory;
 

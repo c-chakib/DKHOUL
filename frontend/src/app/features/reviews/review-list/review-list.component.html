@@ -24,7 +24,7 @@
   <div class="reviews-list">
     <mat-card *ngFor="let review of reviews" class="review-card">
       <div class="review-header">
-        <img [src]="review.user?.avatar || '/assets/default-avatar.png'" [alt]="review.user?.name">
+  <img [src]="review.user?.avatar || 'assets/default-avatar.svg'" [alt]="review.user?.name">
         <div class="user-info">
           <h3>{{ review.user?.name }}</h3>
           <p class="date">{{ review.createdAt | date:'mediumDate' }}</p>

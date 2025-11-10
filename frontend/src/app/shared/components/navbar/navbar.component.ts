@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -7,7 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { SocketService } from '../../../core/services/socket.service';
+import { MessageService } from '../../../core/services/message.service';
 
 @Component({
   selector: 'app-navbar',
@@ -25,23 +28,63 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   currentUser: any = null;
-  unreadMessages = 3; // This should come from a service
+  unreadMessages = 0;
   currentLanguage = 'fr'; // Default language
   isMobileMenuOpen = false;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private socketService: SocketService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
     // Subscribe to auth state
-    this.authService.currentUser.subscribe((user: any) => {
+    const authSub = this.authService.currentUser.subscribe((user: any) => {
       this.isLoggedIn = !!user;
       this.currentUser = user;
+      
+      if (user) {
+        // Connect socket when user logs in
+        const token = localStorage.getItem('token');
+        if (token) {
+          this.socketService.connect(token);
+        }
+        
+        // Load initial unread count
+        this.loadUnreadCount();
+      }
+    });
+    this.subscriptions.push(authSub);
+
+    // Subscribe to real-time unread count updates
+    const unreadSub = this.socketService.unreadCount$.subscribe(count => {
+      this.unreadMessages = count;
+    });
+    this.subscriptions.push(unreadSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private loadUnreadCount(): void {
+    this.messageService.getConversations().subscribe({
+      next: (response: any) => {
+        const conversations = response?.data?.conversations || response?.conversations || response?.data || response || [];
+        const totalUnread = Array.isArray(conversations)
+          ? conversations.reduce((sum: number, conv: any) => sum + (conv?.unreadCount || 0), 0)
+          : 0;
+        this.socketService.setUnreadCount(totalUnread);
+      },
+      error: (error) => {
+        console.error('Error loading unread count:', error);
+      }
     });
   }
 

@@ -132,6 +132,11 @@
   
   <div class="md-category-grid md-category-grid--large">
     <div class="md-category-card md-category-card--featured elevation-z3" *ngFor="let category of mainCategories">
+      <!-- Category Image -->
+      <div class="md-category-card__image">
+        <img [src]="category.image" [alt]="category.name" />
+      </div>
+      
       <div class="md-category-card__header">
         <div class="md-category-card__icon-wrapper">
           <span class="material-icons md-category-card__icon">{{ category.icon }}</span>
@@ -179,7 +184,11 @@
   
   <div class="md-category-grid">
     <div class="md-service-card elevation-z2 elevation-hover" *ngFor="let category of featuredCategories">
-      <div class="md-service-card__icon-wrapper">
+      <div class="md-service-card__image-wrapper" *ngIf="category.image">
+        <img [src]="category.image" [alt]="category.name" class="md-service-card__image">
+      </div>
+      
+      <div class="md-service-card__icon-wrapper" *ngIf="!category.image">
         <span class="material-icons md-service-card__icon">{{ category.icon }}</span>
       </div>
       
@@ -367,43 +376,3 @@
     </mat-card>
   </div>
 </section>
-
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-section">
-      <div class="footer-logo">
-        <mat-icon>handyman</mat-icon>
-        <span>DKHOUL</span>
-      </div>
-      <p>Morocco's #1 Service Marketplace</p>
-    </div>
-    <div class="footer-section">
-      <h4>For Customers</h4>
-      <ul>
-        <li><a href="#">Find Services</a></li>
-        <li><a href="#">How It Works</a></li>
-        <li><a href="#">Safety</a></li>
-      </ul>
-    </div>
-    <div class="footer-section">
-      <h4>For Providers</h4>
-      <ul>
-        <li><a href="#">Become a Provider</a></li>
-        <li><a href="#">Provider Resources</a></li>
-        <li><a href="#">Success Stories</a></li>
-      </ul>
-    </div>
-    <div class="footer-section">
-      <h4>Company</h4>
-      <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">Terms & Privacy</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; {{ 'now' | date: 'yyyy' }} DKHOUL. All rights reserved.</p>
-  </div>
-</footer>

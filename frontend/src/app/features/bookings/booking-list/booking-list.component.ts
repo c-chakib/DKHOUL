@@ -34,14 +34,31 @@ export class BookingListComponent implements OnInit {
 
   loadBookings(): void {
     this.bookingService.getMyBookings().subscribe({
-      next: (bookings) => {
+      next: (response) => {
+        // Accept multiple possible API shapes: { success, data: { bookings } }, { bookings }, array
+        let bookings: any[] = [];
+        if (Array.isArray(response)) {
+          bookings = response;
+        } else if (Array.isArray(response?.data)) {
+          bookings = response.data;
+        } else if (Array.isArray(response?.data?.bookings)) {
+          bookings = response.data.bookings;
+        } else if (Array.isArray(response?.bookings)) {
+          bookings = response.bookings;
+        } else {
+          // Fallback: gather any enumerable values that look like booking objects
+          bookings = Object.values(response).filter((v: any) => v && typeof v === 'object' && 'status' in v);
+        }
+
         const now = new Date();
-        this.upcomingBookings = bookings.filter((b: any) => 
-          (b.status === 'confirmed' || b.status === 'pending') && new Date(b.date) >= now
-        );
-        this.pastBookings = bookings.filter((b: any) => 
-          b.status === 'completed' || (new Date(b.date) < now && b.status !== 'cancelled')
-        );
+        this.upcomingBookings = bookings.filter((b: any) => {
+          const bookingDate = new Date(b.date || b.bookingDate || b.createdAt);
+          return (b.status === 'confirmed' || b.status === 'pending') && bookingDate >= now;
+        });
+        this.pastBookings = bookings.filter((b: any) => {
+          const bookingDate = new Date(b.date || b.bookingDate || b.createdAt);
+          return b.status === 'completed' || (bookingDate < now && b.status !== 'cancelled');
+        });
         this.cancelledBookings = bookings.filter((b: any) => b.status === 'cancelled');
         this.loading = false;
       },

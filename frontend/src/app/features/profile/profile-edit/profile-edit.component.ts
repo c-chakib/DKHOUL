@@ -60,10 +60,29 @@ export class ProfileEditComponent implements OnInit {
 
   loadProfile(): void {
     this.userService.getProfile().subscribe({
-      next: (user: any) => {
-        this.profileForm.patchValue(user);
-        this.avatarPreview = user.avatar;
-        this.coverPreview = user.coverPhoto;
+        next: (response: any) => {
+          const user = response.data?.user || response.data || response;
+        
+          // Map backend fields to form fields
+          const formData = {
+            name: user.profile?.firstName && user.profile?.lastName 
+              ? `${user.profile.firstName} ${user.profile.lastName}`.trim()
+              : user.name || '',
+            email: user.email || '',
+            phone: user.profile?.phone || user.phone || '',
+            bio: user.profile?.bio || user.bio || '',
+            description: user.profile?.bio || user.bio || '',
+            location: {
+              address: user.address || '',
+              city: user.city || '',
+              country: user.country || ''
+            },
+            languages: user.profile?.languages || user.languages || []
+          };
+        
+          this.profileForm.patchValue(formData);
+          this.avatarPreview = user.profile?.photo || user.avatar || null;
+          this.coverPreview = user.coverPhoto || null;
       },
       error: (error: any) => {
         console.error('Error loading profile:', error);

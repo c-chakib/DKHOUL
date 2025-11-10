@@ -37,8 +37,16 @@ export class AdminPanelComponent implements OnInit {
 
   loadStats(): void {
     this.adminService.getDashboardStats().subscribe({
-      next: (stats: any) => {
-        this.stats = stats;
+      next: (response: any) => {
+        const statsData = response.data?.statistics || response.statistics || response;
+        this.stats = {
+          totalUsers: statsData.totalUsers || 0,
+          totalServices: statsData.totalServices || 0,
+          totalBookings: statsData.totalBookings || 0,
+          totalRevenue: statsData.totalRevenue || 0,
+          pendingApprovals: statsData.pendingServices || 0,
+          activeDisputes: 0 // Not yet implemented in backend
+        };
         this.loading = false;
       },
       error: (error: any) => {

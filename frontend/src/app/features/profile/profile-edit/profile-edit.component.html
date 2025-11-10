@@ -9,7 +9,7 @@
       <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Cover Photo -->
         <div class="cover-section">
-          <div class="cover-preview" [style.background-image]="'url(' + (coverPreview || '/assets/default-cover.jpg') + ')'">
+          <div class="cover-preview" [style.background-image]="'url(' + (coverPreview || '/assets/default-cover.svg') + ')'">
             <button type="button" mat-mini-fab color="primary" class="upload-btn" (click)="coverInput.click()">
               <mat-icon>photo_camera</mat-icon>
             </button>
@@ -20,7 +20,7 @@
 
         <!-- Avatar -->
         <div class="avatar-section">
-          <img class="avatar-preview" [src]="avatarPreview || '/assets/default-avatar.png'" alt="Avatar">
+          <img class="avatar-preview" [src]="avatarPreview || 'assets/default-avatar.svg'" alt="Avatar">
           <button type="button" mat-mini-fab color="accent" class="upload-btn" (click)="avatarInput.click()">
             <mat-icon>photo_camera</mat-icon>
           </button>

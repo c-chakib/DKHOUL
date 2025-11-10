@@ -127,7 +127,8 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
 // Send password reset email
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const resetUrl = `${config.frontendUrl}/reset-password/${token}`;
+  // Point to the correct frontend route nested under /auth
+  const resetUrl = `${config.frontendUrl}/auth/reset-password/${token}`;
   const subject = 'Reset Your DKHOUL Password 🔒';
   const html = `
     <!DOCTYPE html>

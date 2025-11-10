@@ -2,6 +2,8 @@ import { Server, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { verifyAccessToken } from '../utils/jwt.util';
 import Message from '../models/Message.model';
+import GlobalMessage from '../models/GlobalMessage.model';
+import User from '../models/User.model';
 import { generateConversationId } from '../utils/helpers';
 
 interface AuthenticatedSocket extends Socket {
@@ -205,6 +207,65 @@ export const initializeSocket = (server: HTTPServer) => {
       socket.leave(`conversation:${conversationId}`);
       
       console.log(`User ${socket.userId} left conversation: ${conversationId}`);
+    });
+
+    // Global Chat Room
+    socket.on('join-global-chat', () => {
+      socket.join('global-chat');
+      console.log(`✅ User ${socket.userId} joined global chat`);
+      
+      // Broadcast to global chat
+      io.to('global-chat').emit('user-joined-global', {
+        userId: socket.userId,
+        timestamp: new Date()
+      });
+    });
+
+    socket.on('leave-global-chat', () => {
+      socket.leave('global-chat');
+      console.log(`❌ User ${socket.userId} left global chat`);
+    });
+
+    socket.on('global-message', async (data: { content: string }) => {
+      try {
+        if (!socket.userId) return;
+
+        // Save to database
+        const savedMessage = await GlobalMessage.create({
+          senderId: socket.userId,
+          content: data.content
+        });
+
+        // Populate sender info
+        await savedMessage.populate('senderId', 'profile.firstName profile.lastName profile.avatar email');
+
+        // Get sender details
+        const sender = savedMessage.senderId as any;
+        const firstName = sender?.profile?.firstName || '';
+        const lastName = sender?.profile?.lastName || '';
+        const senderName = `${firstName} ${lastName}`.trim() || sender?.email?.split('@')[0] || 'Anonymous';
+
+        const globalMessage = {
+          _id: savedMessage._id,
+          sender: {
+            id: socket.userId,
+            _id: socket.userId,
+            name: senderName,
+            avatar: sender?.profile?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(senderName)}`,
+            role: socket.role
+          },
+          content: data.content,
+          timestamp: savedMessage.createdAt,
+          createdAt: savedMessage.createdAt,
+          type: 'global'
+        };
+
+        // Broadcast to all users in global chat
+        io.to('global-chat').emit('global-message', globalMessage);
+        console.log(`📢 Global message from ${senderName}: ${data.content}`);
+      } catch (error) {
+        console.error('Error sending global message:', error);
+      }
     });
 
     // Get online status

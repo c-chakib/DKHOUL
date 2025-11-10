@@ -13,6 +13,7 @@ import reviewRoutes from './routes/review.routes';
 import messageRoutes from './routes/message.routes';
 import userRoutes from './routes/user.routes';
 import adminRoutes from './routes/admin.routes';
+import uploadRoutes from './routes/upload.routes';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/error.middleware';
@@ -22,7 +23,15 @@ dotenv.config();
 const app: Application = express();
 
 // Security middleware
-app.use(helmet());
+// Helmet with adjusted COOP for OAuth popup flows (Google Identity Services requires allow-popups)
+app.use(helmet({
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }
+}));
+// Explicitly ensure header present even if future middleware changes Helmet config
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  return next();
+});
 
 // Flexible CORS: allow single or comma-separated origins, plus Vercel previews by default
 const rawOrigins = process.env.CLIENT_URL || 'http://localhost:4200';
@@ -52,6 +61,11 @@ app.use('/api/', limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve uploaded files statically (development only)
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/uploads', express.static('uploads'));
+}
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
@@ -61,6 +75,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

@@ -60,8 +60,9 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     this.resetPasswordForm = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator()]],
-      confirmPassword: ['', [Validators.required]]
+      // Initialize controls with disabled set in code (not template) to avoid reactive form disabled binding warnings
+      password: [{ value: '', disabled: false }, [Validators.required, Validators.minLength(8), this.passwordStrengthValidator()]],
+      confirmPassword: [{ value: '', disabled: false }, [Validators.required]]
     }, {
       validators: this.passwordMatchValidator
     });
@@ -125,7 +126,9 @@ export class ResetPasswordComponent implements OnInit {
       { value: 100, label: 'Very Strong', color: '#4caf50' }
     ];
 
-    return levels[strength];
+    // Map 1..5 to indices 0..4, clamp within bounds
+    const idx = Math.min(Math.max(strength - 1, 0), levels.length - 1);
+    return levels[idx];
   }
 
   onSubmit(): void {
@@ -133,13 +136,13 @@ export class ResetPasswordComponent implements OnInit {
       this.markFormGroupTouched(this.resetPasswordForm);
       return;
     }
-
-    this.loading = true;
-    const { password } = this.resetPasswordForm.value;
+    // Read values before disabling the form (disabled controls are excluded from value)
+    const { password } = this.resetPasswordForm.getRawValue();
+    this.setLoading(true);
 
     this.authService.resetPassword(this.token, password).subscribe({
       next: () => {
-        this.loading = false;
+        this.setLoading(false);
         
         Swal.fire({
           icon: 'success',
@@ -152,7 +155,7 @@ export class ResetPasswordComponent implements OnInit {
         });
       },
       error: (error: any) => {
-        this.loading = false;
+        this.setLoading(false);
         
         Swal.fire({
           icon: 'error',
@@ -229,5 +232,15 @@ export class ResetPasswordComponent implements OnInit {
   hasSpecialChar(): boolean {
     const password = this.resetPasswordForm.get('password')?.value;
     return password && /[^a-zA-Z0-9]/.test(password);
+  }
+
+  private setLoading(state: boolean): void {
+    this.loading = state;
+    if (!this.resetPasswordForm) return;
+    if (state) {
+      this.resetPasswordForm.disable({ emitEvent: false });
+    } else {
+      this.resetPasswordForm.enable({ emitEvent: false });
+    }
   }
 }

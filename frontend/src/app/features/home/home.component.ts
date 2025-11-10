@@ -18,6 +18,7 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  currentYear = new Date().getFullYear();
   
   // DKHOUL's 3 Main Categories
   mainCategories = [
@@ -29,7 +30,8 @@ export class HomeComponent implements OnInit {
       priceRange: '20-150 DH',
       description: 'Micro-services pratiques : stockage bagages, douche express, wifi, stationnement, coworking à domicile',
       subcategories: ['Stockage bagages (20 DH)', 'Douche express (30 DH)', 'Wifi/Coworking (50 DH)', 'Stationnement (50 DH)'],
-      examples: ['Stockage sécurisé de bagages', 'Accès wifi + café', 'Garage privé', 'Salon coworking']
+      examples: ['Stockage sécurisé de bagages', 'Accès wifi + café', 'Garage privé', 'Salon coworking'],
+      image: '/picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png'
     },
     { 
       icon: 'school', 
@@ -39,7 +41,8 @@ export class HomeComponent implements OnInit {
       priceRange: '150-400 DH',
       description: 'Apprentissages authentiques : cuisine marocaine, artisanat, langues, musique traditionnelle',
       subcategories: ['Cours cuisine (200 DH)', 'Darija (150 DH)', 'Artisanat (200 DH)', 'Musique (250 DH)'],
-      examples: ['Tajine/Couscous chez l\'habitant', 'Initiation darija conversationnelle', 'Poterie berbère', 'Rythmes gnaoua']
+      examples: ['Tajine/Couscous chez l\'habitant', 'Initiation darija conversationnelle', 'Poterie berbère', 'Rythmes gnaoua'],
+      image: '/picture/overall/Gemini_Generated_Image_ssvgmpssvgmpssvg.png'
     },
     { 
       icon: 'groups', 
@@ -49,20 +52,21 @@ export class HomeComponent implements OnInit {
       priceRange: '50-300 DH',
       description: 'Expériences humaines : accompagnement souk, conseils locaux, transport personnalisé, baby-sitting',
       subcategories: ['Shopping souk (100 DH/h)', 'Conseils locaux (50 DH)', 'Transport aéroport', 'Baby-sitting (80 DH/h)'],
-      examples: ['Guide shopping médina', 'Bons plans restos', 'Trajet privé aéroport', 'Garde enfants bilingue']
+      examples: ['Guide shopping médina', 'Bons plans restos', 'Trajet privé aéroport', 'Garde enfants bilingue'],
+      image: '/picture/overall/Gemini_Generated_Image_bbfwmdbbfwmdbbfw.png'
     }
   ];
 
   // Featured service subcategories
   featuredCategories = [
-    { icon: 'luggage', name: 'Stockage bagages', count: 85, category: 'Space', price: '20-30 DH/bagage', description: 'Garde sécurisée de vos valises' },
-    { icon: 'shower', name: 'Douche express', count: 45, category: 'Space', price: '30-50 DH', description: 'Salle de bain + serviette propre' },
-    { icon: 'wifi', name: 'Wifi/Coworking maison', count: 120, category: 'Space', price: '50-100 DH/h', description: 'Travaillez dans un salon confortable' },
-    { icon: 'restaurant', name: 'Cours cuisine marocaine', count: 95, category: 'Skills', price: '200-400 DH', description: 'Tajine, couscous chez l\'habitant' },
-    { icon: 'translate', name: 'Cours de darija', count: 60, category: 'Skills', price: '150-250 DH', description: 'Arabe marocain conversationnel' },
-    { icon: 'shopping_bag', name: 'Accompagnement souk', count: 110, category: 'Connect', price: '100-150 DH/h', description: 'Shopping + traduction + conseils' },
-    { icon: 'child_care', name: 'Baby-sitting bilingue', count: 55, category: 'Connect', price: '80-120 DH/h', description: 'Garde d\'enfants qualifiée' },
-    { icon: 'directions_car', name: 'Transport aéroport', count: 90, category: 'Connect', price: 'Variable', description: 'Trajet privé personnalisé' }
+    { icon: 'luggage', name: 'Stockage bagages', count: 85, category: 'Space', price: '20-30 DH/bagage', description: 'Garde sécurisée de vos valises', image: '/picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png' },
+    { icon: 'shower', name: 'Douche express', count: 45, category: 'Space', price: '30-50 DH', description: 'Salle de bain + serviette propre', image: '/picture/overall/Gemini_Generated_Image_4si8lw4si8lw4si8.png' },
+    { icon: 'wifi', name: 'Wifi/Coworking maison', count: 120, category: 'Space', price: '50-100 DH/h', description: 'Travaillez dans un salon confortable', image: '/picture/overall/Gemini_Generated_Image_xbd1rrxbd1rrxbd1.png' },
+    { icon: 'restaurant', name: 'Cours cuisine marocaine', count: 95, category: 'Skills', price: '200-400 DH', description: 'Tajine, couscous chez l\'habitant', image: '/picture/overall/Gemini_Generated_Image_ssvgmpssvgmpssvg.png' },
+    { icon: 'translate', name: 'Cours de darija', count: 60, category: 'Skills', price: '150-250 DH', description: 'Arabe marocain conversationnel', image: '/picture/overall/Gemini_Generated_Image_npjqhjnpjqhjnpjq.png' },
+    { icon: 'shopping_bag', name: 'Accompagnement souk', count: 110, category: 'Connect', price: '100-150 DH/h', description: 'Shopping + traduction + conseils', image: '/picture/overall/Gemini_Generated_Image_bbfwmdbbfwmdbbfw.png' },
+    { icon: 'child_care', name: 'Baby-sitting bilingue', count: 55, category: 'Connect', price: '80-120 DH/h', description: 'Garde d\'enfants qualifiée', image: '/picture/overall/Gemini_Generated_Image_i1bvcoi1bvcoi1bv.png' },
+    { icon: 'directions_car', name: 'Transport aéroport', count: 90, category: 'Connect', price: 'Variable', description: 'Trajet privé personnalisé', image: '/picture/overall/Gemini_Generated_Image_9keka9keka9keka9.png' }
   ];
 
   howItWorks = [

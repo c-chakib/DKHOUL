@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Message from '../models/Message.model';
+import GlobalMessage from '../models/GlobalMessage.model';
 import { AppError } from '../middleware/error.middleware';
 import { generateConversationId } from '../utils/helpers';
 
@@ -84,6 +85,68 @@ export const getConversation = async (req: Request, res: Response, next: NextFun
           total,
           pages: Math.ceil(total / limitNum)
         }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Create or get existing conversation
+export const createConversation = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = (req as any).user.userId;
+    const { participantId } = req.body;
+
+    if (!participantId) {
+      return next(new AppError('Participant ID is required', 400));
+    }
+
+    // Generate conversation ID
+    const conversationId = generateConversationId(userId, participantId);
+
+    // Check if conversation already exists
+    const existingMessage = await Message.findOne({ conversationId })
+      .sort({ createdAt: -1 })
+      .populate([
+        { path: 'senderId', select: 'name email avatar' },
+        { path: 'receiverId', select: 'name email avatar' }
+      ]);
+
+    if (existingMessage) {
+      // Return existing conversation
+      return res.json({
+        success: true,
+        data: {
+          _id: conversationId,
+          participants: [existingMessage.senderId, existingMessage.receiverId],
+          lastMessage: existingMessage,
+          unreadCount: 0
+        }
+      });
+    }
+
+    // Create initial conversation marker (empty message)
+    const initialMessage = await Message.create({
+      conversationId,
+      senderId: userId,
+      receiverId: participantId,
+      content: '', // Empty initial message
+      read: true
+    });
+
+    await initialMessage.populate([
+      { path: 'senderId', select: 'name email avatar' },
+      { path: 'receiverId', select: 'name email avatar' }
+    ]);
+
+    res.status(201).json({
+      success: true,
+      data: {
+        _id: conversationId,
+        participants: [initialMessage.senderId, initialMessage.receiverId],
+        lastMessage: initialMessage,
+        unreadCount: 0
       }
     });
   } catch (error) {
@@ -211,6 +274,26 @@ export const getUnreadCount = async (req: Request, res: Response, next: NextFunc
     res.json({
       success: true,
       data: { unreadCount: count }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get global messages
+export const getGlobalMessages = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { limit = '50' } = req.query;
+    const limitNum = parseInt(limit as string);
+
+    const messages = await GlobalMessage.find()
+      .populate('senderId', 'profile.firstName profile.lastName profile.avatar email')
+      .sort({ createdAt: -1 })
+      .limit(limitNum);
+
+    res.json({
+      success: true,
+      data: { messages: messages.reverse() } // Reverse to show oldest first
     });
   } catch (error) {
     next(error);

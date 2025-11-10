@@ -40,8 +40,11 @@ export class ForgotPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Initialize control without template [disabled] binding to avoid Angular's
+    // "changed after checked" warning. We'll programmatically disable/enable
+    // during loading states for better reactive form integration.
     this.forgotPasswordForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: [{ value: '', disabled: false }, [Validators.required, Validators.email]]
     });
   }
 
@@ -50,13 +53,12 @@ export class ForgotPasswordComponent implements OnInit {
       this.markFormGroupTouched(this.forgotPasswordForm);
       return;
     }
-
-    this.loading = true;
+    this.setLoading(true);
     const email = this.forgotPasswordForm.value.email;
 
     this.authService.forgotPassword(email).subscribe({
       next: () => {
-        this.loading = false;
+        this.setLoading(false);
         this.emailSent = true;
         
         Swal.fire({
@@ -68,7 +70,7 @@ export class ForgotPasswordComponent implements OnInit {
         });
       },
       error: (error) => {
-        this.loading = false;
+        this.setLoading(false);
         
         Swal.fire({
           icon: 'error',
@@ -116,5 +118,15 @@ export class ForgotPasswordComponent implements OnInit {
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, str => str.toUpperCase())
       .trim();
+  }
+
+  private setLoading(state: boolean): void {
+    this.loading = state;
+    const emailControl = this.forgotPasswordForm.get('email');
+    if (state) {
+      emailControl?.disable({ emitEvent: false });
+    } else {
+      emailControl?.enable({ emitEvent: false });
+    }
   }
 }

@@ -33,6 +33,15 @@ export class InvestorComponent {
     message: ''
   };
 
+  // Local currency figures (MAD / DH)
+  fundraisingTargetMAD = 500000;
+  marketGlobalMAD = 1800000000000;
+  marketMoroccoMAD = 81000000000; 
+  revenueCommissionMAD = 12000000; 
+  revenueSubscriptionsMAD = 3500000;
+  revenueAddonsMAD = 1800000;
+  subscriptionMonthlyMAD = 490; 
+
   constructor(private router: Router) {}
 
   navigateToDemo(): void {

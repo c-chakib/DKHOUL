@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  getAllUsers,
   getProfile,
   getUserById,
   updateProfile,
@@ -19,6 +20,7 @@ import { upload } from '../middleware/upload.middleware';
 const router = Router();
 
 // Authenticated user routes - MUST come before public /:id routes
+router.get('/', authenticate, getAllUsers);
 router.get('/profile', authenticate, getProfile);
 router.put('/profile', authenticate, updateProfile);
 router.post('/photo', authenticate, upload.single('photo'), uploadProfilePhoto);

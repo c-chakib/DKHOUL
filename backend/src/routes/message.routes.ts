@@ -3,9 +3,11 @@ import {
   sendMessage,
   getConversation,
   getConversations,
+  createConversation,
   markAsRead,
   deleteMessage,
-  getUnreadCount
+  getUnreadCount,
+  getGlobalMessages
 } from '../controllers/message.controller';
 import { authenticate } from '../middleware/auth.middleware';
 
@@ -16,7 +18,9 @@ router.use(authenticate);
 
 router.post('/', sendMessage);
 router.get('/conversations', getConversations);
+router.post('/conversations', createConversation);
 router.get('/conversation/:otherUserId', getConversation);
+router.get('/global', getGlobalMessages);
 router.get('/unread-count', getUnreadCount);
 router.patch('/:id/read', markAsRead);
 router.delete('/:id', deleteMessage);

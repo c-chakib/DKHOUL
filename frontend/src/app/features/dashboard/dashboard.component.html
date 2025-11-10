@@ -21,7 +21,7 @@
     <mat-card class="stat-card earnings" *ngIf="user?.role === 'host' || user?.role === 'both'">
       <mat-icon>payments</mat-icon>
       <h3>Total Earnings</h3>
-      <p class="stat-number">${{ stats.totalEarnings.toFixed(2) }}</p>
+  <p class="stat-number">{{ stats.totalEarnings | currency:'MAD':'symbol':'1.0-0' }}</p>
     </mat-card>
 
     <mat-card class="stat-card services" *ngIf="user?.role === 'host' || user?.role === 'both'">
@@ -99,7 +99,7 @@
           <img [src]="service.images[0]" [alt]="service.name">
           <div class="service-details">
             <h4>{{ service.name }}</h4>
-            <p>${{ service.price }}/{{ service.priceUnit }}</p>
+            <p>{{ service.price | currency:'MAD':'symbol':'1.0-0' }}/{{ service.priceUnit }}</p>
             <mat-chip [ngClass]="service.status">{{ service.status }}</mat-chip>
           </div>
         </div>

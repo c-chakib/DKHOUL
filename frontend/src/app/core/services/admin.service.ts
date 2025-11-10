@@ -58,7 +58,7 @@ export class AdminService {
 
   // Analytics & Reports
   getDashboardStats(): Observable<any> {
-    return this.apiService.get('admin/stats/dashboard');
+    return this.apiService.get('admin/stats');
   }
 
   getRevenueStats(period: string): Observable<any> {

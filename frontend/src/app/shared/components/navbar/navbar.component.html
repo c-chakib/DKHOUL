@@ -1,14 +1,13 @@
 <!-- Navbar - Figma Inspired Design -->
 <header class="navbar-figma">
   <div class="navbar-container">
-    <!-- Logo with Arabic Letter - Figma Style -->
+    <!-- Logo with SVG - Figma Style -->
     <button class="navbar-logo" (click)="navigateToHome()">
       <div class="logo-icon">
-        <span class="arabic-letter">د</span>
+        <img src="/picture/overall/logo.png" alt="DKHOUL Logo" class="logo-img">
       </div>
       <div class="logo-text">
-        <div class="brand-name">DKHOUL</div>
-        <div class="brand-tagline">Platform Demo</div>
+        <div class="brand-tagline">Discover Morocco</div>
       </div>
     </button>
 
@@ -53,8 +52,8 @@
       </mat-menu>
 
       <!-- Messages (Logged In) -->
-      <button mat-icon-button class="icon-button" (click)="navigateToMessages()" *ngIf="isLoggedIn" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0">
-        <mat-icon>chat_bubble_outline</mat-icon>
+      <button mat-icon-button class="icon-button" (click)="navigateToMessages()" *ngIf="isLoggedIn" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0" [attr.aria-label]="unreadMessages > 0 ? unreadMessages + ' messages non lus' : 'Messages'">
+        <mat-icon [attr.aria-hidden]="unreadMessages === 0 ? 'true' : 'false'">chat_bubble_outline</mat-icon>
       </button>
 
       <!-- Favorites (Logged In) -->
@@ -104,8 +103,8 @@
           <mat-icon>event_note</mat-icon>
           <span>Mes Réservations</span>
         </button>
-        <button mat-menu-item (click)="navigateToMessages()">
-          <mat-icon [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0">chat_bubble_outline</mat-icon>
+        <button mat-menu-item (click)="navigateToMessages()" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0" [attr.aria-label]="unreadMessages > 0 ? unreadMessages + ' messages non lus' : 'Messages'">
+          <mat-icon [attr.aria-hidden]="unreadMessages === 0 ? 'true' : 'false'">chat_bubble_outline</mat-icon>
           <span>Messages</span>
         </button>
         <button mat-menu-item>

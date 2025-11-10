@@ -1,7 +1,7 @@
 <div class="service-detail-container" *ngIf="!loading && service">
   <!-- Image Gallery -->
   <div class="gallery-section">
-    <div class="main-image">
+    <div class="main-image" *ngIf="service.images?.length > 0; else noImage">
       <img [src]="service.images[selectedImage]" [alt]="service.title">
       <div class="gallery-navigation">
         <button mat-icon-button class="nav-btn prev" (click)="selectImage((selectedImage - 1 + service.images.length) % service.images.length)" *ngIf="service.images.length > 1">
@@ -12,6 +12,13 @@
         </button>
       </div>
     </div>
+    <ng-template #noImage>
+      <div class="main-image placeholder">
+        <div class="placeholder-icon" aria-label="No image available">
+          <mat-icon>image_not_supported</mat-icon>
+        </div>
+      </div>
+    </ng-template>
     <div class="thumbnail-strip" *ngIf="service.images.length > 1">
       <div class="thumbnail" 
            *ngFor="let image of service.images; let i = index" 
@@ -28,8 +35,8 @@
       <!-- Service Header -->
       <div class="service-header">
         <div class="header-top">
-          <span class="category-badge" [class]="service.category.toLowerCase()">
-            {{ service.category }}
+          <span class="category-badge" [class]="(service?.category || 'uncategorized').toLowerCase()">
+            {{ service?.category || 'Uncategorized' }}
           </span>
           <button mat-icon-button (click)="shareService()" matTooltip="Share Service">
             <mat-icon>share</mat-icon>
@@ -38,12 +45,12 @@
         <h1>{{ service.title }}</h1>
         <div class="meta-info">
           <div class="rating">
-            <mat-icon *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= service.averageRating">star</mat-icon>
-            <span class="rating-text">{{ service.averageRating.toFixed(1) }} ({{ service.reviews?.length || 0 }} reviews)</span>
+            <mat-icon *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= (service?.averageRating || 0)">star</mat-icon>
+            <span class="rating-text">{{ (service?.averageRating || 0) | number:'1.1-1' }} ({{ service.reviews?.length || 0 }} reviews)</span>
           </div>
           <div class="location">
             <mat-icon>location_on</mat-icon>
-            <span>{{ service.location.city }}, {{ service.location.region }}</span>
+            <span>{{ service.location?.city || 'Unknown City' }}, {{ service.location?.region || 'Unknown Region' }}</span>
           </div>
         </div>
       </div>
@@ -77,7 +84,7 @@
       <mat-card class="host-card">
         <mat-card-header>
           <div class="host-avatar">
-            <img [src]="service.host?.photo || '/assets/default-avatar.png'" [alt]="service.host?.fullName">
+            <img [src]="service.host?.photo || 'assets/default-avatar.svg'" [alt]="service.host?.fullName">
           </div>
           <div class="host-info">
             <mat-card-title>Hosted by {{ service.host?.fullName }}</mat-card-title>
@@ -136,7 +143,7 @@
             <div class="review-item" *ngFor="let review of service.reviews">
               <div class="review-header">
                 <div class="reviewer-info">
-                  <img [src]="review.user?.photo || '/assets/default-avatar.png'" [alt]="review.user?.fullName" class="reviewer-avatar">
+                  <img [src]="review.user?.photo || 'assets/default-avatar.svg'" [alt]="review.user?.fullName" class="reviewer-avatar">
                   <div>
                     <h4>{{ review.user?.fullName }}</h4>
                     <p class="review-date">{{ review.createdAt | date: 'MMM d, yyyy' }}</p>
@@ -164,7 +171,7 @@
         <mat-card-content>
           <div class="map-placeholder">
             <mat-icon>location_on</mat-icon>
-            <p>{{ service.location.address }}, {{ service.location.city }}, {{ service.location.region }}</p>
+            <p>{{ service.location?.address || 'Unknown address' }}, {{ service.location?.city || 'Unknown City' }}, {{ service.location?.region || 'Unknown Region' }}</p>
             <small>Map integration coming soon</small>
           </div>
         </mat-card-content>
@@ -176,8 +183,8 @@
       <mat-card class="booking-card">
         <mat-card-content>
           <div class="price-section">
-            <span class="price">{{ service.pricing.amount }} MAD</span>
-            <span class="price-unit">/ {{ service.pricing.type === 'per_hour' ? 'hour' : service.pricing.type === 'per_day' ? 'day' : 'service' }}</span>
+            <span class="price">{{ service.pricing?.amount || 0 }} MAD</span>
+            <span class="price-unit">/ {{ service.pricing?.type === 'per_hour' ? 'hour' : service.pricing?.type === 'per_day' ? 'day' : 'service' }}</span>
           </div>
 
           <mat-divider></mat-divider>

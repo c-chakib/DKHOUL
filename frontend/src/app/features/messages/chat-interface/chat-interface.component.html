@@ -1,52 +1,171 @@
-<div class="chat-container" *ngIf="!loading">
-  <!-- Chat Header -->
-  <div class="chat-header">
-    <img [src]="otherUser?.avatar || '/assets/default-avatar.png'" [alt]="otherUser?.name" class="avatar">
-    <div class="user-info">
-      <h3>{{ otherUser?.name }}</h3>
-      <p>{{ otherUser?.role }}</p>
+<div class="chat-layout" *ngIf="!loading">
+  <!-- Sidebar with Users List -->
+  <aside class="users-sidebar">
+    <div class="sidebar-header">
+      <h2>Messages</h2>
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput [(ngModel)]="searchQuery" (input)="filterUsers()" placeholder="Search users...">
+      </mat-form-field>
     </div>
-  </div>
 
-  <!-- Messages Container -->
-  <div #messagesContainer class="messages-container">
-    <div *ngFor="let message of messages" 
-         class="message" 
-         [ngClass]="{'own-message': isOwnMessage(message), 'other-message': !isOwnMessage(message)}">
-      <img [src]="message.sender.avatar || '/assets/default-avatar.png'" 
-           [alt]="message.sender.name" 
-           class="message-avatar"
-           *ngIf="!isOwnMessage(message)">
-      <div class="message-bubble">
-        <p>{{ message.content }}</p>
-        <span class="timestamp">{{ message.createdAt | date:'short' }}</span>
+    <!-- Chat Type Tabs -->
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)" class="sidebar-tabs">
+      <mat-tab label="Private">
+        <div class="users-list">
+          <div *ngFor="let user of filteredUsers" 
+               class="user-item"
+               [class.active]="selectedUserId === user._id"
+               (click)="selectUser(user)">
+            <div class="user-avatar-wrapper">
+              <img [src]="getAvatarUrl(user)" [alt]="user.name" class="user-avatar">
+              <span class="online-indicator" [class.online]="isUserOnline(user._id)" [class.offline]="!isUserOnline(user._id)"></span>
+            </div>
+            <div class="user-details">
+              <div class="user-name">{{ user.name }}</div>
+              <div class="user-status">{{ isUserOnline(user._id) ? 'Online' : 'Offline' }}</div>
+            </div>
+            <span class="unread-badge" *ngIf="user.unreadCount > 0">{{ user.unreadCount }}</span>
+          </div>
+          
+          <div class="empty-state" *ngIf="filteredUsers.length === 0">
+            <mat-icon>people_outline</mat-icon>
+            <p>No users found</p>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Global">
+        <div class="global-info">
+          <mat-icon class="global-icon">public</mat-icon>
+          <h3>Global Community</h3>
+          <p>{{ onlineUsersCount }} users online</p>
+          <button mat-raised-button color="primary" (click)="openGlobalChat()">
+            <mat-icon>forum</mat-icon>
+            Join Chat
+          </button>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </aside>
+
+  <!-- Main Chat Area -->
+  <main class="chat-main">
+    <!-- Private Chat View -->
+    <div class="chat-container" *ngIf="selectedTabIndex === 0 && selectedUserId">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-header-user">
+          <img [src]="getAvatarUrl(selectedUser)" [alt]="selectedUser?.name" class="avatar">
+          <div class="user-info">
+            <h3>{{ selectedUser?.name }}</h3>
+            <p class="user-status-text">
+              <span class="status-dot" [class.online]="isUserOnline(selectedUserId)" [class.offline]="!isUserOnline(selectedUserId)"></span>
+              {{ isUserOnline(selectedUserId) ? 'Online' : 'Offline' }}
+            </p>
+          </div>
+        </div>
       </div>
-      <img [src]="message.sender.avatar || '/assets/default-avatar.png'" 
-           [alt]="message.sender.name" 
-           class="message-avatar"
-           *ngIf="isOwnMessage(message)">
+
+      <!-- Messages Container -->
+      <div #messagesContainer class="messages-container">
+  <div *ngFor="let message of messages" 
+             class="message" 
+             [ngClass]="{'own-message': isOwnMessage(message), 'other-message': !isOwnMessage(message)}">
+          <img [src]="getAvatarUrl(message.sender)" 
+               [alt]="message.sender?.name" 
+               class="message-avatar"
+               *ngIf="!isOwnMessage(message)">
+          <div class="message-bubble">
+            <p>{{ message.content }}</p>
+            <span class="timestamp">{{ message.createdAt | date:'short' }}</span>
+          </div>
+          <img [src]="getAvatarUrl(currentUser)" 
+               [alt]="currentUser?.name" 
+               class="message-avatar"
+               *ngIf="isOwnMessage(message)">
+        </div>
+
+        <div class="empty-state" *ngIf="messages.length === 0">
+          <mat-icon>chat</mat-icon>
+          <p>No messages yet. Start the conversation!</p>
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="message-input">
+        <mat-form-field appearance="outline" class="input-field">
+          <input matInput 
+                 [(ngModel)]="newMessage" 
+                 (keyup.enter)="sendMessage()" 
+                 placeholder="Type a message..." 
+                 [disabled]="sending">
+        </mat-form-field>
+        <button mat-fab color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim() || sending">
+          <mat-icon *ngIf="!sending">send</mat-icon>
+          <mat-spinner *ngIf="sending" diameter="24"></mat-spinner>
+        </button>
+      </div>
     </div>
 
-    <div class="empty-state" *ngIf="messages.length === 0">
-      <mat-icon>chat</mat-icon>
-      <p>No messages yet. Start the conversation!</p>
-    </div>
-  </div>
+    <!-- Global Chat View -->
+    <div class="chat-container global-chat" *ngIf="selectedTabIndex === 1">
+      <div class="chat-header">
+        <mat-icon class="global-icon">public</mat-icon>
+        <div class="user-info">
+          <h3>Global Community Chat</h3>
+          <p *ngIf="getOnlineUserNames().length === 0">No users online</p>
+          <p *ngIf="getOnlineUserNames().length > 0">
+            <strong>Online:</strong> {{ getOnlineUserNames().join(', ') }}
+          </p>
+        </div>
+      </div>
+      
+      <div #globalMessagesContainer class="messages-container">
+  <div *ngFor="let msg of globalMessages" class="message" [ngClass]="{'own-message': isOwnGlobalMessage(msg), 'other-message': !isOwnGlobalMessage(msg)}">
+          <img [src]="getAvatarUrl(msg.sender)" 
+               [alt]="msg.sender?.name" 
+               class="message-avatar"
+               *ngIf="!isOwnGlobalMessage(msg)">
+          <div class="message-bubble">
+            <strong *ngIf="!isOwnGlobalMessage(msg)" class="sender-name">{{ msg.sender?.name }}</strong>
+            <p>{{ msg.content }}</p>
+            <span class="timestamp">{{ msg.timestamp | date:'short' }}</span>
+          </div>
+          <img [src]="getAvatarUrl(currentUser)" 
+               [alt]="currentUser?.name" 
+               class="message-avatar"
+               *ngIf="isOwnGlobalMessage(msg)">
+        </div>
+        <div class="empty-state" *ngIf="globalMessages.length === 0">
+          <mat-icon>forum</mat-icon>
+          <p>Be the first to say hello!</p>
+        </div>
+      </div>
 
-  <!-- Message Input -->
-  <div class="message-input">
-    <mat-form-field appearance="outline" class="input-field">
-      <input matInput 
-             [(ngModel)]="newMessage" 
-             (keyup.enter)="sendMessage()" 
-             placeholder="Type a message..." 
-             [disabled]="sending">
-    </mat-form-field>
-    <button mat-fab color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim() || sending">
-      <mat-icon *ngIf="!sending">send</mat-icon>
-      <mat-spinner *ngIf="sending" diameter="24"></mat-spinner>
-    </button>
-  </div>
+      <!-- Global Message Input -->
+      <div class="message-input">
+        <mat-form-field appearance="outline" class="input-field">
+          <input matInput 
+                 [(ngModel)]="globalNewMessage" 
+                 (keyup.enter)="sendGlobalMessage()" 
+                 placeholder="Message everyone..." 
+                 [disabled]="sending">
+        </mat-form-field>
+        <button mat-fab color="primary" (click)="sendGlobalMessage()" [disabled]="!globalNewMessage.trim() || sending">
+          <mat-icon *ngIf="!sending">send</mat-icon>
+          <mat-spinner *ngIf="sending" diameter="24"></mat-spinner>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State when no chat selected -->
+    <div class="no-chat-selected" *ngIf="selectedTabIndex === 0 && !selectedUserId">
+      <mat-icon>chat_bubble_outline</mat-icon>
+      <h3>Select a conversation</h3>
+      <p>Choose a user from the sidebar to start chatting</p>
+    </div>
+  </main>
 </div>
 
 <div class="loading-container" *ngIf="loading">

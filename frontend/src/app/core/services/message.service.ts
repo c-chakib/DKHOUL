@@ -31,8 +31,18 @@ export class MessageService {
     return this.http.get<{ success: boolean; data: Conversation[] }>(`${this.apiUrl}/conversations`);
   }
 
+  createConversation(userId: string): Observable<{ success: boolean; data: Conversation }> {
+    return this.http.post<{ success: boolean; data: Conversation }>(`${this.apiUrl}/conversations`, {
+      participantId: userId
+    });
+  }
+
   getMessages(userId: string): Observable<{ success: boolean; data: Message[] }> {
     return this.http.get<{ success: boolean; data: Message[] }>(`${this.apiUrl}/${userId}`);
+  }
+
+  getConversationMessages(conversationId: string): Observable<{ success: boolean; data: Message[] }> {
+    return this.http.get<{ success: boolean; data: Message[] }>(`${this.apiUrl}/conversation/${conversationId}`);
   }
 
   sendMessage(receiverId: string, content: string): Observable<{ success: boolean; data: Message }> {
@@ -48,5 +58,11 @@ export class MessageService {
 
   deleteMessage(messageId: string): Observable<{ success: boolean }> {
     return this.http.delete<{ success: boolean }>(`${this.apiUrl}/${messageId}`);
+  }
+
+  getGlobalMessages(limit: number = 50): Observable<{ success: boolean; data: { messages: any[] } }> {
+    return this.http.get<{ success: boolean; data: { messages: any[] } }>(`${this.apiUrl}/global`, {
+      params: { limit: limit.toString() }
+    });
   }
 }

@@ -59,7 +59,15 @@ export class ServiceDetailComponent implements OnInit {
 
     this.serviceService.getServiceById(serviceId).subscribe({
       next: (response: any) => {
-        this.service = response.service || response;
+        this.service = response?.service || response?.data || response;
+        // Normalize images array
+        const imgs = this.service?.images || this.service?.photos || [];
+        this.service.images = Array.isArray(imgs) ? imgs : [];
+        // If there are no images, leave array empty so the template shows a safe placeholder
+        if (!this.service.images.length) {
+          this.service.images = [];
+        }
+        this.selectedImage = 0;
         this.isOwner = this.service.hostId === this.currentUserId;
         this.isHost = this.isOwner; // Set both properties
         this.loading = false;
@@ -182,7 +190,9 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   selectImage(index: number): void {
-    this.selectedImage = index;
+    if (this.service?.images && index >= 0 && index < this.service.images.length) {
+      this.selectedImage = index;
+    }
   }
 
   reviewStats(): any[] {

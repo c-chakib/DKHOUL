@@ -37,7 +37,7 @@
               </div>
               <div class="info-row">
                 <mat-icon>payments</mat-icon>
-                <span><strong>Total:</strong> ${{ booking.totalPrice }}</span>
+                <span><strong>Total:</strong> {{ booking.totalPrice | currency:'MAD':'symbol':'1.0-0' }}</span>
               </div>
             </div>
           </mat-card-content>
@@ -86,7 +86,7 @@
               </div>
               <div class="info-row">
                 <mat-icon>payments</mat-icon>
-                <span><strong>Total:</strong> ${{ booking.totalPrice }}</span>
+                <span><strong>Total:</strong> {{ booking.totalPrice | currency:'MAD':'symbol':'1.0-0' }}</span>
               </div>
             </div>
           </mat-card-content>
@@ -131,7 +131,7 @@
               </div>
               <div class="info-row">
                 <mat-icon>payments</mat-icon>
-                <span><strong>Refunded:</strong> ${{ booking.totalPrice }}</span>
+                <span><strong>Remboursé:</strong> {{ booking.totalPrice | currency:'MAD':'symbol':'1.0-0' }}</span>
               </div>
             </div>
           </mat-card-content>

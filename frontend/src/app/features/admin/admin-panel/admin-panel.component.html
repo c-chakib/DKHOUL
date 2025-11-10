@@ -30,7 +30,7 @@
     <mat-card class="stat-card revenue">
       <mat-icon>attach_money</mat-icon>
       <h3>Total Revenue</h3>
-      <p class="stat-number">${{ stats.totalRevenue.toFixed(2) }}</p>
+      <p class="stat-number">{{ stats.totalRevenue | currency:'MAD':'symbol':'1.0-0' }}</p>
       <button mat-button color="primary" (click)="navigateTo('/admin/payments')">View</button>
     </mat-card>
 

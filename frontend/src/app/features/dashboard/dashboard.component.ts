@@ -45,7 +45,9 @@ export class DashboardComponent implements OnInit {
   loadDashboardData(): void {
     // Load bookings stats
     this.bookingService.getMyBookings().subscribe({
-      next: (bookings) => {
+      next: (response) => {
+        const bookingsData = response.bookings || response;
+        const bookings = Array.isArray(bookingsData) ? bookingsData : [];
         this.stats.totalBookings = bookings.length;
         const now = new Date();
         this.stats.upcomingBookings = bookings.filter((b: any) => 
@@ -54,7 +56,11 @@ export class DashboardComponent implements OnInit {
         this.recentBookings = bookings.slice(0, 5);
         this.loading = false;
       },
-      error: (error: any) => console.error('Error loading bookings:', error)
+      error: (error: any) => {
+        console.error('Error loading bookings:', error);
+        this.recentBookings = [];
+        this.loading = false;
+      }
     });
 
     // If host, load services stats

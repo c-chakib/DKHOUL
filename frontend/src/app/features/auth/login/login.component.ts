@@ -37,6 +37,9 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
   hidePassword = true;
+  googleReady = false;
+  googleRendered = false;
+  prompting = false;
 
   constructor(
     private fb: FormBuilder,
@@ -135,32 +138,121 @@ export class LoginComponent implements OnInit {
 
   initializeGoogleSignIn(): void {
     if (typeof google !== 'undefined') {
-      google.accounts.id.initialize({
-        client_id: environment.googleClientId,
-        callback: (response: any) => this.handleGoogleCallback(response)
-      });
+      try {
+        google.accounts.id.initialize({
+          client_id: environment.googleClientId,
+          callback: (response: any) => this.handleGoogleCallback(response),
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+        this.googleReady = true;
+        this.googleRendered = false;
+        
+        // Try to render the official Google button
+        const container = document.getElementById('google-signin-container');
+        if (container && typeof google !== 'undefined') {
+          try {
+            google.accounts.id.renderButton(container, {
+              theme: 'outline',
+              size: 'large',
+              shape: 'pill',
+              text: 'signin_with',
+              width: 320,
+              logo_alignment: 'left'
+            });
+            // Check if button was rendered
+            setTimeout(() => {
+              this.googleRendered = container.childElementCount > 0;
+              if (!this.googleRendered) {
+                console.warn('[GoogleOAuth] Button not rendered, showing fallback');
+              } else {
+                console.log('[GoogleOAuth] Official button rendered successfully');
+              }
+            }, 100);
+          } catch (renderErr) {
+            console.warn('[GoogleOAuth] renderButton failed; using fallback', renderErr);
+            this.googleRendered = false;
+          }
+        }
+      } catch (e) {
+        console.error('[GoogleOAuth] initialize error', e);
+        this.googleReady = false;
+        this.googleRendered = false;
+      }
     }
   }
 
   handleGoogleSignIn(): void {
-    if (typeof google !== 'undefined') {
-      google.accounts.id.prompt();
-    } else {
+    // This is only called when using the fallback button
+    // The official Google button handles its own click events
+    if (typeof google === 'undefined' || !this.googleReady) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'Google Sign-In is not available. Please try again later.',
       });
+      return;
+    }
+    
+    if (this.prompting) {
+      console.log('[GoogleOAuth] Already prompting, ignoring click');
+      return;
+    }
+    
+    this.prompting = true;
+    console.log('[GoogleOAuth] Fallback button clicked, triggering prompt');
+    
+    try {
+      // For fallback button, trigger the One Tap prompt
+      google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed()) {
+          console.warn('[GoogleOAuth] Prompt not displayed:', notification.getNotDisplayedReason());
+          this.prompting = false;
+          
+          Swal.fire({
+            icon: 'info',
+            title: 'Google Sign-In',
+            text: 'Please ensure you are signed into Google and pop-ups are not blocked.',
+          });
+        } else if (notification.isSkippedMoment()) {
+          console.log('[GoogleOAuth] Prompt skipped by user');
+          this.prompting = false;
+        }
+      });
+      
+      // Safety timeout
+      setTimeout(() => {
+        this.prompting = false;
+      }, 15000);
+    } catch (e) {
+      console.error('[GoogleOAuth] prompt error', e);
+      this.prompting = false;
+      Swal.fire({
+        icon: 'error',
+        title: 'Google Sign-In failed',
+        text: 'Could not initialize Google Sign-In. Please try again.',
+      });
     }
   }
 
   handleGoogleCallback(response: any): void {
+    if (!response || !response.credential) {
+      console.error('[GoogleOAuth] callback without credential', response);
+      Swal.fire({
+        icon: 'error',
+        title: 'Google Sign-In failed',
+        text: 'No credential received. Please sign into Google and try again.',
+      });
+      this.prompting = false;
+      return;
+    }
     this.loading = true;
     const idToken = response.credential;
 
     this.authService.googleLogin(idToken).subscribe({
       next: (response) => {
         this.loading = false;
+        this.prompting = false;
         Swal.fire({
           icon: 'success',
           title: 'Welcome!',
@@ -181,6 +273,8 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.loading = false;
+        this.prompting = false;
+        console.error('[GoogleOAuth] backend login error', error);
         Swal.fire({
           icon: 'error',
           title: 'Login Failed',

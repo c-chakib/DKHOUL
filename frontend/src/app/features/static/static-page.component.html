@@ -1,0 +1,16 @@
+<div class="static-wrapper" *ngIf="title">
+  <header class="static-header">
+    <div class="icon-circle">
+      <mat-icon>{{ title.includes('Confidentialité') ? 'shield' : title.includes('Conditions') ? 'gavel' : title.includes('Cookies') ? 'cookie' : title.includes('Sécurité') ? 'security' : 'info' }}</mat-icon>
+    </div>
+    <h1 class="page-title">{{ title }}</h1>
+    <p class="page-subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+  </header>
+
+  <main class="static-content">
+    <mat-card class="content-card" *ngFor="let section of sections">
+      <h2 *ngIf="section.heading">{{ section.heading }}</h2>
+      <p [innerHTML]="section.content"></p>
+    </mat-card>
+  </main>
+</div>

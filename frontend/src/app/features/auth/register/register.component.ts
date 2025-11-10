@@ -35,6 +35,7 @@ import Swal from 'sweetalert2';
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent implements OnInit {
+  registrationForm!: FormGroup;
   personalInfoForm!: FormGroup;
   accountInfoForm!: FormGroup;
   loading = false;
@@ -42,7 +43,7 @@ export class RegisterComponent implements OnInit {
   hideConfirmPassword = true;
 
   roles = [
-    { value: 'user', label: 'I want to book services' },
+    { value: 'tourist', label: 'I want to book services' },
     { value: 'provider', label: 'I want to offer services' }
   ];
 
@@ -57,6 +58,19 @@ export class RegisterComponent implements OnInit {
   }
 
   initForms(): void {
+    // Single form for modern UI
+    this.registrationForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern(/^[+]?[\d\s-()]+$/)]],
+      password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
+      confirmPassword: ['', Validators.required],
+      role: ['tourist', Validators.required],
+      agreeToTerms: [false, Validators.requiredTrue]
+    }, { validators: this.passwordMatchValidator });
+
+    // Keep old forms for backward compatibility
     this.personalInfoForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
@@ -67,10 +81,20 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
       confirmPassword: ['', Validators.required],
-      role: ['user', Validators.required],
+      role: ['tourist', Validators.required],
       agreeToTerms: [false, Validators.requiredTrue]
     }, { validators: this.passwordMatchValidator });
   }
+  
+  // Getters for form controls
+  get firstName() { return this.registrationForm.get('firstName'); }
+  get lastName() { return this.registrationForm.get('lastName'); }
+  get email() { return this.registrationForm.get('email'); }
+  get phone() { return this.registrationForm.get('phone'); }
+  get password() { return this.registrationForm.get('password'); }
+  get confirmPassword() { return this.registrationForm.get('confirmPassword'); }
+  get role() { return this.registrationForm.get('role'); }
+  get agreeToTerms() { return this.registrationForm.get('agreeToTerms'); }
 
   passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
@@ -96,6 +120,54 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // Use modern single form if available
+    if (this.registrationForm && this.registrationForm.touched) {
+      if (this.registrationForm.invalid) {
+        this.markFormGroupTouched(this.registrationForm);
+        return;
+      }
+      
+      this.loading = true;
+      const formData = { ...this.registrationForm.value };
+      
+      // Map phone to phoneNumber for backend
+      if (formData.phone) {
+        formData.phoneNumber = formData.phone;
+        delete formData.phone;
+      }
+      
+      delete formData.confirmPassword;
+      delete formData.agreeToTerms;
+
+      this.authService.register(formData).subscribe({
+        next: (response) => {
+          this.loading = false;
+          Swal.fire({
+            icon: 'success',
+            title: 'Registration Successful!',
+            html: `
+              <p>Welcome to DKHOUL!</p>
+              <p class="text-sm text-gray-600">Please check your email to verify your account.</p>
+            `,
+            confirmButtonText: 'Go to Login'
+          }).then(() => {
+            this.router.navigate(['/auth/login']);
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: error.error?.message || 'Please try again.',
+            confirmButtonColor: '#ef4444'
+          });
+        }
+      });
+      return;
+    }
+
+    // Fallback to old stepper forms
     if (this.personalInfoForm.invalid || this.accountInfoForm.invalid) {
       this.markFormGroupTouched(this.personalInfoForm);
       this.markFormGroupTouched(this.accountInfoForm);
@@ -142,19 +214,35 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  getErrorMessage(formGroup: FormGroup, field: string): string {
-    const control = formGroup.get(field);
+  // Support both old stepper format (formGroup, field) and new single form format (field only)
+  getErrorMessage(formGroupOrField: FormGroup | string, field?: string): string {
+    let control;
+    let fieldName: string;
+    
+    // New single form format: getErrorMessage('email')
+    if (typeof formGroupOrField === 'string' && !field) {
+      control = this.registrationForm?.get(formGroupOrField);
+      fieldName = formGroupOrField;
+    }
+    // Old stepper format: getErrorMessage(formGroup, 'email')
+    else if (formGroupOrField instanceof FormGroup && field) {
+      control = formGroupOrField.get(field);
+      fieldName = field;
+    } else {
+      return '';
+    }
+    
     if (!control) return '';
 
     if (control.hasError('required')) {
-      return `${this.formatFieldName(field)} is required`;
+      return `${this.formatFieldName(fieldName)} is required`;
     }
     if (control.hasError('email')) {
       return 'Please enter a valid email address';
     }
     if (control.hasError('minlength')) {
       const minLength = control.errors?.['minlength'].requiredLength;
-      return `${this.formatFieldName(field)} must be at least ${minLength} characters`;
+      return `${this.formatFieldName(fieldName)} must be at least ${minLength} characters`;
     }
     if (control.hasError('pattern')) {
       return 'Please enter a valid phone number';
@@ -162,8 +250,11 @@ export class RegisterComponent implements OnInit {
     if (control.hasError('weakPassword')) {
       return 'Password must contain uppercase, lowercase, number, and special character';
     }
-    if (field === 'confirmPassword' && this.accountInfoForm.hasError('passwordMismatch')) {
-      return 'Passwords do not match';
+    if (fieldName === 'confirmPassword') {
+      const formGroup = typeof formGroupOrField === 'string' ? this.registrationForm : formGroupOrField;
+      if (formGroup?.hasError('passwordMismatch')) {
+        return 'Passwords do not match';
+      }
     }
     return '';
   }

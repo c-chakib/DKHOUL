@@ -83,21 +83,50 @@ export class ServiceListComponent implements OnInit {
   loadServices(): void {
     this.loading = true;
     
-    this.serviceService.getServices().subscribe({
+    // Request all services by setting a high limit
+    const filters = { limit: 100, page: 1 };
+    
+    this.serviceService.getServices(filters).subscribe({
       next: (response: any) => {
-        this.services = response.services || response;
-        this.totalServices = this.services.length;
+        console.log('📊 API Response:', response);
+        // Extract services from the correct path: response.data.services
+        const servicesData = response.data?.services || response.services || response;
+        this.services = Array.isArray(servicesData) ? servicesData : [];
+        this.totalServices = response.data?.pagination?.total || this.services.length;
+        console.log('✅ Loaded services:', this.services.length);
+        
+        // Fix image URLs - replace broken placeholders with default image
+        this.services = this.services.map(service => ({
+          ...service,
+          photos: (service.photos && service.photos.length > 0) 
+            ? service.photos.map((photo: string) => {
+                // Fix broken placeholder URLs
+                if (!photo || photo.includes('800x600/?morocco') || photo.includes('placeholder.com')) {
+                  return 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=800&h=600&fit=crop'; // Morocco default
+                }
+                return photo;
+              })
+            : ['https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=800&h=600&fit=crop']
+        }));
+        
         this.applyFilters();
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading services:', error);
+        console.error('❌ Error loading services:', error);
+        this.services = []; // Initialize as empty array on error
+        this.filteredServices = [];
         this.loading = false;
       }
     });
   }
 
   applyFilters(): void {
+    // Safety check
+    if (!Array.isArray(this.services)) {
+      this.services = [];
+    }
+    
     let filtered = [...this.services];
     
     // Search query

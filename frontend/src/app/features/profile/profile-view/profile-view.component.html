@@ -1,6 +1,6 @@
 <div class="profile-container" *ngIf="!loading">
   <!-- Cover Photo -->
-  <div class="cover-photo" [style.background-image]="'url(' + (user?.coverPhoto || '/assets/default-cover.jpg') + ')'">
+  <div class="cover-photo" [style.background-image]="'url(' + (user?.coverPhoto || '/assets/default-cover.svg') + ')'">
     <button mat-fab class="edit-cover" *ngIf="isOwnProfile" (click)="editProfile()">
       <mat-icon>photo_camera</mat-icon>
     </button>
@@ -9,7 +9,7 @@
   <!-- Profile Header -->
   <div class="profile-header">
     <div class="avatar-section">
-      <img class="avatar" [src]="user?.avatar || '/assets/default-avatar.png'" [alt]="user?.name">
+      <img class="avatar" [src]="user?.avatar || '/assets/default-avatar.svg'" [alt]="user?.name">
       <mat-icon class="verified-badge" *ngIf="user?.verified">verified</mat-icon>
     </div>
 
@@ -116,7 +116,7 @@
             <h3>{{ service.name }}</h3>
             <p>{{ service.category }}</p>
             <div class="service-footer">
-              <span class="price">${{ service.price }}/{{ service.priceUnit }}</span>
+              <span class="price">{{ service.price | currency:'MAD':'symbol':'1.0-0' }}/{{ service.priceUnit }}</span>
               <span class="rating">
                 <mat-icon>star</mat-icon>
                 {{ service.rating }}
@@ -155,3 +155,4 @@
   <mat-spinner></mat-spinner>
   <p>Loading profile...</p>
 </div>
+

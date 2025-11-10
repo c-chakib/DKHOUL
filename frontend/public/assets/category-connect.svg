@@ -1,0 +1,55 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- DKHOUL Connect - People connection and cultural exchange illustration -->
+  <defs>
+    <linearGradient id="connectGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f5f3ff"/>
+  
+  <!-- People silhouettes -->
+  <!-- Person 1 -->
+  <circle cx="120" cy="120" r="30" fill="#8b5cf6"/>
+  <ellipse cx="120" cy="180" rx="40" ry="50" fill="url(#connectGradient)"/>
+  
+  <!-- Person 2 -->
+  <circle cx="200" cy="110" r="28" fill="#a78bfa"/>
+  <ellipse cx="200" cy="168" rx="38" ry="48" fill="#8b5cf6"/>
+  
+  <!-- Person 3 -->
+  <circle cx="280" cy="125" r="32" fill="#6366f1"/>
+  <ellipse cx="280" cy="185" rx="42" ry="52" fill="#a78bfa"/>
+  
+  <!-- Connection lines/network -->
+  <line x1="140" y1="140" x2="180" y2="130" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="5,5"/>
+  <line x1="220" y1="135" x2="260" y2="145" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="5,5"/>
+  <line x1="150" y1="180" x2="180" y2="170" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="5,5"/>
+  <line x1="220" y1="175" x2="260" y2="185" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="5,5"/>
+  
+  <!-- Communication bubbles -->
+  <ellipse cx="60" cy="70" rx="35" ry="25" fill="#ddd6fe"/>
+  <path d="M 55 95 L 60 85 L 65 95 Z" fill="#ddd6fe"/>
+  <line x1="45" y1="70" x2="75" y2="70" stroke="#8b5cf6" stroke-width="2"/>
+  <line x1="45" y1="78" x2="70" y2="78" stroke="#8b5cf6" stroke-width="2"/>
+  
+  <ellipse cx="340" cy="80" rx="35" ry="25" fill="#ddd6fe"/>
+  <path d="M 335 105 L 340 95 L 345 105 Z" fill="#ddd6fe"/>
+  <line x1="325" y1="78" x2="355" y2="78" stroke="#6366f1" stroke-width="2"/>
+  <line x1="325" y1="86" x2="350" y2="86" stroke="#6366f1" stroke-width="2"/>
+  
+  <!-- Heart/connection symbol -->
+  <path d="M 200 260 C 200 250 190 245 185 245 C 180 245 175 248 175 253 C 175 248 170 245 165 245 C 160 245 150 250 150 260 C 150 275 175 285 175 285 C 175 285 200 275 200 260 Z" fill="#f87171"/>
+  
+  <!-- Location pin (for local guides) -->
+  <path d="M 50 220 C 50 200 35 190 35 190 C 35 190 20 200 20 220 C 20 230 27 237 35 237 C 43 237 50 230 50 220 Z" fill="#8b5cf6"/>
+  <circle cx="35" cy="215" r="5" fill="white"/>
+  
+  <!-- Shopping bag -->
+  <rect x="340" y="200" width="40" height="50" fill="#a78bfa" rx="4"/>
+  <path d="M 350 200 Q 360 190 370 200" stroke="#6366f1" stroke-width="3" fill="none"/>
+  <circle cx="350" cy="210" r="3" fill="#ddd6fe"/>
+  <circle cx="370" cy="210" r="3" fill="#ddd6fe"/>
+</svg>

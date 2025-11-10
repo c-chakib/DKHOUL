@@ -96,15 +96,22 @@
           <span class="md-divider__text md-typescale-body-small">or</span>
         </div>
 
-        <!-- Social Login -->
+        <!-- Social Login (Google) -->
         <div class="md-social-login">
-          <button type="button" class="md-btn md-btn--outlined md-btn--full-width md-social-btn" (click)="handleGoogleSignIn()">
-            <img src="assets/icons/google.svg" alt="Google" class="md-social-btn__icon">
-            <span class="md-btn__label">Continue with Google</span>
-          </button>
-          <button type="button" class="md-btn md-btn--outlined md-btn--full-width md-social-btn">
-            <img src="assets/icons/facebook.svg" alt="Facebook" class="md-social-btn__icon">
-            <span class="md-btn__label">Continue with Facebook</span>
+          <!-- Container for official Google button (always present but may be empty) -->
+          <div id="google-signin-container" class="md-google-btn-wrapper" [class.hidden]="!googleRendered"></div>
+          
+          <!-- Fallback button (shown if official button fails to render) -->
+          <button 
+            *ngIf="!googleRendered && googleReady" 
+            type="button" 
+            class="md-btn md-btn--outlined md-btn--full-width md-social-btn md-social-btn--google" 
+            (click)="handleGoogleSignIn()" 
+            [disabled]="loading || prompting">
+            <div class="md-social-btn__icon-wrapper">
+              <img src="assets/icons/google.svg" alt="Google" class="md-social-btn__icon">
+            </div>
+            <span class="md-btn__label">Sign in with Google</span>
           </button>
         </div>
 
@@ -118,7 +125,7 @@
       </div>
     </div>
 
-    <!-- Features Section -->
+  <!-- Features Section -->
     <div class="md-features">
       <div class="md-feature-card elevation-z2">
         <div class="md-feature-card__icon-wrapper">
