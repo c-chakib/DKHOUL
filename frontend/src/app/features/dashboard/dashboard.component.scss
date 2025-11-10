@@ -1,139 +1,153 @@
+// Material Design 3 Dashboard Component
 .dashboard-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--md-sys-spacing-lg);
   min-height: 100vh;
-  background: #f5f5f5;
+  background-color: var(--md-sys-color-surface);
 
   .header {
-    padding: 2rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 12px;
-    color: white;
-    margin-bottom: 2rem;
+    padding: var(--md-sys-spacing-xl);
+    background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-tertiary));
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    color: var(--md-sys-color-on-primary);
+    margin-bottom: var(--md-sys-spacing-lg);
+    box-shadow: var(--md-sys-elevation-level2);
 
     h1 {
-      margin: 0 0 0.5rem 0;
-      font-size: 2rem;
+      margin: 0 0 var(--md-sys-spacing-sm) 0;
+      font-family: var(--md-sys-typescale-headline-large-font-family-name);
+      font-size: var(--md-sys-typescale-headline-large-font-size);
+      font-weight: var(--md-sys-typescale-headline-large-font-weight);
+      line-height: var(--md-sys-typescale-headline-large-line-height);
     }
 
     p {
       margin: 0;
       opacity: 0.9;
+      font-family: var(--md-sys-typescale-body-large-font-family-name);
+      font-size: var(--md-sys-typescale-body-large-font-size);
     }
   }
 
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: var(--md-sys-spacing-lg);
+    margin-bottom: var(--md-sys-spacing-lg);
 
     .stat-card {
-      padding: 1.5rem;
-      border-radius: 12px;
+      padding: var(--md-sys-spacing-lg);
+      border-radius: var(--md-sys-shape-corner-large);
       text-align: center;
       position: relative;
       overflow: hidden;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--md-sys-elevation-level2);
 
       &:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--md-sys-elevation-level3);
       }
 
       mat-icon {
         font-size: 3rem;
         width: 3rem;
         height: 3rem;
-        margin-bottom: 1rem;
+        margin-bottom: var(--md-sys-spacing-md);
       }
 
       h3 {
-        margin: 0.5rem 0;
-        font-size: 1rem;
-        color: #666;
-        font-weight: 500;
+        margin: var(--md-sys-spacing-sm) 0;
+        font-family: var(--md-sys-typescale-label-large-font-family-name);
+        font-size: var(--md-sys-typescale-label-large-font-size);
+        font-weight: var(--md-sys-typescale-label-large-font-weight);
       }
 
       .stat-number {
         margin: 0;
-        font-size: 2rem;
-        font-weight: bold;
+        font-family: var(--md-sys-typescale-display-medium-font-family-name);
+        font-size: var(--md-sys-typescale-display-medium-font-size);
+        font-weight: var(--md-sys-typescale-display-medium-font-weight);
       }
 
       &.bookings {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
+        background-color: var(--md-sys-color-primary-container);
+        color: var(--md-sys-color-on-primary-container);
 
-        mat-icon { color: rgba(255,255,255,0.9); }
-        h3 { color: rgba(255,255,255,0.8); }
+        mat-icon { color: var(--md-sys-color-on-primary-container); }
+        h3 { color: var(--md-sys-color-on-primary-container); opacity: 0.8; }
       }
 
       &.upcoming {
-        background: linear-gradient(135deg, #f093fb, #f5576c);
-        color: white;
+        background-color: var(--md-sys-color-secondary-container);
+        color: var(--md-sys-color-on-secondary-container);
 
-        mat-icon { color: rgba(255,255,255,0.9); }
-        h3 { color: rgba(255,255,255,0.8); }
+        mat-icon { color: var(--md-sys-color-on-secondary-container); }
+        h3 { color: var(--md-sys-color-on-secondary-container); opacity: 0.8; }
       }
 
       &.earnings {
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        color: white;
+        background-color: var(--md-sys-color-tertiary-container);
+        color: var(--md-sys-color-on-tertiary-container);
 
-        mat-icon { color: rgba(255,255,255,0.9); }
-        h3 { color: rgba(255,255,255,0.8); }
+        mat-icon { color: var(--md-sys-color-on-tertiary-container); }
+        h3 { color: var(--md-sys-color-on-tertiary-container); opacity: 0.8; }
       }
 
       &.services {
-        background: linear-gradient(135deg, #43e97b, #38f9d7);
-        color: white;
+        background-color: var(--md-sys-color-primary-container);
+        color: var(--md-sys-color-on-primary-container);
 
-        mat-icon { color: rgba(255,255,255,0.9); }
-        h3 { color: rgba(255,255,255,0.8); }
+        mat-icon { color: var(--md-sys-color-on-primary-container); }
+        h3 { color: var(--md-sys-color-on-primary-container); opacity: 0.8; }
       }
 
       &.rating {
-        background: linear-gradient(135deg, #fa709a, #fee140);
-        color: white;
+        background-color: var(--md-sys-color-secondary-container);
+        color: var(--md-sys-color-on-secondary-container);
 
-        mat-icon { color: rgba(255,255,255,0.9); }
-        h3 { color: rgba(255,255,255,0.8); }
+        mat-icon { color: var(--md-sys-color-on-secondary-container); }
+        h3 { color: var(--md-sys-color-on-secondary-container); opacity: 0.8; }
       }
 
       &.reviews {
-        background: linear-gradient(135deg, #30cfd0, #330867);
-        color: white;
+        background-color: var(--md-sys-color-tertiary-container);
+        color: var(--md-sys-color-on-tertiary-container);
 
-        mat-icon { color: rgba(255,255,255,0.9); }
-        h3 { color: rgba(255,255,255,0.8); }
+        mat-icon { color: var(--md-sys-color-on-tertiary-container); }
+        h3 { color: var(--md-sys-color-on-tertiary-container); opacity: 0.8; }
       }
     }
   }
 
   .quick-actions {
-    margin-bottom: 2rem;
-    padding: 2rem;
-    border-radius: 12px;
+    margin-bottom: var(--md-sys-spacing-lg);
+    padding: var(--md-sys-spacing-xl);
+    border-radius: var(--md-sys-shape-corner-large);
+    background-color: var(--md-sys-color-surface-container-low);
+    box-shadow: var(--md-sys-elevation-level1);
 
     h2 {
-      margin: 0 0 1.5rem 0;
-      color: #333;
+      margin: 0 0 var(--md-sys-spacing-lg) 0;
+      font-family: var(--md-sys-typescale-title-large-font-family-name);
+      font-size: var(--md-sys-typescale-title-large-font-size);
+      font-weight: var(--md-sys-typescale-title-large-font-weight);
+      color: var(--md-sys-color-on-surface);
     }
 
     .actions-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
+      gap: var(--md-sys-spacing-md);
 
       button {
-        padding: 1rem;
+        padding: var(--md-sys-spacing-md);
         height: auto;
 
         mat-icon {
-          margin-right: 0.5rem;
+          margin-right: var(--md-sys-spacing-sm);
         }
       }
     }
@@ -142,42 +156,49 @@
   .activity-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
+    gap: var(--md-sys-spacing-lg);
 
     mat-card {
-      border-radius: 12px;
-      padding: 2rem;
+      border-radius: var(--md-sys-shape-corner-large);
+      padding: var(--md-sys-spacing-xl);
+      background-color: var(--md-sys-color-surface-container-low);
+      box-shadow: var(--md-sys-elevation-level1);
 
       h2 {
-        margin: 0 0 1.5rem 0;
-        color: #333;
+        margin: 0 0 var(--md-sys-spacing-lg) 0;
+        font-family: var(--md-sys-typescale-title-large-font-family-name);
+        font-size: var(--md-sys-typescale-title-large-font-size);
+        font-weight: var(--md-sys-typescale-title-large-font-weight);
+        color: var(--md-sys-color-on-surface);
       }
 
       .booking-list, .service-list {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: var(--md-sys-spacing-md);
+        margin-bottom: var(--md-sys-spacing-lg);
 
         .booking-item, .service-item {
           display: flex;
-          gap: 1rem;
-          padding: 1rem;
-          border: 1px solid #e0e0e0;
-          border-radius: 8px;
+          gap: var(--md-sys-spacing-md);
+          padding: var(--md-sys-spacing-md);
+          border: 1px solid var(--md-sys-color-outline-variant);
+          border-radius: var(--md-sys-shape-corner-medium);
           cursor: pointer;
           transition: all 0.2s;
+          background-color: var(--md-sys-color-surface-container);
 
           &:hover {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border-color: #667eea;
+            box-shadow: var(--md-sys-elevation-level2);
+            border-color: var(--md-sys-color-primary);
+            background-color: var(--md-sys-color-surface-container-high);
           }
 
           img {
             width: 80px;
             height: 80px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: var(--md-sys-shape-corner-medium);
           }
 
           .booking-details, .service-details {
@@ -187,14 +208,18 @@
             justify-content: center;
 
             h4 {
-              margin: 0 0 0.5rem 0;
-              color: #333;
+              margin: 0 0 var(--md-sys-spacing-sm) 0;
+              font-family: var(--md-sys-typescale-title-medium-font-family-name);
+              font-size: var(--md-sys-typescale-title-medium-font-size);
+              font-weight: var(--md-sys-typescale-title-medium-font-weight);
+              color: var(--md-sys-color-on-surface);
             }
 
             p {
-              margin: 0 0 0.5rem 0;
-              color: #666;
-              font-size: 0.9rem;
+              margin: 0 0 var(--md-sys-spacing-sm) 0;
+              font-family: var(--md-sys-typescale-body-medium-font-family-name);
+              font-size: var(--md-sys-typescale-body-medium-font-size);
+              color: var(--md-sys-color-on-surface-variant);
             }
 
             mat-chip {
