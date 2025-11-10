@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build",
+  "buildCommand": "ls -la && pwd && test -d frontend && cd frontend && npm install --legacy-peer-deps && npm run build || (echo 'Frontend directory not found' && ls -la && exit 1)",
   "outputDirectory": "frontend/dist/browser",
   "installCommand": "echo 'Dependencies installed in buildCommand'",
   "framework": null,
