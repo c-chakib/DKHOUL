@@ -87,43 +87,43 @@
     <div class="md-container">
       <div class="md-cards-grid">
         
-        <!-- Platform Demo Card -->
-        <div class="md-gateway-card" (click)="navigateToDemo()">
+        <!-- Marketplace Card -->
+        <div class="md-gateway-card" (click)="navigateToMarketplace()">
           <!-- Image with overlay -->
           <div class="md-card-image">
-            <img src="picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png" alt="Platform Demo" />
+            <img src="picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png" alt="DKHOUL Marketplace" />
             <div class="md-image-overlay"></div>
             <div class="md-image-badge">
-              <mat-icon>visibility</mat-icon>
-              <span>Démo Interactive</span>
+              <mat-icon>storefront</mat-icon>
+              <span>Marketplace</span>
             </div>
           </div>
           
           <div class="md-card-content">
-            <h2 class="md-card-title">Explorer la Plateforme</h2>
+            <h2 class="md-card-title">Accéder à la Marketplace</h2>
             
             <p class="md-card-description">
-              Découvrez comment DKHOUL fonctionne : parcourez les services, consultez les profils des Hosts, 
-              et explorez l'expérience utilisateur complète.
+              Découvrez des milliers de services authentiques offerts par des Marocains : 
+              espaces uniques, cours de cuisine, visites guidées et bien plus encore.
             </p>
             
             <ul class="md-card-list">
               <li>
                 <div class="md-bullet"></div>
-                <span>Navigation interactive de la marketplace</span>
+                <span>Parcourir tous les services disponibles</span>
               </li>
               <li>
                 <div class="md-bullet"></div>
-                <span>Recherche et filtres de services</span>
+                <span>Réserver instantanément en ligne</span>
               </li>
               <li>
                 <div class="md-bullet"></div>
-                <span>Pages détaillées et processus de réservation</span>
+                <span>Contacter directement les Hosts</span>
               </li>
             </ul>
             
             <button mat-raised-button class="md-card-cta md-primary-cta">
-              <span>Voir la Démo</span>
+              <span>Explorer la Marketplace</span>
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
@@ -190,6 +190,20 @@
         <div class="md-stat-item">
           <div class="md-stat-value">20%</div>
           <div class="md-stat-label">Commission</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Animated Mini Stats (progressive) -->
+  <section class="md-animated-stats">
+    <div class="md-container">
+      <div class="md-animated-stats-grid">
+        <div class="md-animated-stat reveal" *ngFor="let stat of heroStats">
+          <div class="md-animated-stat-value">
+            {{ stat.value }}<span *ngIf="stat.suffix">{{ stat.suffix }}</span>
+          </div>
+          <div class="md-animated-stat-label">{{ stat.label }}</div>
         </div>
       </div>
     </div>
@@ -281,38 +295,47 @@
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="md-gateway-footer">
+  <!-- Testimonials Section -->
+  <section class="md-testimonials-section">
     <div class="md-container">
-      <div class="md-footer-content">
-        <div class="md-footer-brand">
-          <div class="md-footer-logo">
-            <mat-icon>handyman</mat-icon>
-            <span>DKHOUL</span>
-          </div>
-          <p>Transformons chaque Marocain en micro-entrepreneur touristique.</p>
-        </div>
-
-        <div class="md-footer-links">
-          <div class="md-footer-column">
-            <h4>Plateforme</h4>
-            <a routerLink="/home">Marketplace</a>
-            <a routerLink="/services">Services</a>
-            <a routerLink="/auth/register">Devenir Hôte</a>
-          </div>
-
-          <div class="md-footer-column">
-            <h4>Entreprise</h4>
-            <a routerLink="/investor">Investisseurs</a>
-            <a href="#">À propos</a>
-            <a href="#">Contact</a>
-          </div>
-        </div>
+      <div class="md-testimonials-header reveal">
+        <span class="md-section-badge">Ce qu'ils disent</span>
+        <h2 class="md-section-title">Témoignages d'Hôtes & Voyageurs</h2>
+        <p class="md-section-description">Des expériences authentiques qui créent de vraies connexions.</p>
       </div>
-
-      <div class="md-footer-bottom">
-        <p>&copy; 2025 DKHOUL. Tous droits réservés. Prêt pour la Coupe du Monde 2030.</p>
+      <div class="md-testimonials-grid">
+        <div class="md-testimonial-card reveal">
+          <div class="md-testimonial-content">“J'ai commencé avec des cours de cuisine le weekend – maintenant je gagne assez pour financer mes études.”</div>
+          <div class="md-testimonial-author">
+            <div class="md-avatar-fallback">A</div>
+            <div>
+              <div class="md-author-name">Amal • Host</div>
+              <div class="md-author-meta">Cours de cuisine marocaine</div>
+            </div>
+          </div>
+        </div>
+        <div class="md-testimonial-card reveal">
+          <div class="md-testimonial-content">“Stocker mes bagages et prendre une douche avant mon vol a changé ma dernière journée à Marrakech.”</div>
+          <div class="md-testimonial-author">
+            <div class="md-avatar-fallback">J</div>
+            <div>
+              <div class="md-author-name">Julia • Voyageuse</div>
+              <div class="md-author-meta">Berlin, 🇩🇪</div>
+            </div>
+          </div>
+        </div>
+        <div class="md-testimonial-card reveal">
+          <div class="md-testimonial-content">“Je propose des visites guidées de la médina – mes revenus secondaires ont doublé ce trimestre.”</div>
+          <div class="md-testimonial-author">
+            <div class="md-avatar-fallback">Y</div>
+            <div>
+              <div class="md-author-name">Youssef • Host</div>
+              <div class="md-author-meta">Guides locaux</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
+  </section>
+
 </div>

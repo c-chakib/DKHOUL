@@ -45,7 +45,7 @@ export class InvestorComponent {
   constructor(private router: Router) {}
 
   navigateToDemo(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/services']);
   }
 
   scrollToSection(sectionId: string): void {

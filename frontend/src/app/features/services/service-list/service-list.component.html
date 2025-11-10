@@ -45,6 +45,19 @@
         <mat-icon matPrefix>payments</mat-icon>
       </mat-form-field>
 
+      <!-- Sort By -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Sort by</mat-label>
+        <mat-select [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+          <mat-option value="relevance">Relevance</mat-option>
+          <mat-option value="price-asc">Price: Low to High</mat-option>
+          <mat-option value="price-desc">Price: High to Low</mat-option>
+          <mat-option value="rating-desc">Top Rated</mat-option>
+          <mat-option value="newest">Newest</mat-option>
+        </mat-select>
+        <mat-icon matPrefix>sort</mat-icon>
+      </mat-form-field>
+
       <!-- View Mode Toggle - Figma Inspired -->
       <div class="view-mode-toggle">
         <mat-button-toggle-group [(ngModel)]="viewMode" (ngModelChange)="onViewModeChange()" aria-label="View mode">
@@ -57,11 +70,13 @@
         </mat-button-toggle-group>
       </div>
 
-      <!-- Clear Filters Button -->
-      <button mat-raised-button color="accent" (click)="clearFilters()" class="clear-btn">
-        <mat-icon>clear_all</mat-icon>
-        Clear Filters
-      </button>
+      <!-- Clear / Reset -->
+      <div class="actions-group">
+        <button mat-raised-button color="accent" (click)="clearFilters()" class="clear-btn">
+          <mat-icon>clear_all</mat-icon>
+          Reset
+        </button>
+      </div>
     </div>
 
     <!-- Advanced Filters -->
@@ -94,26 +109,47 @@
           </button>
         </div>
       </div>
+
+      <!-- Quick toggles -->
+      <div class="filter-group quick-toggles">
+        <label>Quick:</label>
+        <button mat-button (click)="setMinRating(4)">Top Rated</button>
+        <button mat-button (click)="selectedPriceRange='0-100'; onPriceRangeChange()">Budget</button>
+        <button mat-button (click)="selectedPriceRange='500+'; onPriceRangeChange()">Premium</button>
+      </div>
     </div>
   </div>
 
   <!-- Results Section -->
   <div class="results-section">
     <div class="results-header">
-      <h2>{{ totalServices }} Services Found</h2>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        routerLink="/services/create"
-      >
-        <mat-icon>add</mat-icon>
-        List Your Service
-      </button>
+      <div class="results-left">
+        <h2>{{ totalServices }} <span class="muted">results</span></h2>
+        <div class="active-filters" *ngIf="hasActiveFilters()">
+          <span class="chip" *ngIf="searchQuery">Search: {{ searchQuery }}</span>
+          <span class="chip" *ngIf="selectedCategory">Category: {{ selectedCategory }}</span>
+          <span class="chip" *ngIf="selectedPriceRange">Price: {{ selectedPriceRange }}</span>
+          <span class="chip" *ngIf="selectedLanguages.length">Lang: {{ selectedLanguages.length }}</span>
+          <span class="chip" *ngIf="minRating">Rating ≥ {{ minRating }}</span>
+        </div>
+      </div>
+      <div class="results-right">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          routerLink="/services/create"
+        >
+          <mat-icon>add</mat-icon>
+          List Your Service
+        </button>
+      </div>
     </div>
 
     <!-- Loading State -->
     <div class="loading-container" *ngIf="loading">
-      <mat-spinner diameter="60"></mat-spinner>
+      <div class="skeleton-grid">
+        <div class="skeleton-card" *ngFor="let sk of [1,2,3,4,5,6,7,8,9,10,11,12]"></div>
+      </div>
       <p>Loading services...</p>
     </div>
 

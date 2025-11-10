@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -74,10 +74,13 @@ export class ServiceListComponent implements OnInit {
   pageSize = 12;
   pageIndex = 0;
   totalServices = 0;
+  // Sorting
+  sortBy: 'relevance' | 'price-asc' | 'price-desc' | 'rating-desc' | 'newest' = 'relevance';
 
   constructor(
     private serviceService: ServiceService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   loadServices(): void {
@@ -163,8 +166,24 @@ export class ServiceListComponent implements OnInit {
       );
     }
     
-    this.filteredServices = filtered;
+    // Sort at the end
+    this.filteredServices = this.sortServices(filtered);
     this.totalServices = filtered.length;
+  }
+
+  private sortServices(list: any[]): any[] {
+    switch (this.sortBy) {
+      case 'price-asc':
+        return list.slice().sort((a, b) => (a.pricing?.amount ?? 0) - (b.pricing?.amount ?? 0));
+      case 'price-desc':
+        return list.slice().sort((a, b) => (b.pricing?.amount ?? 0) - (a.pricing?.amount ?? 0));
+      case 'rating-desc':
+        return list.slice().sort((a, b) => (b.rating?.average ?? 0) - (a.rating?.average ?? 0));
+      case 'newest':
+        return list.slice().sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      default:
+        return list;
+    }
   }
 
   filterByPriceRange(services: any[]): any[] {
@@ -207,10 +226,18 @@ export class ServiceListComponent implements OnInit {
     this.applyFilters();
   }
 
+  setMinRating(rating: number): void {
+    this.onRatingChange(rating);
+  }
+
   onViewModeChange(): void {
     // Save to localStorage for persistence
     localStorage.setItem('serviceViewMode', this.viewMode);
     console.log('View mode changed to:', this.viewMode);
+  }
+
+  onSortChange(): void {
+    this.applyFilters();
   }
 
   ngOnInit(): void {
@@ -219,7 +246,26 @@ export class ServiceListComponent implements OnInit {
     if (savedViewMode) {
       this.viewMode = savedViewMode;
     }
-    this.loadServices();
+    // Initialize filters from query params
+    this.route.queryParams.subscribe(params => {
+      const q = (params['search'] || '').toString();
+      const cat = (params['category'] || '').toString();
+      this.searchQuery = q;
+      // Map category param (space/skills/connect) to proper labels
+      const catMap: Record<string, string> = { space: 'Space', skills: 'Skills', connect: 'Connect' };
+      this.selectedCategory = catMap[cat.toLowerCase()] || '';
+      // Reset pagination when query changes
+      this.pageIndex = 0;
+      // If services already loaded, apply; else load then apply via loadServices
+      if (this.services.length > 0) {
+        this.applyFilters();
+      } else {
+        this.loadServices();
+      }
+    });
+    if (!this.services.length) {
+      this.loadServices();
+    }
   }
 
   clearFilters(): void {
@@ -230,6 +276,11 @@ export class ServiceListComponent implements OnInit {
     this.minRating = 0;
     this.applyFilters();
   }
+
+  hasActiveFilters(): boolean {
+    return !!(this.searchQuery || this.selectedCategory || this.selectedPriceRange || this.selectedLanguages.length || this.minRating);
+  }
+
 
   getPaginatedServices(): any[] {
     const start = this.pageIndex * this.pageSize;

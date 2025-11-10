@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 import { SocketService } from '../../../core/services/socket.service';
 import { MessageService } from '../../../core/services/message.service';
@@ -34,16 +35,29 @@ export class NavbarComponent implements OnInit, OnDestroy {
   unreadMessages = 0;
   currentLanguage = 'fr'; // Default language
   isMobileMenuOpen = false;
+  isMarketingLayout = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private socketService: SocketService,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
+    // Track layout (marketing vs app) via route data
+    const routeSub = this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => {
+        this.isMarketingLayout = this.computeIsMarketingLayout();
+      });
+    this.subscriptions.push(routeSub);
+
+    // Initial compute
+    this.isMarketingLayout = this.computeIsMarketingLayout();
+
     // Subscribe to auth state
     const authSub = this.authService.currentUser.subscribe((user: any) => {
       this.isLoggedIn = !!user;
@@ -67,6 +81,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.unreadMessages = count;
     });
     this.subscriptions.push(unreadSub);
+  }
+
+  private computeIsMarketingLayout(): boolean {
+    let snapshot = this.route.snapshot;
+    // Traverse to deepest child to read data
+    while (snapshot.firstChild) {
+      snapshot = snapshot.firstChild;
+    }
+    const layout = snapshot.data?.['layout'];
+    // Also consider URL path as a fallback
+    const url = this.router.url || '';
+    return layout === 'marketing' || url.startsWith('/landing') || url.startsWith('/investor');
   }
 
   ngOnDestroy(): void {
@@ -101,7 +127,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   navigateToHome(): void {
-    this.router.navigate(['/home']);
+    // On marketing pages, go to landing '/'; inside the app, go to '/home'
+    if (this.isMarketingLayout) {
+      this.router.navigate(['/']);
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
 
   navigateToServices(): void {
@@ -138,7 +169,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 
   isProvider(): boolean {

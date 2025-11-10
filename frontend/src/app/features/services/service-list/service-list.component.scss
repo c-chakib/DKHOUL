@@ -48,7 +48,7 @@
     max-width: 1400px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr auto auto;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
     gap: var(--md-sys-spacing-md);
     align-items: center;
 
@@ -85,10 +85,24 @@
       }
     }
 
-    .clear-btn {
-      height: 56px;
-      min-width: 160px;
-    }
+    .actions-group { display: flex; gap: 8px; justify-content: flex-end; }
+    .clear-btn { height: 56px; min-width: 120px; }
+    .sort-btn { height: 56px; }
+  }
+
+  /* Responsive layout for filters */
+  @media (max-width: 1200px) {
+    .filters-content { grid-template-columns: 2fr 1fr 1fr auto; }
+  }
+  @media (max-width: 992px) {
+    .filters-content { grid-template-columns: 1fr 1fr; }
+    .view-mode-toggle { justify-self: start; }
+    .actions-group { justify-self: end; }
+  }
+  @media (max-width: 600px) {
+    .filters-content { grid-template-columns: 1fr; }
+    .actions-group { justify-content: stretch; }
+    .clear-btn { width: 100%; }
   }
 
   .advanced-filters {
@@ -156,17 +170,16 @@
   padding: 40px 20px;
 
   .results-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
     margin-bottom: 32px;
 
-    h2 {
-      font-size: 28px;
-      font-weight: 600;
-      color: #333;
-      margin: 0;
-    }
+    h2 { font-size: 28px; font-weight: 700; margin: 0; }
+    h2 .muted { color: var(--md-sys-color-on-surface-variant); font-weight: 500; }
+
+    .active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .chip { background: var(--md-sys-color-surface-container-high); border: 1px solid var(--md-sys-color-outline-variant); border-radius: 999px; padding: 6px 10px; font-size: 12px; color: var(--md-sys-color-on-surface-variant); }
 
     button {
       mat-icon {
@@ -176,18 +189,18 @@
   }
 
   .loading-container {
-    text-align: center;
-    padding: 80px 20px;
+    text-align: center; padding: 24px 20px;
 
-    mat-spinner {
-      margin: 0 auto 24px;
-    }
+    .skeleton-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .skeleton-card { height: 280px; border-radius: 16px; background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 37%, #f0f0f0 63%); background-size: 400% 100%; animation: shimmer 1.2s infinite; }
 
     p {
       color: #666;
       font-size: 16px;
     }
   }
+
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
 
   .services-grid {
     display: grid;
@@ -247,6 +260,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
+            line-clamp: 3;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
           }

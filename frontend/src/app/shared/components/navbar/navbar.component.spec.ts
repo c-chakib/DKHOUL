@@ -69,12 +69,12 @@ describe('NavbarComponent', () => {
 
   it('should navigate to home on navigateToHome()', () => {
     component.navigateToHome();
-    expect(router.navigate).toHaveBeenCalledWith(['/home']);
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('should call authService.logout on logout()', () => {
     component.logout();
     expect(authService.logout).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/home']);
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 });

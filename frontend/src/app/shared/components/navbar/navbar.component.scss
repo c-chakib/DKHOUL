@@ -191,7 +191,7 @@
   }
 
   @media (max-width: 480px) {
-    button:not([routerLink="/home"]):not([routerLink="/services"]) {
+    button:not([routerLink="/"]):not([routerLink="/services"]) {
       display: none;
     }
   }

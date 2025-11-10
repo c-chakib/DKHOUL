@@ -1,11 +1,19 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
+  // Root -> Landing (marketing gateway)
   {
     path: '',
-    redirectTo: 'landing',
-    pathMatch: 'full'
+    loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent),
+    data: { layout: 'marketing' }
   },
+  {
+    path: 'investor',
+    loadComponent: () => import('./features/investor/investor.component').then(m => m.InvestorComponent),
+    data: { layout: 'marketing' }
+  },
+
+  // Static content routes
   {
     path: 'about',
     loadComponent: () => import('./features/static/static-page.component').then(m => m.StaticPageComponent),
@@ -105,22 +113,20 @@ export const routes: Routes = [
       ]
     }
   },
+
+  // Auth redirect helpers
   {
     path: 'reset-password/:token',
     redirectTo: 'auth/reset-password/:token'
   },
-  {
-    path: 'landing',
-    loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent)
-  },
-  {
-    path: 'investor',
-    loadComponent: () => import('./features/investor/investor.component').then(m => m.InvestorComponent)
-  },
+
+  // Application home page
   {
     path: 'home',
     loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent)
   },
+
+  // Feature modules
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
@@ -153,8 +159,10 @@ export const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },
+
+  // Fallback
   {
     path: '**',
-    redirectTo: 'home'
+    redirectTo: ''
   }
 ];

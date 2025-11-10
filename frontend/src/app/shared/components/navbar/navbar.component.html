@@ -13,20 +13,28 @@
 
     <!-- Desktop Navigation -->
     <nav class="nav-links-desktop">
-      <button class="nav-link" routerLink="/home" routerLinkActive="active">
+      <!-- Marketing Layout: Marketplace + Investor -->
+      <button class="nav-link" routerLink="/home" routerLinkActive="active" *ngIf="isMarketingLayout">
+        <mat-icon>storefront</mat-icon>
+        Marketplace
+      </button>
+      <button class="nav-link investor-link" routerLink="/investor" routerLinkActive="active" *ngIf="isMarketingLayout">
+        <mat-icon>trending_up</mat-icon>
+        Investisseurs
+      </button>
+      
+      <!-- App Layout: Full navigation -->
+      <button class="nav-link" routerLink="/home" routerLinkActive="active" *ngIf="!isMarketingLayout">
         Accueil
       </button>
-      <button class="nav-link" routerLink="/services" routerLinkActive="active">
-        Explorer
+      <button class="nav-link" routerLink="/services" routerLinkActive="active" *ngIf="!isMarketingLayout">
+        Services
       </button>
-      <button class="nav-link" routerLink="/dashboard" routerLinkActive="active" *ngIf="isLoggedIn">
+      <button class="nav-link" routerLink="/dashboard" routerLinkActive="active" *ngIf="isLoggedIn && !isMarketingLayout">
         Dashboard
       </button>
-      <button class="nav-link" routerLink="/services/create" routerLinkActive="active" *ngIf="isProvider() || isAdmin()">
+      <button class="nav-link" routerLink="/services/create" routerLinkActive="active" *ngIf="(isProvider() || isAdmin()) && !isMarketingLayout">
         Devenir Host
-      </button>
-      <button class="nav-link investor-link" routerLink="/investor" routerLinkActive="active">
-        Investisseurs
       </button>
     </nav>
 
@@ -52,17 +60,17 @@
       </mat-menu>
 
       <!-- Messages (Logged In) -->
-      <button mat-icon-button class="icon-button" (click)="navigateToMessages()" *ngIf="isLoggedIn" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0" [attr.aria-label]="unreadMessages > 0 ? unreadMessages + ' messages non lus' : 'Messages'">
+      <button mat-icon-button class="icon-button" (click)="navigateToMessages()" *ngIf="isLoggedIn && !isMarketingLayout" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0" [attr.aria-label]="unreadMessages > 0 ? unreadMessages + ' messages non lus' : 'Messages'">
         <mat-icon [attr.aria-hidden]="unreadMessages === 0 ? 'true' : 'false'">chat_bubble_outline</mat-icon>
       </button>
 
       <!-- Favorites (Logged In) -->
-      <button mat-icon-button class="icon-button" *ngIf="isLoggedIn">
+      <button mat-icon-button class="icon-button" *ngIf="isLoggedIn && !isMarketingLayout">
         <mat-icon>favorite_border</mat-icon>
       </button>
 
-      <!-- Not Logged In -->
-      <ng-container *ngIf="!isLoggedIn">
+      <!-- Not Logged In (hidden on marketing pages) -->
+      <ng-container *ngIf="!isLoggedIn && !isMarketingLayout">
         <button mat-button class="login-button" (click)="navigateToLogin()">
           Login
         </button>
@@ -71,8 +79,8 @@
         </button>
       </ng-container>
 
-      <!-- User Menu (Logged In) -->
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar-button" *ngIf="isLoggedIn">
+      <!-- User Menu (Logged In, hidden on marketing pages) -->
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar-button" *ngIf="isLoggedIn && !isMarketingLayout">
         <div class="user-avatar">
           <mat-icon>person</mat-icon>
         </div>
