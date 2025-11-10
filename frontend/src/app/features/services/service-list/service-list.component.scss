@@ -1,13 +1,14 @@
+// Material Design 3 Service List Component
 .service-list-container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background-color: var(--md-sys-color-surface);
 }
 
-// Hero Section
+// Hero Section - MD3 Surface with Primary Gradient
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 80px 20px;
+  background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-tertiary) 100%);
+  color: var(--md-sys-color-on-primary);
+  padding: var(--md-sys-spacing-xl) var(--md-sys-spacing-md);
   text-align: center;
 
   .hero-content {
@@ -15,24 +16,30 @@
     margin: 0 auto;
 
     h1 {
-      font-size: 48px;
-      font-weight: 700;
-      margin: 0 0 16px 0;
+      font-family: var(--md-sys-typescale-display-small-font-family-name);
+      font-size: var(--md-sys-typescale-display-small-font-size);
+      font-weight: var(--md-sys-typescale-display-small-font-weight);
+      line-height: var(--md-sys-typescale-display-small-line-height);
+      letter-spacing: var(--md-sys-typescale-display-small-letter-spacing);
+      margin: 0 0 var(--md-sys-spacing-md) 0;
     }
 
     p {
-      font-size: 20px;
+      font-family: var(--md-sys-typescale-title-large-font-family-name);
+      font-size: var(--md-sys-typescale-title-large-font-size);
+      font-weight: var(--md-sys-typescale-title-large-font-weight);
+      line-height: var(--md-sys-typescale-title-large-line-height);
       opacity: 0.9;
       margin: 0;
     }
   }
 }
 
-// Filters Section
+// Filters Section - MD3 Surface with Elevation
 .filters-section {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 24px;
+  background-color: var(--md-sys-color-surface-container-low);
+  box-shadow: var(--md-sys-elevation-level2);
+  padding: var(--md-sys-spacing-lg);
   position: sticky;
   top: 64px;
   z-index: 100;
@@ -42,7 +49,7 @@
     margin: 0 auto;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr auto auto;
-    gap: 16px;
+    gap: var(--md-sys-spacing-md);
     align-items: center;
 
     .search-field {
@@ -53,25 +60,25 @@
       width: 100%;
     }
 
-    /* View Mode Toggle - Figma Inspired */
+    // View Mode Toggle - MD3 Filled Tonal Buttons
     .view-mode-toggle {
       mat-button-toggle-group {
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
+        box-shadow: var(--md-sys-elevation-level1);
+        border-radius: var(--md-sys-shape-corner-small);
+        border: 1px solid var(--md-sys-color-outline-variant);
 
         mat-button-toggle {
           border: none;
           
           mat-icon {
-            color: #64748b;
+            color: var(--md-sys-color-on-surface-variant);
           }
 
           &.mat-button-toggle-checked {
-            background-color: #3f51b5;
+            background-color: var(--md-sys-color-secondary-container);
             
             mat-icon {
-              color: #ffffff;
+              color: var(--md-sys-color-on-secondary-container);
             }
           }
         }
