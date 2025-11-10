@@ -1,63 +1,71 @@
+// Material Design 3 Booking Detail Component
 .booking-detail-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--md-sys-spacing-lg);
   min-height: 100vh;
-  background: #f5f5f5;
+  background-color: var(--md-sys-color-surface);
 
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 12px;
-    color: white;
+    margin-bottom: var(--md-sys-spacing-lg);
+    padding: var(--md-sys-spacing-xl);
+    background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-tertiary));
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    color: var(--md-sys-color-on-primary);
+    box-shadow: var(--md-sys-elevation-level2);
 
     h1 {
       margin: 0;
-      font-size: 2rem;
+      font-family: var(--md-sys-typescale-headline-large-font-family-name);
+      font-size: var(--md-sys-typescale-headline-large-font-size);
+      font-weight: var(--md-sys-typescale-headline-large-font-weight);
     }
 
     mat-chip {
-      font-weight: 600;
-      color: white;
+      font-weight: var(--md-sys-typescale-label-large-font-weight);
+      color: var(--md-sys-color-on-primary-container);
 
-      &.pending { background: #FFC107; }
-      &.confirmed { background: #4CAF50; }
-      &.completed { background: #2196F3; }
-      &.cancelled { background: #F44336; }
+      &.pending { background-color: var(--md-sys-color-tertiary-container); }
+      &.confirmed { background-color: var(--md-sys-color-primary-container); }
+      &.completed { background-color: var(--md-sys-color-secondary-container); }
+      &.cancelled { background-color: var(--md-sys-color-error-container); }
     }
   }
 
   .content {
     display: grid;
-    gap: 2rem;
+    gap: var(--md-sys-spacing-lg);
 
     mat-card {
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-radius: var(--md-sys-shape-corner-large);
+      box-shadow: var(--md-sys-elevation-level2);
+      background-color: var(--md-sys-color-surface-container-low);
 
       .service-info {
         display: flex;
-        gap: 1.5rem;
+        gap: var(--md-sys-spacing-lg);
         align-items: center;
 
         img {
           width: 150px;
           height: 150px;
           object-fit: cover;
-          border-radius: 8px;
+          border-radius: var(--md-sys-shape-corner-medium);
         }
 
         h2 {
-          margin: 0 0 0.5rem 0;
-          color: #333;
+          margin: 0 0 var(--md-sys-spacing-sm) 0;
+          font-family: var(--md-sys-typescale-title-large-font-family-name);
+          font-size: var(--md-sys-typescale-title-large-font-size);
+          font-weight: var(--md-sys-typescale-title-large-font-weight);
+          color: var(--md-sys-color-on-surface);
         }
 
         p {
-          margin: 0 0 1rem 0;
+          margin: 0 0 var(--md-sys-spacing-md) 0;
           color: #666;
         }
       }
