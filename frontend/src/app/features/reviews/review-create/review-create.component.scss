@@ -1,59 +1,67 @@
+// Material Design 3 Review Create Component
 .review-create-container {
   max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: var(--md-sys-spacing-lg) auto;
+  padding: var(--md-sys-spacing-lg);
   min-height: 100vh;
-  background: #f5f5f5;
+  background-color: var(--md-sys-color-surface);
 
   mat-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    box-shadow: var(--md-sys-elevation-level2);
+    background-color: var(--md-sys-color-surface-container-low);
 
     mat-card-header {
-      padding: 2rem 2rem 1rem 2rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      margin: -16px -16px 2rem -16px;
-      border-radius: 12px 12px 0 0;
+      padding: var(--md-sys-spacing-xl) var(--md-sys-spacing-xl) var(--md-sys-spacing-md) var(--md-sys-spacing-xl);
+      background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-tertiary));
+      color: var(--md-sys-color-on-primary);
+      margin: -16px -16px var(--md-sys-spacing-lg) -16px;
+      border-radius: var(--md-sys-shape-corner-extra-large) var(--md-sys-shape-corner-extra-large) 0 0;
 
       h1 {
-        margin: 0 0 0.5rem 0;
-        font-size: 2rem;
+        margin: 0 0 var(--md-sys-spacing-sm) 0;
+        font-family: var(--md-sys-typescale-headline-large-font-family-name);
+        font-size: var(--md-sys-typescale-headline-large-font-size);
+        font-weight: var(--md-sys-typescale-headline-large-font-weight);
       }
 
       p {
         margin: 0;
         opacity: 0.9;
+        font-family: var(--md-sys-typescale-body-medium-font-family-name);
       }
     }
 
     mat-card-content {
-      padding: 2rem;
+      padding: var(--md-sys-spacing-xl);
 
       .service-info {
         display: flex;
-        gap: 1rem;
+        gap: var(--md-sys-spacing-md);
         align-items: center;
-        padding: 1.5rem;
-        background: #f5f5f5;
-        border-radius: 8px;
-        margin-bottom: 2rem;
+        padding: var(--md-sys-spacing-lg);
+        background-color: var(--md-sys-color-surface-container);
+        border-radius: var(--md-sys-shape-corner-medium);
+        margin-bottom: var(--md-sys-spacing-lg);
 
         img {
           width: 80px;
           height: 80px;
           object-fit: cover;
-          border-radius: 8px;
+          border-radius: var(--md-sys-shape-corner-medium);
         }
 
         h3 {
-          margin: 0 0 0.5rem 0;
-          color: #333;
+          margin: 0 0 var(--md-sys-spacing-sm) 0;
+          font-family: var(--md-sys-typescale-title-medium-font-family-name);
+          font-size: var(--md-sys-typescale-title-medium-font-size);
+          font-weight: var(--md-sys-typescale-title-medium-font-weight);
+          color: var(--md-sys-color-on-surface);
         }
 
         p {
           margin: 0;
-          color: #666;
+          color: var(--md-sys-color-on-surface-variant);
         }
       }
 
