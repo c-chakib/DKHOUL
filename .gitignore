@@ -2,7 +2,6 @@
 
 # Dependencies - npm workspaces hoisted dependencies
 node_modules/
-package-lock.json
 
 # Environment variables
 .env
