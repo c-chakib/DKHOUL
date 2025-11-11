@@ -49,10 +49,16 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kB",
+                  "maximumWarning": "40kB",
                   "maximumError": "50kB"
                 }
               ],
+              "allowedCommonJsDependencies": [
+                "sweetalert2"
+              ],
+              "optimization": {
+                "fonts": false
+              },
               "outputHashing": "all"
             },
             "development": {

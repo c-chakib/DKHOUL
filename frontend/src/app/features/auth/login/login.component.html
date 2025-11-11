@@ -102,16 +102,19 @@
           <div id="google-signin-container" class="md-google-btn-wrapper" [class.hidden]="!googleRendered"></div>
           
           <!-- Fallback button (shown if official button fails to render) -->
-          <button 
-            *ngIf="!googleRendered && googleReady" 
-            type="button" 
-            class="md-btn md-btn--outlined md-btn--full-width md-social-btn md-social-btn--google" 
-            (click)="handleGoogleSignIn()" 
-            [disabled]="loading || prompting">
+          <button
+            *ngIf="!googleRendered && googleReady"
+            type="button"
+            class="md-btn md-btn--outlined md-btn--full-width md-social-btn md-social-btn--google"
+            (click)="handleGoogleSignIn()"
+            [disabled]="loading || prompting"
+            [class.md-btn--loading]="prompting"
+            aria-label="Sign in with Google">
             <div class="md-social-btn__icon-wrapper">
-              <img src="assets/icons/google.svg" alt="Google" class="md-social-btn__icon">
+              <img src="assets/icons/google.svg" alt="Google logo" class="md-social-btn__icon" loading="lazy">
             </div>
-            <span class="md-btn__label">Sign in with Google</span>
+            <span class="md-btn__label" *ngIf="!prompting">Continue with Google</span>
+            <span class="md-btn__label" *ngIf="prompting">Connecting...</span>
           </button>
         </div>
 
@@ -151,5 +154,3 @@
         <p class="md-feature-card__description md-typescale-body-medium">Our team is always here to help you</p>
       </div>
     </div>
-  </div>
-</div>
