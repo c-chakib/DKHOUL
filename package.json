@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "cd frontend && npm install --legacy-peer-deps && npm run build && cd .. && node post-build.js",
+    "build:frontend": "cd frontend && npm install --legacy-peer-deps && npm run build",
     "test": "cd frontend && npm test && cd ../backend && npm test",
     "start:frontend": "cd frontend && npm start",
     "start:backend": "cd backend && npm run dev"

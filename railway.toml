@@ -1,14 +1,12 @@
 [build]
 builder = "dockerfile"
-dockerfilePath = "backend/Dockerfile"
+dockerfilePath = "Dockerfile"
 dockerContext = "backend"
-watchPatterns = ["backend/**"]
+watchPatterns = ["**/*"]
 
 [deploy]
 startCommand = "npm start"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
-
-# Health check configuration
 healthcheckPath = "/health"
 healthcheckTimeout = 300
