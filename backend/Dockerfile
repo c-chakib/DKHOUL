@@ -2,20 +2,20 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Install all dependencies (including dev) to build
-COPY package*.json ./
+# Copy package files from backend directory
+COPY backend/package*.json ./
 RUN npm ci
 
-# Copy source and build
-COPY . .
+# Copy backend source and build
+COPY backend/ ./
 RUN npm run build
 
 ## -------- Runtime stage: production-only image --------
 FROM node:18-alpine AS runtime
 WORKDIR /app
 
-# Install only production dependencies - COPY BOTH FILES EXPLICITLY
-COPY package.json package-lock.json ./
+# Install only production dependencies - COPY FROM BACKEND DIR
+COPY backend/package.json backend/package-lock.json ./
 RUN npm ci --only=production
 
 # Copy compiled artifacts from builder
