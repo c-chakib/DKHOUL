@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build",
+  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build && cd .. && node post-build.js",
   "outputDirectory": "frontend/dist/browser",
-  "installCommand": "echo 'Skip root install'",
+  "installCommand": "echo 'Skipping root install - will install in frontend'",
   "framework": null,
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet ./frontend",
   "env": {
     "NODE_VERSION": "20"
   },

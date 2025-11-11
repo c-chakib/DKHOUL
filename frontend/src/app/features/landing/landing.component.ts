@@ -37,6 +37,10 @@ export class LandingComponent implements OnInit {
     this.router.navigate(['/investor']);
   }
 
+  navigateToRegister(): void {
+    this.router.navigate(['/auth/register']);
+  }
+
   scrollToFeatures(): void {
     document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
   }

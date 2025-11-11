@@ -1,20 +1,32 @@
-# Backend (not deployed to Vercel)
-backend/
+# Ignore entire backend for Vercel (frontend-only deployment)
+backend
 
 # Local data
-local-dump/
+local-dump
+
+# Node modules (will be installed fresh)
+node_modules
+frontend/node_modules
 
 # Build artifacts (will be rebuilt)
-frontend/dist/
-frontend/.angular/
+frontend/dist
+frontend/.angular
 
 # Test coverage
-frontend/coverage/
+frontend/coverage
 
 # Environment files
 .env
 .env.local
 .env.*.local
+
+# Documentation
+*.md
+!README.md
+
+# Docker & Railway
+docker-compose.yml
+railway.toml
 
 # OS files
 .DS_Store

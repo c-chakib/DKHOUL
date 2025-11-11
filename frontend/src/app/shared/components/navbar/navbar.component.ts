@@ -33,9 +33,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   currentUser: any = null;
   unreadMessages = 0;
-  currentLanguage = 'fr'; // Default language
+  currentLanguage = 'fr';
+  currentLanguageFlag = '🇫🇷';
   isMobileMenuOpen = false;
   isMarketingLayout = false;
+  isScrolled = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -47,11 +49,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Track scroll for navbar style
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', this.onScroll.bind(this));
+    }
+
     // Track layout (marketing vs app) via route data
     const routeSub = this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe(() => {
         this.isMarketingLayout = this.computeIsMarketingLayout();
+        // Close mobile menu on route change
+        this.isMobileMenuOpen = false;
       });
     this.subscriptions.push(routeSub);
 
@@ -83,6 +92,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.subscriptions.push(unreadSub);
   }
 
+  private onScroll(): void {
+    this.isScrolled = window.scrollY > 20;
+  }
+
   private computeIsMarketingLayout(): boolean {
     let snapshot = this.route.snapshot;
     // Traverse to deepest child to read data
@@ -92,10 +105,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const layout = snapshot.data?.['layout'];
     // Also consider URL path as a fallback
     const url = this.router.url || '';
-    return layout === 'marketing' || url.startsWith('/landing') || url.startsWith('/investor');
+    return layout === 'marketing' || url === '/' || url.startsWith('/investor');
   }
 
   ngOnDestroy(): void {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('scroll', this.onScroll.bind(this));
+    }
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
@@ -116,23 +132,38 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   changeLanguage(lang: string): void {
     this.currentLanguage = lang;
+    // Update flag emoji
+    switch(lang) {
+      case 'fr':
+        this.currentLanguageFlag = '🇫🇷';
+        break;
+      case 'ar':
+        this.currentLanguageFlag = '🇲🇦';
+        break;
+      case 'en':
+        this.currentLanguageFlag = '🇬🇧';
+        break;
+    }
     // TODO: Implement actual language change logic with i18n
     console.log('Language changed to:', lang);
   }
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    // TODO: Implement mobile menu functionality
-    console.log('Mobile menu toggled:', this.isMobileMenuOpen);
+    // Prevent body scroll when menu is open
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
+    }
+  }
+
+  navigateToLanding(): void {
+    // Logo ALWAYS goes to landing page
+    this.router.navigate(['/']);
   }
 
   navigateToHome(): void {
-    // On marketing pages, go to landing '/'; inside the app, go to '/home'
-    if (this.isMarketingLayout) {
-      this.router.navigate(['/']);
-    } else {
-      this.router.navigate(['/home']);
-    }
+    // This is the "Accueil" button in marketplace - goes to /home
+    this.router.navigate(['/home']);
   }
 
   navigateToServices(): void {
@@ -178,5 +209,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isAdmin(): boolean {
     return this.currentUser?.role === 'admin';
+  }
+
+  getInitials(): string {
+    if (!this.currentUser) return '?';
+    const first = this.currentUser.firstName?.charAt(0) || '';
+    const last = this.currentUser.lastName?.charAt(0) || '';
+    return (first + last).toUpperCase() || '?';
+  }
+
+  getUserRole(): string {
+    if (this.isAdmin()) return 'Administrateur';
+    if (this.isProvider()) return 'Host';
+    return 'Voyageur';
   }
 }

@@ -1,139 +1,235 @@
-<!-- Navbar - Figma Inspired Design -->
-<header class="navbar-figma">
+<!-- Modern Professional Navbar -->
+<header class="modern-navbar" [class.scrolled]="isScrolled">
   <div class="navbar-container">
-    <!-- Logo with SVG - Figma Style -->
-    <button class="navbar-logo" (click)="navigateToHome()">
-      <div class="logo-icon">
-        <img src="/picture/overall/logo.png" alt="DKHOUL Logo" class="logo-img">
+    
+    <!-- Logo - Always returns to Landing -->
+    <a class="brand-logo" (click)="navigateToLanding()" [attr.aria-label]="'DKHOUL - Discover Morocco'">
+      <div class="logo-wrapper">
+        <img src="/picture/overall/logo.png" alt="DKHOUL" class="logo-image">
+        <span class="logo-text">DKHOUL</span>
       </div>
-      <div class="logo-text">
-        <div class="brand-tagline">Discover Morocco</div>
-      </div>
-    </button>
+    </a>
 
     <!-- Desktop Navigation -->
-    <nav class="nav-links-desktop">
-      <!-- Marketing Layout: Marketplace + Investor -->
-      <button class="nav-link" routerLink="/home" routerLinkActive="active" *ngIf="isMarketingLayout">
-        <mat-icon>storefront</mat-icon>
-        Marketplace
-      </button>
-      <button class="nav-link investor-link" routerLink="/investor" routerLinkActive="active" *ngIf="isMarketingLayout">
-        <mat-icon>trending_up</mat-icon>
-        Investisseurs
-      </button>
+    <nav class="desktop-nav" role="navigation">
       
-      <!-- App Layout: Full navigation -->
-      <button class="nav-link" routerLink="/home" routerLinkActive="active" *ngIf="!isMarketingLayout">
-        Accueil
-      </button>
-      <button class="nav-link" routerLink="/services" routerLinkActive="active" *ngIf="!isMarketingLayout">
-        Services
-      </button>
-      <button class="nav-link" routerLink="/dashboard" routerLinkActive="active" *ngIf="isLoggedIn && !isMarketingLayout">
-        Dashboard
-      </button>
-      <button class="nav-link" routerLink="/services/create" routerLinkActive="active" *ngIf="(isProvider() || isAdmin()) && !isMarketingLayout">
-        Devenir Host
-      </button>
+      <!-- Marketing Layout Navigation (Landing & Investor pages) -->
+      <ng-container *ngIf="isMarketingLayout">
+        <a class="nav-item" routerLink="/home" routerLinkActive="active">
+          <span class="nav-icon">🏪</span>
+          <span class="nav-label">Marketplace</span>
+        </a>
+        <a class="nav-item" routerLink="/investor" routerLinkActive="active">
+          <span class="nav-icon">📈</span>
+          <span class="nav-label">Investisseurs</span>
+        </a>
+      </ng-container>
+
+      <!-- App Layout Navigation (Inside Marketplace) -->
+      <ng-container *ngIf="!isMarketingLayout">
+        <a class="nav-item" routerLink="/home" routerLinkActive="active">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Accueil</span>
+        </a>
+        <a class="nav-item" routerLink="/services" routerLinkActive="active">
+          <span class="nav-icon">✨</span>
+          <span class="nav-label">Services</span>
+        </a>
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" *ngIf="isLoggedIn">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-item host-link" routerLink="/services/create" routerLinkActive="active" *ngIf="isProvider() || isAdmin()">
+          <span class="nav-icon">⭐</span>
+          <span class="nav-label">Devenir Host</span>
+        </a>
+      </ng-container>
     </nav>
 
     <!-- Right Actions -->
-    <div class="nav-actions">
+    <div class="navbar-actions">
+      
       <!-- Language Selector -->
-      <button mat-icon-button [matMenuTriggerFor]="langMenu" class="icon-button">
-        <mat-icon>language</mat-icon>
-      </button>
-      <mat-menu #langMenu="matMenu" class="language-menu">
-        <button mat-menu-item (click)="changeLanguage('fr')">
-          <span class="flag">🇫🇷</span>
-          <span>Français</span>
+      <div class="action-item language-selector">
+        <button class="action-btn" [matMenuTriggerFor]="langMenu" aria-label="Changer la langue">
+          <span class="flag-icon">{{ currentLanguageFlag }}</span>
         </button>
-        <button mat-menu-item (click)="changeLanguage('ar')">
-          <span class="flag">🇲🇦</span>
-          <span>العربية</span>
-        </button>
-        <button mat-menu-item (click)="changeLanguage('en')">
-          <span class="flag">🇬🇧</span>
-          <span>English</span>
-        </button>
-      </mat-menu>
+        <mat-menu #langMenu="matMenu" class="custom-menu">
+          <button mat-menu-item (click)="changeLanguage('fr')" class="language-option">
+            <span class="flag">🇫🇷</span>
+            <span>Français</span>
+            <mat-icon *ngIf="currentLanguage === 'fr'" class="check-icon">check</mat-icon>
+          </button>
+          <button mat-menu-item (click)="changeLanguage('ar')" class="language-option">
+            <span class="flag">🇲🇦</span>
+            <span>العربية</span>
+            <mat-icon *ngIf="currentLanguage === 'ar'" class="check-icon">check</mat-icon>
+          </button>
+          <button mat-menu-item (click)="changeLanguage('en')" class="language-option">
+            <span class="flag">🇬🇧</span>
+            <span>English</span>
+            <mat-icon *ngIf="currentLanguage === 'en'" class="check-icon">check</mat-icon>
+          </button>
+        </mat-menu>
+      </div>
 
-      <!-- Messages (Logged In) -->
-      <button mat-icon-button class="icon-button" (click)="navigateToMessages()" *ngIf="isLoggedIn && !isMarketingLayout" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0" [attr.aria-label]="unreadMessages > 0 ? unreadMessages + ' messages non lus' : 'Messages'">
-        <mat-icon [attr.aria-hidden]="unreadMessages === 0 ? 'true' : 'false'">chat_bubble_outline</mat-icon>
-      </button>
-
-      <!-- Favorites (Logged In) -->
-      <button mat-icon-button class="icon-button" *ngIf="isLoggedIn && !isMarketingLayout">
-        <mat-icon>favorite_border</mat-icon>
-      </button>
-
-      <!-- Not Logged In (hidden on marketing pages) -->
-      <ng-container *ngIf="!isLoggedIn && !isMarketingLayout">
-        <button mat-button class="login-button" (click)="navigateToLogin()">
-          Login
+      <!-- Messages (App only, logged in) -->
+      <div class="action-item" *ngIf="isLoggedIn && !isMarketingLayout">
+        <button class="action-btn" (click)="navigateToMessages()" [class.has-badge]="unreadMessages > 0" aria-label="Messages">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <span class="badge" *ngIf="unreadMessages > 0">{{ unreadMessages > 9 ? '9+' : unreadMessages }}</span>
         </button>
-        <button mat-raised-button class="signup-button" (click)="navigateToRegister()">
+      </div>
+
+      <!-- Favorites (App only, logged in) -->
+      <div class="action-item" *ngIf="isLoggedIn && !isMarketingLayout">
+        <button class="action-btn" aria-label="Favoris">
+          <mat-icon>favorite_border</mat-icon>
+        </button>
+      </div>
+
+      <!-- Auth Buttons (Not logged in) -->
+      <ng-container *ngIf="!isLoggedIn">
+        <button class="btn-text" (click)="navigateToLogin()">
+          Connexion
+        </button>
+        <button class="btn-primary" (click)="navigateToRegister()">
           S'inscrire
         </button>
       </ng-container>
 
-      <!-- User Menu (Logged In, hidden on marketing pages) -->
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar-button" *ngIf="isLoggedIn && !isMarketingLayout">
-        <div class="user-avatar">
-          <mat-icon>person</mat-icon>
-        </div>
-      </button>
-      <mat-menu #userMenu="matMenu" class="user-menu-figma">
-        <div class="user-menu-header">
-          <div class="user-avatar-large">
-            <mat-icon>account_circle</mat-icon>
-          </div>
-          <div class="user-info">
-            <p class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</p>
-            <p class="user-email">{{ currentUser?.email }}</p>
-            <span class="user-badge" [class.provider]="isProvider()" [class.admin]="isAdmin()">
-              {{ isAdmin() ? 'Admin' : isProvider() ? 'Host' : 'Voyageur' }}
+      <!-- User Menu (Logged in, app only) -->
+      <div class="action-item" *ngIf="isLoggedIn && !isMarketingLayout">
+        <button class="action-btn user-btn" [matMenuTriggerFor]="userMenu" aria-label="Menu utilisateur">
+          <div class="user-avatar">
+            <img *ngIf="currentUser?.profilePicture" [src]="currentUser.profilePicture" [alt]="currentUser.firstName">
+            <span *ngIf="!currentUser?.profilePicture" class="avatar-initials">
+              {{ getInitials() }}
             </span>
           </div>
-        </div>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="navigateToProfile()">
-          <mat-icon>person_outline</mat-icon>
-          <span>Mon Profil</span>
         </button>
-        <button mat-menu-item *ngIf="isProvider() || isAdmin()" (click)="navigateToDashboard()">
-          <mat-icon>dashboard</mat-icon>
-          <span>Mes Services</span>
+        <mat-menu #userMenu="matMenu" class="custom-menu user-menu">
+          <div class="user-menu-header">
+            <div class="user-avatar-large">
+              <img *ngIf="currentUser?.profilePicture" [src]="currentUser.profilePicture" [alt]="currentUser.firstName">
+              <span *ngIf="!currentUser?.profilePicture" class="avatar-initials-large">
+                {{ getInitials() }}
+              </span>
+            </div>
+            <div class="user-details">
+              <p class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</p>
+              <p class="user-email">{{ currentUser?.email }}</p>
+              <span class="user-role" [class.provider]="isProvider()" [class.admin]="isAdmin()">
+                {{ getUserRole() }}
+              </span>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="navigateToProfile()">
+            <mat-icon>person_outline</mat-icon>
+            <span>Mon Profil</span>
+          </button>
+          <button mat-menu-item (click)="navigateToDashboard()" *ngIf="isProvider() || isAdmin()">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </button>
+          <button mat-menu-item (click)="navigateToBookings()">
+            <mat-icon>event_note</mat-icon>
+            <span>Réservations</span>
+          </button>
+          <button mat-menu-item (click)="navigateToMessages()">
+            <mat-icon>chat_bubble_outline</mat-icon>
+            <span>Messages</span>
+            <span class="menu-badge" *ngIf="unreadMessages > 0">{{ unreadMessages }}</span>
+          </button>
+          <button mat-menu-item *ngIf="isAdmin()" (click)="navigateToAdmin()">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>Admin Panel</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()" class="logout-btn">
+            <mat-icon color="warn">logout</mat-icon>
+            <span>Déconnexion</span>
+          </button>
+        </mat-menu>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button class="mobile-menu-btn" (click)="toggleMobileMenu()" aria-label="Menu mobile">
+        <span class="hamburger" [class.active]="isMobileMenuOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" [class.open]="isMobileMenuOpen">
+    <div class="mobile-menu-content">
+      
+      <!-- Mobile Navigation Links -->
+      <nav class="mobile-nav">
+        <!-- Marketing Layout -->
+        <ng-container *ngIf="isMarketingLayout">
+          <a class="mobile-nav-item" routerLink="/home" (click)="toggleMobileMenu()">
+            <span class="nav-icon">🏪</span>
+            <span>Marketplace</span>
+          </a>
+          <a class="mobile-nav-item" routerLink="/investor" (click)="toggleMobileMenu()">
+            <span class="nav-icon">📈</span>
+            <span>Investisseurs</span>
+          </a>
+        </ng-container>
+
+        <!-- App Layout -->
+        <ng-container *ngIf="!isMarketingLayout">
+          <a class="mobile-nav-item" routerLink="/home" (click)="toggleMobileMenu()">
+            <span class="nav-icon">🏠</span>
+            <span>Accueil</span>
+          </a>
+          <a class="mobile-nav-item" routerLink="/services" (click)="toggleMobileMenu()">
+            <span class="nav-icon">✨</span>
+            <span>Services</span>
+          </a>
+          <a class="mobile-nav-item" routerLink="/dashboard" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="mobile-nav-item" routerLink="/bookings" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+            <span class="nav-icon">📅</span>
+            <span>Réservations</span>
+          </a>
+          <a class="mobile-nav-item" routerLink="/messages" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+            <span class="nav-icon">💬</span>
+            <span>Messages</span>
+            <span class="badge" *ngIf="unreadMessages > 0">{{ unreadMessages }}</span>
+          </a>
+          <a class="mobile-nav-item" routerLink="/profile" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+            <span class="nav-icon">👤</span>
+            <span>Profil</span>
+          </a>
+        </ng-container>
+      </nav>
+
+      <!-- Mobile Auth Actions -->
+      <div class="mobile-actions" *ngIf="!isLoggedIn">
+        <button class="btn-mobile-text" (click)="navigateToLogin(); toggleMobileMenu()">
+          Connexion
         </button>
-        <button mat-menu-item (click)="navigateToBookings()">
-          <mat-icon>event_note</mat-icon>
-          <span>Mes Réservations</span>
+        <button class="btn-mobile-primary" (click)="navigateToRegister(); toggleMobileMenu()">
+          S'inscrire
         </button>
-        <button mat-menu-item (click)="navigateToMessages()" [matBadge]="unreadMessages" matBadgeColor="warn" [matBadgeHidden]="unreadMessages === 0" [attr.aria-label]="unreadMessages > 0 ? unreadMessages + ' messages non lus' : 'Messages'">
-          <mat-icon [attr.aria-hidden]="unreadMessages === 0 ? 'true' : 'false'">chat_bubble_outline</mat-icon>
-          <span>Messages</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>settings</mat-icon>
-          <span>Paramètres</span>
-        </button>
-        <button mat-menu-item *ngIf="isAdmin()" (click)="navigateToAdmin()">
-          <mat-icon>admin_panel_settings</mat-icon>
-          <span>Admin Panel</span>
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item class="logout-item" (click)="logout()">
-          <mat-icon color="warn">logout</mat-icon>
+      </div>
+
+      <!-- Mobile Logout -->
+      <div class="mobile-actions" *ngIf="isLoggedIn">
+        <button class="btn-mobile-logout" (click)="logout(); toggleMobileMenu()">
+          <mat-icon>logout</mat-icon>
           <span>Déconnexion</span>
         </button>
-      </mat-menu>
-
-      <!-- Mobile Menu -->
-      <button mat-icon-button class="mobile-menu-button" (click)="toggleMobileMenu()">
-        <mat-icon>menu</mat-icon>
-      </button>
+      </div>
     </div>
   </div>
 </header>
