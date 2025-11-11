@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build",
   "outputDirectory": "frontend/dist/browser",
-  "installCommand": "npm install --legacy-peer-deps",
+  "installCommand": "echo 'Skip root install'",
   "framework": null,
   "env": {
     "NODE_VERSION": "20"
