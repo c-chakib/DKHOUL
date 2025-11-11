@@ -244,7 +244,7 @@ Tourist                    DKHOUL Platform                  Host
   │                              │                            │
   │                              │  6. Accept/Reject          │
   │                              │<───────────────────────────┤
-  │  7. Confirmation             │                            │
+  │  7. Confirmation
   │<─────────────────────────────┤                            │
   │                              │                            │
   │  8. Service Delivered        │                            │
@@ -326,6 +326,40 @@ Le frontend sera accessible sur **http://localhost:4200**
 - ✅ Backend : http://localhost:5000/api/health
 - ✅ Frontend : http://localhost:4200
 - ✅ MongoDB : mongodb://localhost:27017/dkhoul
+
+---
+
+## ⚙️ Environnement & Variables
+
+Before starting, ensure you have the following environment variables set in your `.env` file (backend):
+
+```
+MONGODB_URI=mongodb://localhost:27017/dkhoul
+JWT_SECRET=your_secret_key
+PORT=5000
+AWS_S3_BUCKET=your_bucket
+```
+
+For the frontend, check `src/environments/environment.ts`:
+```
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:5000/api',
+  socketUrl: 'http://localhost:5000',
+  googleClientId: 'your-google-client-id'
+};
+```
+
+---
+
+## 📋 Quick Start
+
+1. Clone repo and install dependencies (see above)
+2. Set up environment variables
+3. Seed database: `npm run seed` (backend)
+4. Start backend: `npm start` (backend)
+5. Start frontend: `ng serve` (frontend)
+6. Login as admin and test the log dashboard
 
 ---
 

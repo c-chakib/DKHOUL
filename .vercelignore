@@ -31,7 +31,5 @@ Thumbs.db
 # VS Code settings
 .vscode/
 
-
-
 # Build scripts (not needed for frontend)
 post-build.js
