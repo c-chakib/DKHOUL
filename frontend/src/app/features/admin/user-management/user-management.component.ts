@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AdminService } from '../../../core/services/admin.service';
 import Swal from 'sweetalert2';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-user-management',
@@ -45,7 +46,7 @@ export class UserManagementComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading users:', error);
+        this.logger.error('Error loading users:', error);
         this.loading = false;
       }
     });
@@ -85,7 +86,7 @@ export class UserManagementComponent implements OnInit {
             this.loadUsers();
           },
           error: (error: any) => {
-            console.error('Error verifying user:', error);
+            this.logger.error('Error verifying user:', error);
             Swal.fire('Error', 'Failed to verify user', 'error');
           }
         });
@@ -110,7 +111,7 @@ export class UserManagementComponent implements OnInit {
             this.loadUsers();
           },
           error: (error: any) => {
-            console.error('Error suspending user:', error);
+            this.logger.error('Error suspending user:', error);
             Swal.fire('Error', 'Failed to suspend user', 'error');
           }
         });
@@ -135,7 +136,7 @@ export class UserManagementComponent implements OnInit {
             this.loadUsers();
           },
           error: (error: any) => {
-            console.error('Error deleting user:', error);
+            this.logger.error('Error deleting user:', error);
             Swal.fire('Error', 'Failed to delete user', 'error');
           }
         });
@@ -143,3 +144,5 @@ export class UserManagementComponent implements OnInit {
     });
   }
 }
+
+

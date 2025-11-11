@@ -1,10 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build && cd .. && node post-build.js",
+  "buildCommand": "npm run build",
   "outputDirectory": "frontend/dist/browser",
-  "installCommand": "echo 'Skipping root install - will install in frontend'",
-  "framework": null,
-  "ignoreCommand": "git diff HEAD^ HEAD --quiet ./frontend",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "angular",
   "env": {
     "NODE_VERSION": "20"
   },
@@ -38,10 +37,6 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
-        },
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin-allow-popups"
         }
       ]
     }

@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../../core/services/auth.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import { environment } from '../../../../environments/environment';
 import Swal from 'sweetalert2';
 
@@ -44,7 +45,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -164,18 +166,18 @@ export class LoginComponent implements OnInit {
             setTimeout(() => {
               this.googleRendered = container.childElementCount > 0;
               if (!this.googleRendered) {
-                console.warn('[GoogleOAuth] Button not rendered, showing fallback');
+                this.logger.warn('Google OAuth button not rendered, showing fallback');
               } else {
-                console.log('[GoogleOAuth] Official button rendered successfully');
+                this.logger.debug('Google OAuth official button rendered successfully');
               }
             }, 100);
           } catch (renderErr) {
-            console.warn('[GoogleOAuth] renderButton failed; using fallback', renderErr);
+            this.logger.warn('Google OAuth renderButton failed; using fallback', renderErr);
             this.googleRendered = false;
           }
         }
       } catch (e) {
-        console.error('[GoogleOAuth] initialize error', e);
+        this.logger.error('Google OAuth initialize error', e);
         this.googleReady = false;
         this.googleRendered = false;
       }
@@ -195,18 +197,18 @@ export class LoginComponent implements OnInit {
     }
     
     if (this.prompting) {
-      console.log('[GoogleOAuth] Already prompting, ignoring click');
+      this.logger.debug('Google OAuth already prompting, ignoring click');
       return;
     }
     
     this.prompting = true;
-    console.log('[GoogleOAuth] Fallback button clicked, triggering prompt');
+    this.logger.debug('Google OAuth fallback button clicked, triggering prompt');
     
     try {
       // For fallback button, trigger the One Tap prompt
       google.accounts.id.prompt((notification: any) => {
         if (notification.isNotDisplayed()) {
-          console.warn('[GoogleOAuth] Prompt not displayed:', notification.getNotDisplayedReason());
+          this.logger.warn('Google OAuth prompt not displayed', notification.getNotDisplayedReason());
           this.prompting = false;
           
           Swal.fire({
@@ -215,7 +217,7 @@ export class LoginComponent implements OnInit {
             text: 'Please ensure you are signed into Google and pop-ups are not blocked.',
           });
         } else if (notification.isSkippedMoment()) {
-          console.log('[GoogleOAuth] Prompt skipped by user');
+          this.logger.debug('Google OAuth prompt skipped by user');
           this.prompting = false;
         }
       });
@@ -225,7 +227,7 @@ export class LoginComponent implements OnInit {
         this.prompting = false;
       }, 15000);
     } catch (e) {
-      console.error('[GoogleOAuth] prompt error', e);
+      this.logger.error('Google OAuth prompt error', e);
       this.prompting = false;
       Swal.fire({
         icon: 'error',
@@ -237,7 +239,7 @@ export class LoginComponent implements OnInit {
 
   handleGoogleCallback(response: any): void {
     if (!response || !response.credential) {
-      console.error('[GoogleOAuth] callback without credential', response);
+      this.logger.error('Google OAuth callback without credential', response);
       Swal.fire({
         icon: 'error',
         title: 'Google Sign-In failed',
@@ -274,7 +276,7 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         this.prompting = false;
-        console.error('[GoogleOAuth] backend login error', error);
+        this.logger.error('Google OAuth backend login error', error);
         Swal.fire({
           icon: 'error',
           title: 'Login Failed',

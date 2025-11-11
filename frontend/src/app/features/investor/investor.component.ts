@@ -53,8 +53,10 @@ export class InvestorComponent {
   }
 
   submitInvestorForm(): void {
-    console.log('Investor form submitted:', this.investorForm);
+    this.logger.info('Investor form submitted:', this.investorForm);
     // TODO: Implement actual form submission
     alert('Merci pour votre intérêt ! Nous vous contacterons bientôt.');
   }
 }
+
+

@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { ServiceService } from '../../../core/services/service.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -42,7 +43,8 @@ export class ServiceDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private serviceService: ServiceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +75,7 @@ export class ServiceDetailComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading service:', error);
+        this.logger.error('Error loading service', error);
         Swal.fire({
           icon: 'error',
           title: 'Error',

@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Message } from '../../models/message';
 import { environment } from '../../../environments/environment';
+import { LoggerService } from './logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class SocketService {
   private onlineUsersSubject = new BehaviorSubject<string[]>([]);
   public onlineUsers$ = this.onlineUsersSubject.asObservable();
 
-  constructor() { }
+  constructor(private logger: LoggerService) { }
 
   connect(token: string): void {
     if (!this.socket) {
@@ -28,28 +29,28 @@ export class SocketService {
       });
 
       this.socket.on('connect', () => {
-        console.log('✅ Socket connected:', this.socket?.id);
+        this.logger.info('Socket connected', { socketId: this.socket?.id });
       });
 
       this.socket.on('disconnect', () => {
-        console.log('❌ Socket disconnected');
+        this.logger.warn('Socket disconnected');
       });
 
       // Listen for new messages to update unread count
       this.socket.on('new-message', (message: any) => {
-        console.log('📨 New message received:', message);
+        this.logger.debug('New message received', message);
         const currentCount = this.unreadCountSubject.value;
         this.unreadCountSubject.next(currentCount + 1);
       });
 
       // Listen for notification events
       this.socket.on('notification', (data: any) => {
-        console.log('🔔 Notification:', data);
+        this.logger.debug('Notification received', data);
       });
 
       // Listen for online users
       this.socket.on('online-users', (userIds: string[]) => {
-        console.log('👥 Online users:', userIds.length);
+        this.logger.debug('Online users updated', { count: userIds.length });
         this.onlineUsersSubject.next(userIds);
       });
 
@@ -127,14 +128,14 @@ export class SocketService {
   joinGlobalChat(): void {
     if (this.socket) {
       this.socket.emit('join-global-chat');
-      console.log('📢 Joined global chat');
+      this.logger.debug('Joined global chat');
     }
   }
 
   leaveGlobalChat(): void {
     if (this.socket) {
       this.socket.emit('leave-global-chat');
-      console.log('📢 Left global chat');
+      this.logger.debug('Left global chat');
     }
   }
 

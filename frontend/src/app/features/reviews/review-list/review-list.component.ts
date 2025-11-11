@@ -40,7 +40,7 @@ export class ReviewListComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading reviews:', error);
+        this.logger.error('Error loading reviews:', error);
         this.loading = false;
       }
     });
@@ -78,3 +78,5 @@ export class ReviewListComponent implements OnInit {
     return this.totalReviews > 0 ? (this.ratingDistribution[stars as keyof typeof this.ratingDistribution] / this.totalReviews) * 100 : 0;
   }
 }
+
+

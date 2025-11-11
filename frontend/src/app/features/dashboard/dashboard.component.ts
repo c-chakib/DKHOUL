@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading bookings:', error);
+        this.logger.error('Error loading bookings:', error);
         this.recentBookings = [];
         this.loading = false;
       }
@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
           this.stats.totalReviews = services.reduce((sum: number, s: any) => sum + (s.reviews?.length || 0), 0);
           this.recentServices = services.slice(0, 5);
         },
-        error: (error: any) => console.error('Error loading services:', error)
+        error: (error: any) => this.logger.error('Error loading services:', error)
       });
     }
   }
@@ -83,3 +83,5 @@ export class DashboardComponent implements OnInit {
     this.router.navigate([route]);
   }
 }
+
+

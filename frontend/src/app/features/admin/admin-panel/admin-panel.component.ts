@@ -50,7 +50,7 @@ export class AdminPanelComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading stats:', error);
+        this.logger.error('Error loading stats:', error);
         this.loading = false;
       }
     });
@@ -60,3 +60,5 @@ export class AdminPanelComponent implements OnInit {
     this.router.navigate([route]);
   }
 }
+
+

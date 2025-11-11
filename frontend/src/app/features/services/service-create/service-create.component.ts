@@ -14,6 +14,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ServiceService } from '../../../core/services/service.service';
 import { UploadService } from '../../../core/services/upload.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -58,7 +59,8 @@ export class ServiceCreateComponent implements OnInit {
     private fb: FormBuilder,
     private serviceService: ServiceService,
     private uploadService: UploadService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -233,13 +235,13 @@ export class ServiceCreateComponent implements OnInit {
           this.router.navigate(['/services', response._id]);
         },
         error: (error) => {
-          console.error('Error creating service:', error);
+          this.logger.error('Error creating service', error);
           Swal.fire('Error', error.error?.message || 'Failed to create service', 'error');
           this.loading = false;
         }
       });
     } catch (error) {
-      console.error('Error uploading images:', error);
+      this.logger.error('Error uploading images', error);
       Swal.fire('Error', 'Failed to upload images', 'error');
       this.loading = false;
     }

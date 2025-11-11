@@ -14,6 +14,7 @@ import messageRoutes from './routes/message.routes';
 import userRoutes from './routes/user.routes';
 import adminRoutes from './routes/admin.routes';
 import uploadRoutes from './routes/upload.routes';
+import logRoutes from './routes/log.routes';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/error.middleware';
@@ -76,6 +77,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/logs', logRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BookingService } from '../../../core/services/booking.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -24,7 +25,8 @@ export class BookingDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +41,7 @@ export class BookingDetailComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading booking:', error);
+        this.logger.error('Error loading booking', error);
         Swal.fire('Error', 'Failed to load booking', 'error');
         this.router.navigate(['/bookings']);
       }

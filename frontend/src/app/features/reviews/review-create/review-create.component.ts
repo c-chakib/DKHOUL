@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReviewService } from '../../../core/services/review.service';
 import { BookingService } from '../../../core/services/booking.service';
 import Swal from 'sweetalert2';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-review-create',
@@ -70,7 +71,7 @@ export class ReviewCreateComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading booking:', error);
+        this.logger.error('Error loading booking:', error);
         Swal.fire('Error', 'Failed to load booking details', 'error');
         this.loading = false;
       }
@@ -93,7 +94,7 @@ export class ReviewCreateComponent implements OnInit {
         this.router.navigate(['/bookings', this.booking._id]);
       },
       error: (error: any) => {
-        console.error('Error submitting review:', error);
+        this.logger.error('Error submitting review:', error);
         Swal.fire('Error', 'Failed to submit review', 'error');
         this.submitting = false;
       }
@@ -108,3 +109,5 @@ export class ReviewCreateComponent implements OnInit {
     this.router.navigate(['/bookings']);
   }
 }
+
+

@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ServiceService } from '../../../core/services/service.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-service-list',
@@ -80,7 +81,8 @@ export class ServiceListComponent implements OnInit {
   constructor(
     private serviceService: ServiceService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private logger: LoggerService
   ) {}
 
   loadServices(): void {
@@ -91,12 +93,12 @@ export class ServiceListComponent implements OnInit {
     
     this.serviceService.getServices(filters).subscribe({
       next: (response: any) => {
-        console.log('📊 API Response:', response);
+        this.logger.debug('API Response received', response);
         // Extract services from the correct path: response.data.services
         const servicesData = response.data?.services || response.services || response;
         this.services = Array.isArray(servicesData) ? servicesData : [];
         this.totalServices = response.data?.pagination?.total || this.services.length;
-        console.log('✅ Loaded services:', this.services.length);
+        this.logger.info(`Loaded ${this.services.length} services`);
         
         // Fix image URLs - replace broken placeholders with default image
         this.services = this.services.map(service => ({
@@ -116,7 +118,7 @@ export class ServiceListComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('❌ Error loading services:', error);
+        this.logger.error('Error loading services', error);
         this.services = []; // Initialize as empty array on error
         this.filteredServices = [];
         this.loading = false;
@@ -233,7 +235,7 @@ export class ServiceListComponent implements OnInit {
   onViewModeChange(): void {
     // Save to localStorage for persistence
     localStorage.setItem('serviceViewMode', this.viewMode);
-    console.log('View mode changed to:', this.viewMode);
+    this.logger.debug(`View mode changed to: ${this.viewMode}`);
   }
 
   onSortChange(): void {

@@ -8,6 +8,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BookingService } from '../../../core/services/booking.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -25,7 +26,8 @@ export class BookingListComponent implements OnInit {
 
   constructor(
     private bookingService: BookingService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +65,7 @@ export class BookingListComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading bookings:', error);
+        this.logger.error('Error loading bookings', error);
         this.loading = false;
       }
     });
@@ -103,7 +105,7 @@ export class BookingListComponent implements OnInit {
             this.loadBookings();
           },
           error: (error: any) => {
-            console.error('Error cancelling booking:', error);
+            this.logger.error('Error cancelling booking', error);
             Swal.fire('Error', 'Failed to cancel booking. Please try again.', 'error');
           }
         });

@@ -15,6 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ServiceService } from '../../../core/services/service.service';
 import { BookingService } from '../../../core/services/booking.service';
 import { PaymentService } from '../../../core/services/payment.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -59,7 +60,8 @@ export class BookingCreateComponent implements OnInit {
     private router: Router,
     private serviceService: ServiceService,
     private bookingService: BookingService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -101,11 +103,11 @@ export class BookingCreateComponent implements OnInit {
           this.bookingForm.patchValue({ duration: service.duration / 60 }); // Convert minutes to hours
         }
         
-        this.calculatePrice();
+        this.calculateTotalPrice();
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading service:', error);
+        this.logger.error('Error loading service', error);
         Swal.fire('Error', 'Failed to load service', 'error');
         this.router.navigate(['/services']);
       }
@@ -207,19 +209,19 @@ export class BookingCreateComponent implements OnInit {
               this.router.navigate(['/bookings', booking._id]);
             }
           } catch (paymentError) {
-            console.error('Payment error:', paymentError);
+            this.logger.error('Payment error', paymentError);
             Swal.fire('Warning', 'Booking created but payment failed. Please complete payment.', 'warning');
             this.router.navigate(['/bookings', booking._id]);
           }
         },
         error: (error) => {
-          console.error('Booking error:', error);
+          this.logger.error('Booking error', error);
           Swal.fire('Error', error.error?.message || 'Failed to create booking', 'error');
           this.processing = false;
         }
       });
     } catch (error) {
-      console.error('Error:', error);
+      this.logger.error('Unexpected error', error);
       Swal.fire('Error', 'An unexpected error occurred', 'error');
       this.processing = false;
     }

@@ -129,7 +129,7 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
         this.markAsRead();
       },
       error: (error: any) => {
-        console.error('Error loading conversation:', error);
+        this.logger.error('Error loading conversation:', error);
         this.loading = false;
       }
     });
@@ -205,7 +205,7 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
         this.shouldScrollGlobalToBottom = true;
       },
       error: (error: any) => {
-        console.error('Error loading global history:', error);
+        this.logger.error('Error loading global history:', error);
         this.globalMessages = [];
       }
     });
@@ -214,7 +214,7 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
   sendMessage(): void {
     if (!this.newMessage.trim() || this.sending) return;
     if (!this.otherUser || !this.otherUser._id) {
-      console.warn('Cannot send message: No user selected');
+      this.logger.warn('Cannot send message: No user selected');
       return;
     }
 
@@ -241,7 +241,7 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
         }
       },
       error: (error: any) => {
-        console.error('Error sending message:', error);
+        this.logger.error('Error sending message:', error);
         this.sending = false;
       }
     });
@@ -252,7 +252,7 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
       next: () => {
         this.socketService.decrementUnreadCount();
       },
-      error: (error: any) => console.error('Error marking as read:', error)
+      error: (error: any) => this.logger.error('Error marking as read:', error)
     });
   }
 
@@ -354,7 +354,7 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
         });
       },
       error: (error: any) => {
-        console.error('Error loading users:', error);
+        this.logger.error('Error loading users:', error);
         this.allUsers = [];
         this.filteredUsers = [];
       }
@@ -419,7 +419,7 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
       },
       error: (error: any) => {
         // Conversation doesn't exist yet, that's fine
-        console.log('No existing conversation, starting fresh');
+        this.logger.info('No existing conversation, starting fresh');
         this.messages = [];
         this.loading = false;
       }
@@ -451,3 +451,5 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
       .filter(name => name && name !== 'Unknown User');
   }
 }
+
+

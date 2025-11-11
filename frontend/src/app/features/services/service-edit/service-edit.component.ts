@@ -13,6 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ServiceService } from '../../../core/services/service.service';
 import { UploadService } from '../../../core/services/upload.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -62,7 +63,8 @@ export class ServiceEditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private serviceService: ServiceService,
-    private uploadService: UploadService
+    private uploadService: UploadService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +117,7 @@ export class ServiceEditComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading service:', error);
+        this.logger.error('Error loading service', error);
         Swal.fire('Error', 'Failed to load service', 'error');
         this.router.navigate(['/dashboard']);
       }
@@ -221,13 +223,13 @@ export class ServiceEditComponent implements OnInit {
           this.router.navigate(['/services', this.serviceId]);
         },
         error: (error) => {
-          console.error('Error updating service:', error);
+          this.logger.error('Error updating service', error);
           Swal.fire('Error', error.error?.message || 'Failed to update service', 'error');
           this.saving = false;
         }
       });
     } catch (error) {
-      console.error('Error uploading images:', error);
+      this.logger.error('Error uploading images', error);
       Swal.fire('Error', 'Failed to upload images', 'error');
       this.saving = false;
     }

@@ -8,5 +8,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'users',
     loadComponent: () => import('./user-management/user-management.component').then(m => m.UserManagementComponent)
+  },
+  {
+    path: 'logs',
+    loadComponent: () => import('./logs/logs.component').then(m => m.LogsComponent)
   }
 ];

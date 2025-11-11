@@ -74,7 +74,7 @@ export class ConversationsListComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading conversations:', error);
+        this.logger.error('Error loading conversations:', error);
         this.conversations = [];
         this.filteredConversations = [];
         this.loading = false;
@@ -89,7 +89,7 @@ export class ConversationsListComponent implements OnInit, OnDestroy {
         this.filteredUsers = this.allUsers;
       },
       error: (error: any) => {
-        console.error('Error loading users:', error);
+        this.logger.error('Error loading users:', error);
         this.allUsers = [];
         this.filteredUsers = [];
       }
@@ -149,7 +149,7 @@ export class ConversationsListComponent implements OnInit, OnDestroy {
         this.router.navigate(['/messages', conversationId]);
       },
       error: (error: any) => {
-        console.error('Error creating conversation:', error);
+        this.logger.error('Error creating conversation:', error);
       }
     });
   }
@@ -162,3 +162,5 @@ export class ConversationsListComponent implements OnInit, OnDestroy {
     return message.length > 50 ? message.substring(0, 50) + '...' : message;
   }
 }
+
+

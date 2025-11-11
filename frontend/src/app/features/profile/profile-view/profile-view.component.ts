@@ -9,6 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-profile-view',
@@ -37,7 +38,8 @@ export class ProfileViewComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -65,7 +67,7 @@ export class ProfileViewComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading profile:', error);
+        this.logger.error('Error loading profile:', error);
         this.loading = false;
       }
     });
@@ -79,7 +81,7 @@ export class ProfileViewComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading profile:', error);
+        this.logger.error('Error loading profile:', error);
         this.loading = false;
       }
     });
@@ -105,3 +107,5 @@ export class ProfileViewComponent implements OnInit {
     this.router.navigate(['/messages'], { queryParams: { userId: this.user._id } });
   }
 }
+
+

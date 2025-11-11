@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UserService } from '../../../core/services/user.service';
 import { UploadService } from '../../../core/services/upload.service';
 import Swal from 'sweetalert2';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-profile-edit',
@@ -85,7 +86,7 @@ export class ProfileEditComponent implements OnInit {
           this.coverPreview = user.coverPhoto || null;
       },
       error: (error: any) => {
-        console.error('Error loading profile:', error);
+        this.logger.error('Error loading profile:', error);
         Swal.fire('Error', 'Failed to load profile', 'error');
       }
     });
@@ -146,13 +147,13 @@ export class ProfileEditComponent implements OnInit {
           this.router.navigate(['/profile']);
         },
         error: (error: any) => {
-          console.error('Error updating profile:', error);
+          this.logger.error('Error updating profile:', error);
           Swal.fire('Error', 'Failed to update profile', 'error');
           this.loading = false;
         }
       });
     } catch (error) {
-      console.error('Error uploading images:', error);
+      this.logger.error('Error uploading images:', error);
       Swal.fire('Error', 'Failed to upload images', 'error');
       this.loading = false;
     }
@@ -162,3 +163,5 @@ export class ProfileEditComponent implements OnInit {
     this.router.navigate(['/profile']);
   }
 }
+
+
