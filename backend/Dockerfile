@@ -10,16 +10,17 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+# Production dependencies only
+RUN npm prune --production
+
 ## -------- Runtime stage: production-only image --------
 FROM node:18-alpine AS runtime
 WORKDIR /app
 
-# Install only production dependencies
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Copy compiled artifacts from builder
+# Copy production node_modules from builder
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
+COPY package.json ./
 
 EXPOSE 5000
 CMD ["npm", "start"]
