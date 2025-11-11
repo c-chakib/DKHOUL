@@ -16,6 +16,7 @@ import { MessageService } from '../../../core/services/message.service';
 import { SocketService } from '../../../core/services/socket.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-chat-interface',
@@ -75,7 +76,8 @@ export class ChatInterfaceComponent implements OnInit, OnDestroy, AfterViewCheck
     private messageService: MessageService,
     private socketService: SocketService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {

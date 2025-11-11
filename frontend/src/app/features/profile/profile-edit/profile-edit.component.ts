@@ -35,7 +35,8 @@ export class ProfileEditComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private uploadService: UploadService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {

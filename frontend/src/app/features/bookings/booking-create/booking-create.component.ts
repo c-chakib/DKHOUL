@@ -103,7 +103,7 @@ export class BookingCreateComponent implements OnInit {
           this.bookingForm.patchValue({ duration: service.duration / 60 }); // Convert minutes to hours
         }
         
-        this.calculateTotalPrice();
+        this.calculatePrice();
         this.loading = false;
       },
       error: (error) => {

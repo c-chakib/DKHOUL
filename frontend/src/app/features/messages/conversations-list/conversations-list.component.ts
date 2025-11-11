@@ -14,6 +14,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MessageService } from '../../../core/services/message.service';
 import { UserService } from '../../../core/services/user.service';
 import { SocketService } from '../../../core/services/socket.service';
+import { LoggerService } from '../../../core/services/logger.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -51,7 +52,8 @@ export class ConversationsListComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private userService: UserService,
     private socketService: SocketService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {

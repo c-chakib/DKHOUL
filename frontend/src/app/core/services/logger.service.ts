@@ -56,20 +56,6 @@ export class LoggerService {
   }
 
   /**
-   * Log info messages and optionally send to backend
-   */
-  info(message: string, ...args: any[]): void {
-    if (this.shouldLog(LogLevel.INFO)) {
-      console.info(`[INFO] ${message}`, ...args);
-      
-      // Send important info to backend
-      if (this.shouldSendToBackend) {
-        this.sendToBackend(LogLevel.INFO, message, args[0]);
-      }
-    }
-  }
-
-  /**
    * Log with timestamp (for debugging timing issues)
    */
   logWithTimestamp(message: string, ...args: any[]): void {

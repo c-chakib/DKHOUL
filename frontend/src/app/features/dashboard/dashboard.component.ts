@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/services/auth.service';
 import { BookingService } from '../../core/services/booking.service';
 import { ServiceService } from '../../core/services/service.service';
+import { LoggerService } from '../../core/services/logger.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,7 +35,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private bookingService: BookingService,
     private serviceService: ServiceService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {

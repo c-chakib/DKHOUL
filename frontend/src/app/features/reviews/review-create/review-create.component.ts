@@ -41,7 +41,8 @@ export class ReviewCreateComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private reviewService: ReviewService,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {

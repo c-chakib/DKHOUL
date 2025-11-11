@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReviewService } from '../../../core/services/review.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-review-list',
@@ -25,7 +26,10 @@ export class ReviewListComponent implements OnInit {
   averageRating = 0;
   ratingDistribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 
-  constructor(private reviewService: ReviewService) {}
+  constructor(
+    private reviewService: ReviewService,
+    private logger: LoggerService
+  ) {}
 
   ngOnInit(): void {
     this.loadReviews();

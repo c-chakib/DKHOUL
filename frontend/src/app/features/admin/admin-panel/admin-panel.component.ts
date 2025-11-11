@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AdminService } from '../../../core/services/admin.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-admin-panel',
@@ -28,7 +29,8 @@ export class AdminPanelComponent implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {

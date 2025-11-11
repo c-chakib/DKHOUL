@@ -1,17 +1,18 @@
 // backend/src/controllers/log.controller.ts
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthRequest } from '../middleware/auth.middleware';
 import Log from '../models/log.model';
 
 /**
  * Create a new log entry
  */
-export const createLog = async (req: Request, res: Response) => {
+export const createLog = async (req: AuthRequest, res: Response) => {
   try {
     const { level, message, component, action, metadata } = req.body;
     
     // Get user info from authenticated request
-    const userId = req.user?.id;
-    const userName = req.user?.name;
+    const userId = req.user?.userId;
+    const userName = req.user?.email;
     
     // Get IP and user agent
     const ip = req.ip || req.connection.remoteAddress;
@@ -57,7 +58,7 @@ export const createLog = async (req: Request, res: Response) => {
 /**
  * Get all logs with filtering and pagination
  */
-export const getLogs = async (req: Request, res: Response) => {
+export const getLogs = async (req: AuthRequest, res: Response) => {
   try {
     const {
       page = 1,
@@ -130,7 +131,7 @@ export const getLogs = async (req: Request, res: Response) => {
 /**
  * Get log statistics
  */
-export const getLogStats = async (req: Request, res: Response) => {
+export const getLogStats = async (req: AuthRequest, res: Response) => {
   try {
     const { startDate, endDate } = req.query;
     
@@ -229,7 +230,7 @@ export const getLogStats = async (req: Request, res: Response) => {
 /**
  * Delete old logs
  */
-export const deleteOldLogs = async (req: Request, res: Response) => {
+export const deleteOldLogs = async (req: AuthRequest, res: Response) => {
   try {
     const { days = 30 } = req.body;
     
@@ -260,7 +261,7 @@ export const deleteOldLogs = async (req: Request, res: Response) => {
 /**
  * Export logs to CSV
  */
-export const exportLogs = async (req: Request, res: Response) => {
+export const exportLogs = async (req: AuthRequest, res: Response) => {
   try {
     const { startDate, endDate, level, component } = req.query;
     

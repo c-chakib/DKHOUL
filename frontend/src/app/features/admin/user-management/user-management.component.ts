@@ -32,7 +32,10 @@ export class UserManagementComponent implements OnInit {
   searchQuery = '';
   roleFilter = '';
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private logger: LoggerService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();

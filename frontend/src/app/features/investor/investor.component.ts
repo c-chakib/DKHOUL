@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { LoggerService } from '../../core/services/logger.service';
 
 @Component({
   selector: 'app-investor',
@@ -42,7 +43,10 @@ export class InvestorComponent {
   revenueAddonsMAD = 1800000;
   subscriptionMonthlyMAD = 490; 
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private logger: LoggerService
+  ) {}
 
   navigateToDemo(): void {
     this.router.navigate(['/services']);

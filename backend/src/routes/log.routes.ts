@@ -7,8 +7,7 @@ import {
   deleteOldLogs,
   exportLogs
 } from '../controllers/log.controller';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { authorizeRoles } from '../middleware/role.middleware';
+import { authenticate, authorize } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
@@ -16,9 +15,9 @@ const router = express.Router();
 router.post('/', createLog);
 
 // Protected routes - Admin only
-router.get('/', authenticateToken, authorizeRoles('admin'), getLogs);
-router.get('/stats', authenticateToken, authorizeRoles('admin'), getLogStats);
-router.post('/cleanup', authenticateToken, authorizeRoles('admin'), deleteOldLogs);
-router.get('/export', authenticateToken, authorizeRoles('admin'), exportLogs);
+router.get('/', authenticate, authorize('admin'), getLogs);
+router.get('/stats', authenticate, authorize('admin'), getLogStats);
+router.post('/cleanup', authenticate, authorize('admin'), deleteOldLogs);
+router.get('/export', authenticate, authorize('admin'), exportLogs);
 
 export default router;
