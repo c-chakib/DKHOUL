@@ -1,0 +1,331 @@
+// frontend/src/app/features/admin/logs/logs.component.scss
+.logs-container {
+  padding: 2rem;
+  max-width: 1800px;
+  margin: 0 auto;
+
+  .logs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 600;
+
+      mat-icon {
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+
+  // Statistics Cards
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .stat-card {
+      mat-card-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem !important;
+
+        .stat-icon {
+          width: 60px;
+          height: 60px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          mat-icon {
+            font-size: 30px;
+            width: 30px;
+            height: 30px;
+            color: white;
+          }
+
+          &.total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          }
+
+          &.today {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          }
+
+          &.errors {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+          }
+
+          &.warnings {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+          }
+        }
+
+        .stat-content {
+          h3 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+          }
+
+          p {
+            margin: 0.25rem 0 0;
+            font-size: 0.875rem;
+            color: #666;
+          }
+        }
+      }
+    }
+  }
+
+  // Filters
+  .filters-card {
+    margin-bottom: 2rem;
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      align-items: start;
+
+      .search-field {
+        grid-column: span 2;
+      }
+
+      button {
+        height: 56px;
+        margin-top: 0;
+      }
+    }
+  }
+
+  // Error Trends Chart
+  .chart-card {
+    margin-bottom: 2rem;
+
+    .error-trends {
+      padding: 1rem 0;
+
+      .trend-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+
+        .trend-label {
+          width: 80px;
+          font-size: 0.875rem;
+          color: #666;
+        }
+
+        .trend-bar-container {
+          flex: 1;
+          height: 30px;
+          background: #f5f5f5;
+          border-radius: 4px;
+          position: relative;
+          overflow: hidden;
+
+          .trend-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+          }
+
+          .trend-count {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #333;
+          }
+        }
+      }
+    }
+  }
+
+  // Logs Table
+  .logs-table-card {
+    .table-container {
+      position: relative;
+      min-height: 400px;
+
+      .logs-table {
+        width: 100%;
+
+        th {
+          font-weight: 600;
+          color: #333;
+          background: #f9f9f9;
+        }
+
+        td {
+          padding: 1rem 0.75rem;
+        }
+
+        .timestamp {
+          font-size: 0.875rem;
+          color: #666;
+        }
+
+        mat-chip {
+          font-size: 0.75rem;
+          font-weight: 600;
+          min-height: 28px;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+
+          mat-icon {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+          }
+
+          &.level-debug {
+            background: #e3f2fd;
+            color: #1976d2;
+          }
+
+          &.level-info {
+            background: #e8f5e9;
+            color: #4caf50;
+          }
+
+          &.level-warn {
+            background: #fff3e0;
+            color: #ff9800;
+          }
+
+          &.level-error {
+            background: #ffebee;
+            color: #f44336;
+          }
+        }
+
+        .component-badge {
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          background: #f5f5f5;
+          border-radius: 12px;
+          font-size: 0.875rem;
+          color: #333;
+        }
+
+        .message-cell {
+          max-width: 400px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 0.875rem;
+        }
+
+        .user-cell {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            color: #666;
+          }
+        }
+
+        .na {
+          color: #999;
+          font-style: italic;
+        }
+      }
+
+      .loading-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .no-data {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #999;
+
+        mat-icon {
+          font-size: 4rem;
+          width: 4rem;
+          height: 4rem;
+          opacity: 0.5;
+        }
+
+        p {
+          margin-top: 1rem;
+          font-size: 1.125rem;
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .logs-container {
+    padding: 1rem;
+
+    .logs-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .header-actions {
+        width: 100%;
+
+        button {
+          flex: 1;
+        }
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .filters-grid {
+      grid-template-columns: 1fr !important;
+
+      .search-field {
+        grid-column: span 1 !important;
+      }
+    }
+
+    .logs-table {
+      .message-cell {
+        max-width: 200px !important;
+      }
+    }
+  }
+}
