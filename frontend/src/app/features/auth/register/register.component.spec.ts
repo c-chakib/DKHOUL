@@ -56,7 +56,7 @@ describe('RegisterComponent', () => {
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'user',
+        role: 'tourist',
         agreeToTerms: false
       });
     });
@@ -364,7 +364,7 @@ describe('RegisterComponent', () => {
 
     it('should have role options', () => {
       expect(component.roles.length).toBe(2);
-      expect(component.roles[0].value).toBe('user');
+      expect(component.roles[0].value).toBe('tourist');
       expect(component.roles[1].value).toBe('provider');
     });
   });

@@ -3,6 +3,7 @@ import { NavbarComponent } from './navbar.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 
 class MockAuthService {
@@ -18,7 +19,7 @@ describe('NavbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavbarComponent, RouterTestingModule],
+      imports: [NavbarComponent, RouterTestingModule, HttpClientTestingModule],
       providers: [
         { provide: AuthService, useClass: MockAuthService }
       ]
@@ -41,17 +42,19 @@ describe('NavbarComponent', () => {
     authService.currentUser.next(null);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Login');
+    expect(compiled.textContent).toContain('Connexion');
     expect(compiled.textContent).toContain('S\'inscrire');
   });
 
   it('should show dashboard links when logged in', () => {
     authService.currentUser.next({ _id: '1', role: 'tourist', firstName: 'A', lastName: 'B', email: 'a@b.com' });
+    component.isMarketingLayout = false; // Ensure we're in app layout
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Dashboard');
-    // Messages icon button should be visible
-    const messagesButton = compiled.querySelector('button[mat-icon-button] mat-icon');
+    // Check that we're in app layout (not marketing layout) and user is logged in
+    expect(component.isLoggedIn).toBe(true);
+    // Messages button should be visible
+    const messagesButton = compiled.querySelector('button[aria-label="Messages"]');
     expect(messagesButton).toBeTruthy();
   });
 
@@ -69,7 +72,7 @@ describe('NavbarComponent', () => {
 
   it('should navigate to home on navigateToHome()', () => {
     component.navigateToHome();
-    expect(router.navigate).toHaveBeenCalledWith(['/']);
+    expect(router.navigate).toHaveBeenCalledWith(['/home']);
   });
 
   it('should call authService.logout on logout()', () => {

@@ -236,6 +236,8 @@ describe('LoginComponent', () => {
           }
         }
       };
+      // Set component as ready for testing
+      component.googleReady = true;
     });
 
     afterEach(() => {

@@ -1,22 +1,23 @@
 import mongoose from 'mongoose';
+import logger from '../utils/logger';
 
 export const connectDatabase = async (): Promise<void> => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI as string);
-    
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-    
+
+    logger.info(`MongoDB Connected: ${conn.connection.host}`);
+
     // Handle connection events
     mongoose.connection.on('error', (err) => {
-      console.error('❌ MongoDB connection error:', err);
+      logger.error('MongoDB connection error:', err);
     });
 
     mongoose.connection.on('disconnected', () => {
-      console.warn('⚠️  MongoDB disconnected');
+      logger.warn('MongoDB disconnected');
     });
 
   } catch (error) {
-    console.error('❌ Error connecting to MongoDB:', error);
+    logger.error('Error connecting to MongoDB:', error);
     process.exit(1);
   }
 };
