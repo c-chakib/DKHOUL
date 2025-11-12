@@ -8,8 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import Swal from 'sweetalert2';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -36,7 +37,9 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -60,25 +63,13 @@ export class ForgotPasswordComponent implements OnInit {
       next: () => {
         this.setLoading(false);
         this.emailSent = true;
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Email Sent!',
-          text: 'Password reset instructions have been sent to your email address.',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#667eea'
-        });
+        this.toastService.success('Password reset instructions have been sent to your email address.', '', 5000);
       },
       error: (error) => {
         this.setLoading(false);
-        
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: error.error?.message || 'Failed to send reset email. Please try again.',
-          confirmButtonText: 'Try Again',
-          confirmButtonColor: '#667eea'
-        });
+        const errorMessage = error.error?.message || error.error?.error || 'Failed to send reset email. Please try again.';
+        this.toastService.error(errorMessage, 'Close', 5000);
+        this.logger.error('Forgot password error', error);
       }
     });
   }

@@ -3,9 +3,15 @@
   <div class="navbar-container">
     
     <!-- Logo - Always returns to Landing -->
-    <a class="brand-logo" (click)="navigateToLanding()" [attr.aria-label]="'DKHOUL - Discover Morocco'">
+    <a class="brand-logo" 
+       (click)="navigateToLanding()" 
+       (keydown.enter)="navigateToLanding()"
+       (keydown.space)="navigateToLanding(); $event.preventDefault()"
+       [attr.aria-label]="'DKHOUL - Discover Morocco - Return to home'"
+       role="button"
+       tabindex="0">
       <div class="logo-wrapper">
-        <img src="/picture/overall/logo.png" alt="DKHOUL" class="logo-image">
+        <img src="/picture/overall/logo.png" alt="DKHOUL Logo" class="logo-image" loading="eager" width="48" height="48">
         <span class="logo-text">DKHOUL</span>
       </div>
     </a>
@@ -75,15 +81,28 @@
 
       <!-- Messages (App only, logged in) -->
       <div class="action-item" *ngIf="isLoggedIn && !isMarketingLayout">
-        <button class="action-btn" (click)="navigateToMessages()" [class.has-badge]="unreadMessages > 0" aria-label="Messages">
+        <button class="action-btn" 
+                (click)="navigateToMessages()" 
+                [class.has-badge]="unreadMessages > 0" 
+                [attr.aria-label]="unreadMessages > 0 ? 'Messages - ' + unreadMessages + ' unread' : 'Messages'"
+                type="button"
+                [attr.aria-busy]="false">
           <mat-icon>chat_bubble_outline</mat-icon>
-          <span class="badge" *ngIf="unreadMessages > 0">{{ unreadMessages > 9 ? '9+' : unreadMessages }}</span>
+          <span class="badge" 
+                *ngIf="unreadMessages > 0"
+                [attr.aria-label]="unreadMessages + ' unread messages'">
+            {{ unreadMessages > 9 ? '9+' : unreadMessages }}
+          </span>
         </button>
       </div>
 
       <!-- Favorites (App only, logged in) -->
       <div class="action-item" *ngIf="isLoggedIn && !isMarketingLayout">
-        <button class="action-btn" aria-label="Favoris">
+        <button class="action-btn" 
+                aria-label="Favoris - View favorites"
+                type="button"
+                disabled
+                title="Coming soon">
           <mat-icon>favorite_border</mat-icon>
         </button>
       </div>
@@ -155,7 +174,12 @@
       </div>
 
       <!-- Mobile Menu Button -->
-      <button class="mobile-menu-btn" (click)="toggleMobileMenu()" aria-label="Menu mobile">
+      <button class="mobile-menu-btn" 
+              (click)="toggleMobileMenu()" 
+              [attr.aria-label]="isMobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'"
+              [attr.aria-expanded]="isMobileMenuOpen"
+              aria-controls="mobile-menu"
+              type="button">
         <span class="hamburger" [class.active]="isMobileMenuOpen">
           <span></span>
           <span></span>
@@ -166,18 +190,24 @@
   </div>
 
   <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu" [class.open]="isMobileMenuOpen">
+  <div class="mobile-menu" 
+       [class.open]="isMobileMenuOpen"
+       id="mobile-menu"
+       [attr.aria-hidden]="!isMobileMenuOpen"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="mobile-menu-title">
     <div class="mobile-menu-content">
       
       <!-- Mobile Navigation Links -->
-      <nav class="mobile-nav">
+      <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
         <!-- Marketing Layout -->
         <ng-container *ngIf="isMarketingLayout">
-          <a class="mobile-nav-item" routerLink="/home" (click)="toggleMobileMenu()">
+          <a class="mobile-nav-item" routerLink="/home" (click)="closeMobileMenu()" aria-label="Navigate to Marketplace">
             <span class="nav-icon">🏪</span>
             <span>Marketplace</span>
           </a>
-          <a class="mobile-nav-item" routerLink="/investor" (click)="toggleMobileMenu()">
+          <a class="mobile-nav-item" routerLink="/investor" (click)="closeMobileMenu()" aria-label="Navigate to Investor page">
             <span class="nav-icon">📈</span>
             <span>Investisseurs</span>
           </a>
@@ -185,28 +215,28 @@
 
         <!-- App Layout -->
         <ng-container *ngIf="!isMarketingLayout">
-          <a class="mobile-nav-item" routerLink="/home" (click)="toggleMobileMenu()">
+          <a class="mobile-nav-item" routerLink="/home" (click)="closeMobileMenu()" aria-label="Navigate to Home">
             <span class="nav-icon">🏠</span>
             <span>Accueil</span>
           </a>
-          <a class="mobile-nav-item" routerLink="/services" (click)="toggleMobileMenu()">
+          <a class="mobile-nav-item" routerLink="/services" (click)="closeMobileMenu()" aria-label="Navigate to Services">
             <span class="nav-icon">✨</span>
             <span>Services</span>
           </a>
-          <a class="mobile-nav-item" routerLink="/dashboard" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+          <a class="mobile-nav-item" routerLink="/dashboard" (click)="closeMobileMenu()" *ngIf="isLoggedIn" aria-label="Navigate to Dashboard">
             <span class="nav-icon">📊</span>
             <span>Dashboard</span>
           </a>
-          <a class="mobile-nav-item" routerLink="/bookings" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+          <a class="mobile-nav-item" routerLink="/bookings" (click)="closeMobileMenu()" *ngIf="isLoggedIn" aria-label="Navigate to Bookings">
             <span class="nav-icon">📅</span>
             <span>Réservations</span>
           </a>
-          <a class="mobile-nav-item" routerLink="/messages" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+          <a class="mobile-nav-item" routerLink="/messages" (click)="closeMobileMenu()" *ngIf="isLoggedIn" [attr.aria-label]="unreadMessages > 0 ? 'Navigate to Messages - ' + unreadMessages + ' unread' : 'Navigate to Messages'">
             <span class="nav-icon">💬</span>
             <span>Messages</span>
-            <span class="badge" *ngIf="unreadMessages > 0">{{ unreadMessages }}</span>
+            <span class="badge" *ngIf="unreadMessages > 0" [attr.aria-label]="unreadMessages + ' unread messages'">{{ unreadMessages }}</span>
           </a>
-          <a class="mobile-nav-item" routerLink="/profile" (click)="toggleMobileMenu()" *ngIf="isLoggedIn">
+          <a class="mobile-nav-item" routerLink="/profile" (click)="closeMobileMenu()" *ngIf="isLoggedIn" aria-label="Navigate to Profile">
             <span class="nav-icon">👤</span>
             <span>Profil</span>
           </a>
@@ -215,17 +245,17 @@
 
       <!-- Mobile Auth Actions -->
       <div class="mobile-actions" *ngIf="!isLoggedIn">
-        <button class="btn-mobile-text" (click)="navigateToLogin(); toggleMobileMenu()">
+        <button class="btn-mobile-text" (click)="navigateToLogin(); closeMobileMenu()" type="button" aria-label="Navigate to Login">
           Connexion
         </button>
-        <button class="btn-mobile-primary" (click)="navigateToRegister(); toggleMobileMenu()">
+        <button class="btn-mobile-primary" (click)="navigateToRegister(); closeMobileMenu()" type="button" aria-label="Navigate to Register">
           S'inscrire
         </button>
       </div>
 
       <!-- Mobile Logout -->
       <div class="mobile-actions" *ngIf="isLoggedIn">
-        <button class="btn-mobile-logout" (click)="logout(); toggleMobileMenu()">
+        <button class="btn-mobile-logout" (click)="logout(); closeMobileMenu()" type="button" aria-label="Logout">
           <mat-icon>logout</mat-icon>
           <span>Déconnexion</span>
         </button>

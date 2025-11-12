@@ -51,7 +51,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Track scroll for navbar style
     if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', this.onScroll.bind(this));
+      window.addEventListener('scroll', this.onScroll, { passive: true });
+      // Close mobile menu on escape key
+      document.addEventListener('keydown', this.handleKeyDown);
     }
 
     // Track layout (marketing vs app) via route data
@@ -60,7 +62,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.isMarketingLayout = this.computeIsMarketingLayout();
         // Close mobile menu on route change
-        this.isMobileMenuOpen = false;
+        this.closeMobileMenu();
       });
     this.subscriptions.push(routeSub);
 
@@ -92,9 +94,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.subscriptions.push(unreadSub);
   }
 
-  private onScroll(): void {
-    this.isScrolled = window.scrollY > 20;
-  }
+  private onScroll = (): void => {
+    if (typeof window !== 'undefined') {
+      this.isScrolled = window.scrollY > 20;
+    }
+  };
+
+  private handleKeyDown = (event: KeyboardEvent): void => {
+    // Close mobile menu on Escape key
+    if (event.key === 'Escape' && this.isMobileMenuOpen) {
+      this.closeMobileMenu();
+    }
+  };
 
   private computeIsMarketingLayout(): boolean {
     let snapshot = this.route.snapshot;
@@ -110,7 +121,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('scroll', this.onScroll.bind(this));
+      window.removeEventListener('scroll', this.onScroll);
+      document.removeEventListener('keydown', this.handleKeyDown);
+    }
+    // Restore body scroll
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
     }
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
@@ -150,6 +166,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    this.updateBodyScroll();
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+    this.updateBodyScroll();
+  }
+
+  private updateBodyScroll(): void {
     // Prevent body scroll when menu is open
     if (typeof document !== 'undefined') {
       document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
@@ -204,7 +229,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   isProvider(): boolean {
-    return this.currentUser?.role === 'provider';
+    // Backend uses 'host' role, but frontend may receive 'provider' from registration
+    // Support both for compatibility
+    return this.currentUser?.role === 'provider' || this.currentUser?.role === 'host';
   }
 
   isAdmin(): boolean {

@@ -15,6 +15,15 @@ interface AuthResponse {
   };
 }
 
+// Helper function to normalize user role from backend to frontend
+// Backend uses 'host' but frontend uses 'provider' for consistency
+function normalizeUserRole(user: any): User {
+  if (user && user.role === 'host') {
+    user.role = 'provider' as any;
+  }
+  return user;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,9 +38,12 @@ export class AuthService {
     private router: Router
   ) {
     const storedUser = localStorage.getItem('currentUser');
-    this.currentUserSubject = new BehaviorSubject<User | null>(
-      storedUser ? JSON.parse(storedUser) : null
-    );
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    // Normalize role when loading from storage
+    if (user) {
+      normalizeUserRole(user);
+    }
+    this.currentUserSubject = new BehaviorSubject<User | null>(user);
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -42,6 +54,13 @@ export class AuthService {
   register(userData: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, userData)
       .pipe(
+        map(response => {
+          // Normalize role: backend uses 'host' but frontend uses 'provider'
+          if (response.success && response.data.user) {
+            response.data.user = normalizeUserRole(response.data.user);
+          }
+          return response;
+        }),
         tap(response => {
           if (response.success) {
             localStorage.setItem('token', response.data.accessToken);
@@ -56,6 +75,13 @@ export class AuthService {
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, { email, password })
       .pipe(
+        map(response => {
+          // Normalize role: backend uses 'host' but frontend uses 'provider'
+          if (response.success && response.data.user) {
+            response.data.user = normalizeUserRole(response.data.user);
+          }
+          return response;
+        }),
         tap(response => {
           if (response.success) {
             localStorage.setItem('token', response.data.accessToken);
@@ -70,6 +96,13 @@ export class AuthService {
   googleLogin(idToken: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/google`, { idToken })
       .pipe(
+        map(response => {
+          // Normalize role: backend uses 'host' but frontend uses 'provider'
+          if (response.success && response.data.user) {
+            response.data.user = normalizeUserRole(response.data.user);
+          }
+          return response;
+        }),
         tap(response => {
           if (response.success) {
             localStorage.setItem('token', response.data.accessToken);
@@ -110,8 +143,8 @@ export class AuthService {
         observer.complete();
       });
     }
-    // Align endpoint naming with tests expecting /refresh-token
-    return this.http.post<{ success: boolean; data: { accessToken: string } }>(`${this.apiUrl}/auth/refresh-token`, { refreshToken })
+    // Backend endpoint is /api/auth/refresh
+    return this.http.post<{ success: boolean; data: { accessToken: string } }>(`${this.apiUrl}/auth/refresh`, { refreshToken })
       .pipe(
         tap(response => {
           if (response.success) {
@@ -143,11 +176,14 @@ export class AuthService {
     const stored = localStorage.getItem('currentUser');
     if (stored) {
       try {
-        return JSON.parse(stored);
+        const user = JSON.parse(stored);
+        // Normalize role when retrieving from storage
+        return normalizeUserRole(user);
       } catch {
         return null;
       }
     }
-    return this.currentUserValue;
+    const user = this.currentUserValue;
+    return user ? normalizeUserRole(user) : null;
   }
 }

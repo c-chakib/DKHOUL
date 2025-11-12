@@ -11,8 +11,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoggerService } from '../../../core/services/logger.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { environment } from '../../../../environments/environment';
-import Swal from 'sweetalert2';
 
 declare const google: any;
 
@@ -46,7 +46,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -84,45 +85,42 @@ export class LoginComponent implements OnInit {
     this.authService.login(email, password).subscribe({
       next: (response) => {
         this.loading = false;
-        Swal.fire({
-          icon: 'success',
-          title: 'Welcome Back!',
-          text: 'Login successful',
-          timer: 2000,
-          showConfirmButton: false
-        });
+        this.toastService.success('Welcome back! Login successful');
         
         // Navigate based on user role
         const role = this.authService.getUserRole();
         if (role === 'admin') {
-          this.router.navigate(['/admin/dashboard']);
+          this.router.navigate(['/admin']);
         } else if (role === 'provider') {
-          this.router.navigate(['/dashboard/provider']);
+          this.router.navigate(['/dashboard']);
         } else {
-          this.router.navigate(['/dashboard/user']);
+          this.router.navigate(['/home']);
         }
       },
       error: (error) => {
         this.loading = false;
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: error.error?.message || 'Invalid email or password',
-        });
+        const errorMessage = error.error?.message || error.error?.error || 'Invalid email or password. Please try again.';
+        this.toastService.error(errorMessage, 'Close', 5000);
+        this.logger.error('Login error', error);
       }
     });
   }
 
   getErrorMessage(field: string): string {
     const control = this.loginForm.get(field);
-    if (control?.hasError('required')) {
-      return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+    if (!control || !control.touched || !control.errors) {
+      return '';
     }
-    if (control?.hasError('email')) {
+    
+    if (control.hasError('required')) {
+      return field === 'email' ? 'Email address is required' : 'Password is required';
+    }
+    if (control.hasError('email')) {
       return 'Please enter a valid email address';
     }
-    if (control?.hasError('minlength')) {
-      return `${field.charAt(0).toUpperCase() + field.slice(1)} must be at least 8 characters`;
+    if (control.hasError('minlength')) {
+      const requiredLength = control.errors['minlength']?.requiredLength || 8;
+      return `Password must be at least ${requiredLength} characters`;
     }
     return '';
   }
@@ -188,11 +186,7 @@ export class LoginComponent implements OnInit {
     // This is only called when using the fallback button
     // The official Google button handles its own click events
     if (typeof google === 'undefined' || !this.googleReady) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Google Sign-In is not available. Please try again later.',
-      });
+      this.toastService.error('Google Sign-In is not available. Please try again later.', 'Close', 5000);
       return;
     }
     
@@ -210,12 +204,7 @@ export class LoginComponent implements OnInit {
         if (notification.isNotDisplayed()) {
           this.logger.warn('Google OAuth prompt not displayed', notification.getNotDisplayedReason());
           this.prompting = false;
-          
-          Swal.fire({
-            icon: 'info',
-            title: 'Google Sign-In',
-            text: 'Please ensure you are signed into Google and pop-ups are not blocked.',
-          });
+          this.toastService.info('Please ensure you are signed into Google and pop-ups are not blocked.', 'Close', 5000);
         } else if (notification.isSkippedMoment()) {
           this.logger.debug('Google OAuth prompt skipped by user');
           this.prompting = false;
@@ -229,22 +218,14 @@ export class LoginComponent implements OnInit {
     } catch (e) {
       this.logger.error('Google OAuth prompt error', e);
       this.prompting = false;
-      Swal.fire({
-        icon: 'error',
-        title: 'Google Sign-In failed',
-        text: 'Could not initialize Google Sign-In. Please try again.',
-      });
+      this.toastService.error('Could not initialize Google Sign-In. Please try again.', 'Close', 5000);
     }
   }
 
   handleGoogleCallback(response: any): void {
     if (!response || !response.credential) {
       this.logger.error('Google OAuth callback without credential', response);
-      Swal.fire({
-        icon: 'error',
-        title: 'Google Sign-In failed',
-        text: 'No credential received. Please sign into Google and try again.',
-      });
+      this.toastService.error('No credential received. Please sign into Google and try again.', 'Close', 5000);
       this.prompting = false;
       return;
     }
@@ -255,33 +236,24 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         this.prompting = false;
-        Swal.fire({
-          icon: 'success',
-          title: 'Welcome!',
-          text: 'Login successful',
-          timer: 2000,
-          showConfirmButton: false
-        });
+        this.toastService.success('Welcome! Login successful');
         
         // Navigate based on user role
         const role = this.authService.getUserRole();
         if (role === 'admin') {
-          this.router.navigate(['/admin/dashboard']);
+          this.router.navigate(['/admin']);
         } else if (role === 'provider') {
-          this.router.navigate(['/dashboard/provider']);
+          this.router.navigate(['/dashboard']);
         } else {
-          this.router.navigate(['/dashboard/user']);
+          this.router.navigate(['/home']);
         }
       },
       error: (error) => {
         this.loading = false;
         this.prompting = false;
         this.logger.error('Google OAuth backend login error', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: error.error?.message || 'Google login failed. Please try again.',
-        });
+        const errorMessage = error.error?.message || error.error?.error || 'Google login failed. Please try again.';
+        this.toastService.error(errorMessage, 'Close', 5000);
       }
     });
   }
