@@ -12,7 +12,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatStepperModule } from '@angular/material/stepper';
 import { AuthService } from '../../../core/services/auth.service';
-import Swal from 'sweetalert2';
+import { ToastService } from '../../../core/services/toast.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-register',
@@ -50,7 +51,9 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -142,26 +145,17 @@ export class RegisterComponent implements OnInit {
       this.authService.register(formData).subscribe({
         next: (response) => {
           this.loading = false;
-          Swal.fire({
-            icon: 'success',
-            title: 'Registration Successful!',
-            html: `
-              <p>Welcome to DKHOUL!</p>
-              <p class="text-sm text-gray-600">Please check your email to verify your account.</p>
-            `,
-            confirmButtonText: 'Go to Login'
-          }).then(() => {
+          this.toastService.success('Registration successful! Please check your email to verify your account.', '', 5000);
+          // Navigate after a short delay to show the toast
+          setTimeout(() => {
             this.router.navigate(['/auth/login']);
-          });
+          }, 2000);
         },
         error: (error) => {
           this.loading = false;
-          Swal.fire({
-            icon: 'error',
-            title: 'Registration Failed',
-            text: error.error?.message || 'Please try again.',
-            confirmButtonColor: '#ef4444'
-          });
+          const errorMessage = error.error?.message || error.error?.error || 'Registration failed. Please try again.';
+          this.toastService.error(errorMessage, 'Close', 5000);
+          this.logger.error('Registration error', error);
         }
       });
       return;
@@ -185,25 +179,17 @@ export class RegisterComponent implements OnInit {
     this.authService.register(formData).subscribe({
       next: (response) => {
         this.loading = false;
-        Swal.fire({
-          icon: 'success',
-          title: 'Registration Successful!',
-          html: `
-            <p>Welcome to DKHOUL!</p>
-            <p class="text-sm text-gray-600">Please check your email to verify your account.</p>
-          `,
-          confirmButtonText: 'Go to Login'
-        }).then(() => {
+        this.toastService.success('Registration successful! Please check your email to verify your account.', '', 5000);
+        // Navigate after a short delay to show the toast
+        setTimeout(() => {
           this.router.navigate(['/auth/login']);
-        });
+        }, 2000);
       },
       error: (error) => {
         this.loading = false;
-        Swal.fire({
-          icon: 'error',
-          title: 'Registration Failed',
-          text: error.error?.message || 'An error occurred during registration',
-        });
+        const errorMessage = error.error?.message || error.error?.error || 'An error occurred during registration. Please try again.';
+        this.toastService.error(errorMessage, 'Close', 5000);
+        this.logger.error('Registration error', error);
       }
     });
   }

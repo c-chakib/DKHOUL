@@ -1,9 +1,14 @@
 // Main content area should account for fixed navbar
 .main-content {
-  margin-top: 64px; // Height of navbar
-  min-height: calc(100vh - 64px);
+  margin-top: 70px; // Height of navbar (updated to match navbar height)
+  min-height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
+  
+  @media (max-width: 1024px) {
+    margin-top: 64px; // Mobile navbar height
+    min-height: calc(100vh - 64px);
+  }
 }
 
 // App layout

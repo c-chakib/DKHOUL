@@ -11,7 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ServiceService } from '../../../core/services/service.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoggerService } from '../../../core/services/logger.service';
-import Swal from 'sweetalert2';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-service-detail',
@@ -44,7 +44,8 @@ export class ServiceDetailComponent implements OnInit {
     private router: Router,
     private serviceService: ServiceService,
     private authService: AuthService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +62,9 @@ export class ServiceDetailComponent implements OnInit {
 
     this.serviceService.getServiceById(serviceId).subscribe({
       next: (response: any) => {
-        this.service = response?.service || response?.data || response;
+        // Handle API response structure: { success: true, data: { service } }
+        const service = response?.data?.service || response?.service || response?.data || response;
+        this.service = service;
         // Normalize images array
         const imgs = this.service?.images || this.service?.photos || [];
         this.service.images = Array.isArray(imgs) ? imgs : [];
@@ -70,20 +73,20 @@ export class ServiceDetailComponent implements OnInit {
           this.service.images = [];
         }
         this.selectedImage = 0;
-        this.isOwner = this.service.hostId === this.currentUserId;
+        // Compare hostId with currentUserId (handle both string and object IDs)
+        const hostId = typeof this.service.hostId === 'object' ? this.service.hostId?._id : this.service.hostId;
+        this.isOwner = hostId === this.currentUserId || hostId?.toString() === this.currentUserId;
         this.isHost = this.isOwner; // Set both properties
         this.loading = false;
       },
       error: (error) => {
         this.logger.error('Error loading service', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to load service details',
-          confirmButtonColor: '#667eea'
-        });
+        const errorMessage = error.error?.message || error.error?.error || 'Failed to load service details';
+        this.toastService.error(errorMessage, 'Close', 5000);
         this.loading = false;
-        this.router.navigate(['/services']);
+        setTimeout(() => {
+          this.router.navigate(['/services']);
+        }, 2000);
       }
     });
   }
@@ -106,17 +109,10 @@ export class ServiceDetailComponent implements OnInit {
 
   bookService(): void {
     if (!this.currentUserId) {
-      Swal.fire({
-        icon: 'info',
-        title: 'Login Required',
-        text: 'Please login to book this service',
-        confirmButtonText: 'Go to Login',
-        confirmButtonColor: '#667eea'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['/auth/login']);
-        }
-      });
+      this.toastService.info('Please login to book this service', 'Close', 5000);
+      setTimeout(() => {
+        this.router.navigate(['/auth/login']);
+      }, 2000);
       return;
     }
 
@@ -127,12 +123,10 @@ export class ServiceDetailComponent implements OnInit {
 
   contactHost(): void {
     if (!this.currentUserId) {
-      Swal.fire({
-        icon: 'info',
-        title: 'Login Required',
-        text: 'Please login to contact the host',
-        confirmButtonColor: '#667eea'
-      });
+      this.toastService.info('Please login to contact the host', 'Close', 5000);
+      setTimeout(() => {
+        this.router.navigate(['/auth/login']);
+      }, 2000);
       return;
     }
 
@@ -178,15 +172,15 @@ export class ServiceDetailComponent implements OnInit {
         title: this.service.title,
         text: this.service.description,
         url: window.location.href
+      }).catch((error) => {
+        this.logger.error('Error sharing service', error);
       });
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      Swal.fire({
-        icon: 'success',
-        title: 'Link Copied!',
-        text: 'Service link copied to clipboard',
-        timer: 2000,
-        showConfirmButton: false
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        this.toastService.success('Service link copied to clipboard', '', 2000);
+      }).catch((error) => {
+        this.logger.error('Error copying to clipboard', error);
+        this.toastService.error('Failed to copy link. Please try again.', 'Close', 3000);
       });
     }
   }

@@ -31,9 +31,15 @@
                 autocomplete="email"
                 class="md-form-field__input"
                 [class.md-form-field__input--error]="email?.invalid && email?.touched"
+                [attr.aria-invalid]="email?.invalid && email?.touched"
+                [attr.aria-describedby]="email?.invalid && email?.touched ? 'email-error' : null"
+                required
               >
             </div>
-            <span class="md-form-field__error md-typescale-body-small" *ngIf="email?.invalid && email?.touched">
+            <span class="md-form-field__error md-typescale-body-small" 
+                  id="email-error"
+                  role="alert"
+                  *ngIf="email?.invalid && email?.touched">
               {{ getErrorMessage('email') }}
             </span>
           </div>
@@ -51,6 +57,9 @@
                 autocomplete="current-password"
                 class="md-form-field__input"
                 [class.md-form-field__input--error]="password?.invalid && password?.touched"
+                [attr.aria-invalid]="password?.invalid && password?.touched"
+                [attr.aria-describedby]="password?.invalid && password?.touched ? 'password-error' : null"
+                required
               >
               <button 
                 type="button"
@@ -61,7 +70,10 @@
                 <span class="material-icons">{{ hidePassword ? 'visibility_off' : 'visibility' }}</span>
               </button>
             </div>
-            <span class="md-form-field__error md-typescale-body-small" *ngIf="password?.invalid && password?.touched">
+            <span class="md-form-field__error md-typescale-body-small" 
+                  id="password-error"
+                  role="alert"
+                  *ngIf="password?.invalid && password?.touched">
               {{ getErrorMessage('password') }}
             </span>
           </div>
@@ -81,12 +93,14 @@
           <button 
             type="submit"
             class="md-btn md-btn--filled md-btn--primary md-btn--full-width"
-            [disabled]="loading"
+            [disabled]="loading || loginForm.invalid"
             [class.md-btn--loading]="loading"
+            [attr.aria-busy]="loading"
+            [attr.aria-label]="loading ? 'Signing in...' : 'Sign in to your account'"
           >
             <span class="md-btn__label" *ngIf="!loading">Sign In</span>
-            <span class="md-btn__loader" *ngIf="loading">
-              <span class="md-spinner"></span>
+            <span class="md-btn__loader" *ngIf="loading" aria-hidden="true">
+              <span class="md-spinner" aria-label="Loading"></span>
             </span>
           </button>
         </form>

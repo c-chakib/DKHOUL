@@ -8,8 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import Swal from 'sweetalert2';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -39,7 +40,9 @@ export class ResetPasswordComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -47,15 +50,10 @@ export class ResetPasswordComponent implements OnInit {
     this.token = this.route.snapshot.params['token'];
     
     if (!this.token) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Link',
-        text: 'This password reset link is invalid or has expired.',
-        confirmButtonText: 'Go to Login',
-        confirmButtonColor: '#667eea'
-      }).then(() => {
+      this.toastService.error('This password reset link is invalid or has expired.', 'Close', 5000);
+      setTimeout(() => {
         this.router.navigate(['/auth/login']);
-      });
+      }, 2000);
       return;
     }
 
@@ -143,27 +141,16 @@ export class ResetPasswordComponent implements OnInit {
     this.authService.resetPassword(this.token, password).subscribe({
       next: () => {
         this.setLoading(false);
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Password Reset Successful!',
-          text: 'Your password has been reset successfully. You can now log in with your new password.',
-          confirmButtonText: 'Go to Login',
-          confirmButtonColor: '#667eea'
-        }).then(() => {
+        this.toastService.success('Your password has been reset successfully. You can now log in with your new password.', '', 5000);
+        setTimeout(() => {
           this.router.navigate(['/auth/login']);
-        });
+        }, 2000);
       },
       error: (error: any) => {
         this.setLoading(false);
-        
-        Swal.fire({
-          icon: 'error',
-          title: 'Reset Failed',
-          text: error.error?.message || 'Failed to reset password. The link may have expired.',
-          confirmButtonText: 'Try Again',
-          confirmButtonColor: '#667eea'
-        });
+        const errorMessage = error.error?.message || error.error?.error || 'Failed to reset password. The link may have expired.';
+        this.toastService.error(errorMessage, 'Close', 5000);
+        this.logger.error('Reset password error', error);
       }
     });
   }

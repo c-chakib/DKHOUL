@@ -15,7 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ServiceService } from '../../../core/services/service.service';
 import { UploadService } from '../../../core/services/upload.service';
 import { LoggerService } from '../../../core/services/logger.service';
-import Swal from 'sweetalert2';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-service-create',
@@ -60,7 +60,8 @@ export class ServiceCreateComponent implements OnInit {
     private serviceService: ServiceService,
     private uploadService: UploadService,
     private router: Router,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -117,12 +118,12 @@ export class ServiceCreateComponent implements OnInit {
     const files: FileList = event.target.files;
     
     if (this.selectedFiles.length + files.length > 10) {
-      Swal.fire('Error', 'Maximum 10 images allowed', 'error');
+      this.toastService.error('Maximum 10 images allowed', 'Close', 5000);
       return;
     }
 
     if (this.selectedFiles.length + files.length < 3 && files.length < 3) {
-      Swal.fire('Error', 'Minimum 3 images required', 'warning');
+      this.toastService.warning('Minimum 3 images required', 'Close', 5000);
     }
 
     for (let i = 0; i < files.length; i++) {
@@ -130,13 +131,13 @@ export class ServiceCreateComponent implements OnInit {
       
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        Swal.fire('Error', 'Only image files are allowed', 'error');
+        this.toastService.error('Only image files are allowed', 'Close', 5000);
         continue;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        Swal.fire('Error', `Image ${file.name} is too large. Max 5MB`, 'error');
+        this.toastService.error(`Image ${file.name} is too large. Max 5MB`, 'Close', 5000);
         continue;
       }
 
@@ -194,7 +195,7 @@ export class ServiceCreateComponent implements OnInit {
 
   async onSubmit(): Promise<void> {
     if (this.serviceForm.invalid) {
-      Swal.fire('Error', 'Please fill all required fields', 'error');
+      this.toastService.error('Please fill all required fields', 'Close', 5000);
       Object.keys(this.serviceForm.controls).forEach(key => {
         const control = this.serviceForm.get(key);
         if (control?.invalid) {
@@ -205,7 +206,7 @@ export class ServiceCreateComponent implements OnInit {
     }
 
     if (this.selectedFiles.length < 3) {
-      Swal.fire('Error', 'Please upload at least 3 images', 'error');
+      this.toastService.error('Please upload at least 3 images', 'Close', 5000);
       return;
     }
 
@@ -216,10 +217,21 @@ export class ServiceCreateComponent implements OnInit {
       const imageUrls: string[] = [];
       
       for (const file of this.selectedFiles) {
-        const url = await this.uploadService.uploadImage(file, 'services').toPromise();
-        if (url) {
-          imageUrls.push(url);
+        try {
+          const url = await this.uploadService.uploadImage(file, 'services').toPromise();
+          if (url) {
+            imageUrls.push(url);
+          }
+        } catch (uploadError: any) {
+          this.logger.error('Error uploading image', uploadError);
+          this.toastService.error(`Failed to upload ${file.name}`, 'Close', 5000);
         }
+      }
+
+      if (imageUrls.length === 0) {
+        this.toastService.error('Failed to upload images. Please try again.', 'Close', 5000);
+        this.loading = false;
+        return;
       }
 
       // Prepare service data
@@ -231,18 +243,33 @@ export class ServiceCreateComponent implements OnInit {
       // Create service
       this.serviceService.createService(serviceData).subscribe({
         next: (response) => {
-          Swal.fire('Success!', 'Service created successfully', 'success');
-          this.router.navigate(['/services', response._id]);
+          // Handle API response structure: { success: true, data: { service } }
+          const service = response.data?.service || response.service || response;
+          const serviceId = service._id || service.id;
+          
+          if (!serviceId) {
+            this.logger.error('Service ID not found in response', response);
+            this.toastService.error('Service created but ID not found. Please check your services.', 'Close', 5000);
+            this.loading = false;
+            return;
+          }
+
+          this.loading = false;
+          this.toastService.success('Service created successfully', '', 5000);
+          setTimeout(() => {
+            this.router.navigate(['/services', serviceId]);
+          }, 2000);
         },
         error: (error) => {
           this.logger.error('Error creating service', error);
-          Swal.fire('Error', error.error?.message || 'Failed to create service', 'error');
+          const errorMessage = error.error?.message || error.error?.error || 'Failed to create service. Please try again.';
+          this.toastService.error(errorMessage, 'Close', 5000);
           this.loading = false;
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error uploading images', error);
-      Swal.fire('Error', 'Failed to upload images', 'error');
+      this.toastService.error('Failed to upload images. Please try again.', 'Close', 5000);
       this.loading = false;
     }
   }

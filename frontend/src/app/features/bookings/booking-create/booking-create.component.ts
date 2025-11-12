@@ -16,7 +16,7 @@ import { ServiceService } from '../../../core/services/service.service';
 import { BookingService } from '../../../core/services/booking.service';
 import { PaymentService } from '../../../core/services/payment.service';
 import { LoggerService } from '../../../core/services/logger.service';
-import Swal from 'sweetalert2';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-booking-create',
@@ -61,14 +61,17 @@ export class BookingCreateComponent implements OnInit {
     private serviceService: ServiceService,
     private bookingService: BookingService,
     private paymentService: PaymentService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
     const serviceId = this.route.snapshot.queryParams['serviceId'];
     if (!serviceId) {
-      Swal.fire('Error', 'Service not found', 'error');
-      this.router.navigate(['/services']);
+      this.toastService.error('Service not found', 'Close', 5000);
+      setTimeout(() => {
+        this.router.navigate(['/services']);
+      }, 2000);
       return;
     }
 
@@ -94,9 +97,11 @@ export class BookingCreateComponent implements OnInit {
 
   loadService(serviceId: string): void {
     this.serviceService.getServiceById(serviceId).subscribe({
-      next: (service) => {
+      next: (response) => {
+        // Handle API response structure: { success: true, data: { service } }
+        const service = response.data?.service || response.service || response;
         this.service = service;
-        this.basePrice = service.pricing.amount;
+        this.basePrice = service.pricing?.amount || 0;
         
         // Set default duration and guests from service
         if (service.duration) {
@@ -108,8 +113,11 @@ export class BookingCreateComponent implements OnInit {
       },
       error: (error) => {
         this.logger.error('Error loading service', error);
-        Swal.fire('Error', 'Failed to load service', 'error');
-        this.router.navigate(['/services']);
+        const errorMessage = error.error?.message || error.error?.error || 'Failed to load service';
+        this.toastService.error(errorMessage, 'Close', 5000);
+        setTimeout(() => {
+          this.router.navigate(['/services']);
+        }, 2000);
       }
     });
   }
@@ -171,7 +179,11 @@ export class BookingCreateComponent implements OnInit {
 
   async onSubmit(): Promise<void> {
     if (this.bookingForm.invalid) {
-      Swal.fire('Error', 'Please fill all required fields', 'error');
+      this.toastService.error('Please fill all required fields', 'Close', 5000);
+      // Mark all fields as touched to show validation errors
+      Object.keys(this.bookingForm.controls).forEach(key => {
+        this.bookingForm.get(key)?.markAsTouched();
+      });
       return;
     }
 
@@ -192,37 +204,58 @@ export class BookingCreateComponent implements OnInit {
 
       // Create booking
       this.bookingService.createBooking(bookingData).subscribe({
-        next: async (booking) => {
+        next: async (response) => {
+          // Handle API response structure: { success: true, data: { booking } }
+          const booking = response.data?.booking || response.booking || response;
+          const bookingId = booking._id || booking.id;
+          
+          if (!bookingId) {
+            this.logger.error('Booking ID not found in response', response);
+            this.toastService.error('Booking created but ID not found. Please check your bookings.', 'Close', 5000);
+            this.processing = false;
+            return;
+          }
+
           // Process payment
           try {
             const paymentResult = await this.paymentService.processPayment({
-              bookingId: booking._id,
+              bookingId: bookingId,
               amount: this.totalPrice,
               currency: 'MAD'
             }).toPromise();
 
-            if (paymentResult.success) {
-              Swal.fire('Success!', 'Booking confirmed! Payment processed.', 'success');
-              this.router.navigate(['/bookings', booking._id]);
+            if (paymentResult?.success || paymentResult?.data?.success) {
+              this.processing = false;
+              this.toastService.success('Booking confirmed! Payment processed.', '', 5000);
+              setTimeout(() => {
+                this.router.navigate(['/bookings', bookingId]);
+              }, 2000);
             } else {
-              Swal.fire('Warning', 'Booking created but payment failed. Please complete payment.', 'warning');
-              this.router.navigate(['/bookings', booking._id]);
+              this.processing = false;
+              this.toastService.warning('Booking created but payment failed. Please complete payment.', 'Close', 6000);
+              setTimeout(() => {
+                this.router.navigate(['/bookings', bookingId]);
+              }, 2000);
             }
-          } catch (paymentError) {
+          } catch (paymentError: any) {
             this.logger.error('Payment error', paymentError);
-            Swal.fire('Warning', 'Booking created but payment failed. Please complete payment.', 'warning');
-            this.router.navigate(['/bookings', booking._id]);
+            this.processing = false;
+            this.toastService.warning('Booking created but payment failed. Please complete payment.', 'Close', 6000);
+            setTimeout(() => {
+              this.router.navigate(['/bookings', bookingId]);
+            }, 2000);
           }
         },
         error: (error) => {
           this.logger.error('Booking error', error);
-          Swal.fire('Error', error.error?.message || 'Failed to create booking', 'error');
+          const errorMessage = error.error?.message || error.error?.error || 'Failed to create booking. Please try again.';
+          this.toastService.error(errorMessage, 'Close', 5000);
           this.processing = false;
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Unexpected error', error);
-      Swal.fire('Error', 'An unexpected error occurred', 'error');
+      this.toastService.error('An unexpected error occurred. Please try again.', 'Close', 5000);
       this.processing = false;
     }
   }
