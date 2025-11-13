@@ -1,7 +1,7 @@
 # Dockerfile location: /your-monorepo/backend/Dockerfile
 
 ## -------- Builder stage --------
-FROM node:18-alpine AS builder
+FROM node:25-alpine AS builder
 WORKDIR /app
 
 # Copy package files and lock file from parent directory (monorepo root)
@@ -14,7 +14,7 @@ COPY . ./
 RUN npm run build
 
 ## -------- Runtime stage --------
-FROM node:18-alpine AS runtime
+FROM node:25-alpine AS runtime
 WORKDIR /app
 
 # Copy package files and lock file from parent directory (monorepo root)
