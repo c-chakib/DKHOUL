@@ -1,7 +1,6 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 
 // Import routes
@@ -18,16 +17,57 @@ import logRoutes from './routes/log.routes';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/error.middleware';
+import { securityHeaders } from './middleware/security.middleware';
+import {
+  generalRateLimit,
+  authRateLimit,
+  sensitiveRateLimit,
+  uploadRateLimit,
+  apiRateLimit
+} from './middleware/rateLimit.middleware';
+import { setupSwagger } from './config/swagger';
+import { initSentry } from './config/sentry';
 
 dotenv.config();
+
+// Initialize Sentry (must be done before any other code)
+initSentry();
 
 const app: Application = express();
 
 // Security middleware
-// Helmet with adjusted COOP for OAuth popup flows (Google Identity Services requires allow-popups)
 app.use(helmet({
-  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: ["'self'", "https://api.stripe.com", "https://js.stripe.com"],
+      frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  },
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  dnsPrefetchControl: { allow: false },
+  frameguard: { action: 'deny' },
+  hidePoweredBy: true,
+  ieNoOpen: true,
+  noSniff: true,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  xssFilter: true,
 }));
+
+// Additional security headers
+app.use(securityHeaders);
 // Explicitly ensure header present even if future middleware changes Helmet config
 app.use((req, res, next) => {
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
@@ -51,12 +91,23 @@ const corsOptions: cors.CorsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use('/api/', limiter);
+// Rate limiting - apply different limits to different route types
+// General API rate limiting (applied to all routes)
+app.use('/api/', generalRateLimit);
+
+// Stricter rate limiting for authentication routes
+app.use('/api/auth', authRateLimit);
+
+// Rate limiting for sensitive operations (payments, admin)
+app.use('/api/payments', sensitiveRateLimit);
+app.use('/api/admin', sensitiveRateLimit);
+
+// Rate limiting for file uploads
+app.use('/api/upload', uploadRateLimit);
+
+// Stricter rate limiting for API-heavy routes
+app.use('/api/messages', apiRateLimit);
+app.use('/api/logs', apiRateLimit);
 
 // Body parsing middleware
 app.use(express.json());
@@ -83,6 +134,9 @@ app.use('/api/logs', logRoutes);
 app.get('/health', (req, res) => {
   res.json({ success: true, message: 'Server is running' });
 });
+
+// API Documentation
+setupSwagger(app);
 
 // Error handling
 app.use(notFound);

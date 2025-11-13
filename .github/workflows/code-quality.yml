@@ -1,0 +1,84 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    # Backend quality checks
+    - name: Backend - Install dependencies
+      run: cd backend && npm ci
+
+    - name: Backend - Run ESLint
+      run: cd backend && npm run lint
+
+    - name: Backend - Check TypeScript types
+      run: cd backend && npx tsc --noEmit
+
+    - name: Backend - Check formatting
+      run: cd backend && npx prettier --check "src/**/*.{ts,js,json}"
+
+    # Frontend quality checks
+    - name: Frontend - Install dependencies
+      run: cd frontend && npm ci
+
+    - name: Frontend - Run ESLint
+      run: cd frontend && npm run lint
+
+    - name: Frontend - Check formatting
+      run: cd frontend && npx prettier --check "src/**/*.{ts,html,scss,json}"
+
+    - name: Frontend - Build check
+      run: cd frontend && npm run build --configuration=production
+
+    # Security checks
+    - name: Run security audit
+      run: |
+        cd backend && npm audit --audit-level high
+        cd ../frontend && npm audit --audit-level high
+
+    # Size checks
+    - name: Check bundle size
+      run: |
+        cd frontend
+        npm install -g bundlesize
+        bundlesize --config bundlesize.config.json
+      continue-on-error: true
+
+    # Comment PR with results
+    - name: Comment PR
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '## 🔍 Code Quality Check Results\n\n' +
+                  `✅ **Status:** ${process.env.JOB_STATUS}\n\n` +
+                  '### Checks Performed:\n' +
+                  '- ESLint (Backend & Frontend)\n' +
+                  '- TypeScript compilation\n' +
+                  '- Code formatting (Prettier)\n' +
+                  '- Security audit\n' +
+                  '- Bundle size check\n' +
+                  '- Production build test\n\n' +
+                  'Please review any warnings or errors above.'
+          })
+      env:
+        JOB_STATUS: ${{ job.status }}

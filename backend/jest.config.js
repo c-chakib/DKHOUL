@@ -19,7 +19,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   moduleFileExtensions: ['ts', 'js', 'json'],
-  testTimeout: 60000,
+  testTimeout: 60000, // Increased timeout for database tests
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
   verbose: true,
   forceExit: true,
@@ -28,4 +28,5 @@ module.exports = {
   restoreMocks: true,
   maxWorkers: 1, // Run tests serially to avoid memory issues
   detectOpenHandles: false, // Disable to prevent hanging
+  // testNamePattern: '^(?!.*(?:auth\\.middleware|controller)).*', // Temporarily disabled to run controller tests
 };

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { captureException } from '../config/sentry';
 
 export class AppError extends Error {
   statusCode: number;
@@ -48,7 +49,20 @@ export const errorHandler = (
     message = 'Token expired';
   }
 
+  // Log error to console
   console.error('Error:', err);
+
+  // Send error to Sentry (only for non-operational errors or 5xx errors)
+  if (statusCode >= 500 || !(err instanceof AppError) || !err.isOperational) {
+    captureException(err, {
+      url: req.url,
+      method: req.method,
+      userAgent: req.get('User-Agent'),
+      ip: req.ip,
+      statusCode,
+      timestamp: new Date().toISOString()
+    });
+  }
 
   res.status(statusCode).json({
     success: false,

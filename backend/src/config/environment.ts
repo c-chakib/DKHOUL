@@ -50,7 +50,7 @@ export const config = {
   },
   
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:4200',
-  
+
   oauth: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -62,6 +62,19 @@ export const config = {
     }
   }
 };
+
+// Validate required environment variables
+const requiredEnvVars = [
+  'MONGODB_URI',
+  'JWT_SECRET',
+  'JWT_REFRESH_SECRET'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingVars.length > 0) {
+  throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+}
 
 export default config;
 

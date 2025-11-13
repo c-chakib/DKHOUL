@@ -1,0 +1,10 @@
+[
+  {
+    "path": "./frontend/dist/**/*.js",
+    "maxSize": "2 MB"
+  },
+  {
+    "path": "./frontend/dist/**/*.css",
+    "maxSize": "500 KB"
+  }
+]
