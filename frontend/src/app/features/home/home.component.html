@@ -1,3 +1,6 @@
+<!-- Scroll Progress Indicator -->
+<div class="scroll-indicator" id="scrollIndicator"></div>
+
 <!-- Hero Section - Material Design 3 with SVG Pattern -->
 <section class="md-hero bg-dot-pattern bg-texture-overlay">
   <div class="md-hero__container">
@@ -6,11 +9,7 @@
         Micro-Services Touristiques Authentiques
         <span class="md-hero__title-highlight">par des Marocains</span>
       </h1>
-      <p class="md-hero__subtitle md-typescale-body-large">
-        <strong class="md-hero__price">50-300 DH</strong> au lieu de 400-2000 DH ailleurs. Stockez vos bagages (20 DH), prenez une douche (30 DH), 
-        apprenez la cuisine marocaine (200 DH), ou explorez la médina avec un local (100 DH/h). 
-        <strong>DKHOUL</strong> connecte voyageurs et Marocains pour des services pratiques, abordables et authentiques.
-      </p>
+      <app-typed-text [texts]="typedTexts" [typeSpeed]="60" [backSpeed]="40" [loop]="true"></app-typed-text>
       
       <div class="md-hero__badges">
         <span class="md-badge md-badge--primary">🎯 Prix 50-70% moins chers</span>
@@ -29,26 +28,15 @@
         </button>
       </div>
       
-      <div class="md-hero__stats">
-        <div class="md-stat-card elevation-z2">
-          <span class="md-stat-card__number md-typescale-headline-large">580+</span>
-          <span class="md-stat-card__label md-typescale-label-medium">Hôtes Marocains</span>
-        </div>
-        <div class="md-stat-card elevation-z2">
-          <span class="md-stat-card__number md-typescale-headline-large">10K+</span>
-          <span class="md-stat-card__label md-typescale-label-medium">Voyageurs Aidés</span>
-        </div>
-        <div class="md-stat-card elevation-z2">
-          <span class="md-stat-card__number md-typescale-headline-large">5K+</span>
-          <span class="md-stat-card__label md-typescale-label-medium">Services Fournis</span>
-        </div>
+      <div class="md-hero__stats flex gap-6">
+        <app-stats-counter [value]="500" [duration]="1200" label="Hôtes Marocains"></app-stats-counter>
+        <app-stats-counter [value]="10000" [duration]="1200" label="Voyageurs Aidés"></app-stats-counter>
+        <app-stats-counter [value]="5000" [duration]="1200" label="Services Fournis"></app-stats-counter>
       </div>
     </div>
     
     <div class="md-hero__image-wrapper">
-      <div class="md-hero__image elevation-z3">
-        <img src="picture/overall/Gemini_Generated_Image_9keka9keka9keka9.png" alt="Services DKHOUL" class="md-hero__img">
-      </div>
+      <app-hero-carousel [images]="heroImages"></app-hero-carousel>
     </div>
   </div>
 </section>
@@ -211,6 +199,10 @@
   </div>
 </section>
 
+  <!-- Interactive Map Section -->
+  <section class="md-map-section">
+    <app-map-section [locations]="mapLocations"></app-map-section>
+  </section>
 <!-- How It Works - Material Design 3 -->
 <section class="md-how-it-works">
   <div class="md-section-header">

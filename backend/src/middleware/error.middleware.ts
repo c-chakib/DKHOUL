@@ -19,7 +19,7 @@ export const errorHandler = (
   err: AppError | Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   let statusCode = 500;
   // default to the error message so tests that expect custom messages pass
@@ -72,7 +72,7 @@ export const errorHandler = (
   });
 };
 
-export const notFound = (req: Request, res: Response, next: NextFunction): void => {
+export const notFound = (req: Request, _res: Response, next: NextFunction): void => {
   const error = new AppError(`Not Found - ${req.originalUrl}`, 404);
   next(error);
 };

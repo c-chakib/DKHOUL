@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -15,21 +15,38 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class LandingComponent implements OnInit {
   searchQuery = '';
+  animatedTagline = '';
+  private taglinePhrases = [
+    'avec les Marocains',
+    'avec des hôtes locaux',
+    'pour des expériences authentiques',
+    'pour des souvenirs inoubliables'
+  ];
+  private taglineIndex = 0;
   // Animated counters targets
   heroStats = [
     { label: 'Hosts actifs', end: 500, value: 0 },
     { label: 'DH projeté en 2030', end: 100, value: 0, suffix: 'M+' }
   ];
   private observer?: IntersectionObserver;
-
-  constructor(private router: Router) {}
+  router = inject(Router);
 
   ngOnInit(): void {
     this.initRevealObserver();
     this.animateCounters();
+    this.startTaglineAnimation();
+  }
+
+  private startTaglineAnimation(): void {
+    this.animatedTagline = this.taglinePhrases[0];
+    setInterval(() => {
+      this.taglineIndex = (this.taglineIndex + 1) % this.taglinePhrases.length;
+      this.animatedTagline = this.taglinePhrases[this.taglineIndex];
+    }, 2200);
   }
 
   navigateToMarketplace(): void {
+  // Removed debug log
     this.router.navigate(['/home']);
   }
 

@@ -123,7 +123,7 @@ export const setupSwagger = (app: Application) => {
   }));
 
   // Swagger JSON endpoint
-  app.get('/api-docs.json', (req, res) => {
+  app.get('/api-docs.json', (_req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });

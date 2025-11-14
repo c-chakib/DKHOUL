@@ -1,13 +1,78 @@
 /* ============================================
-   GOOGLE MATERIAL DESIGN 3 - GLOBAL STYLES
+   DKHOUL - ENHANCED MATERIAL DESIGN 3 STYLES
    ============================================ */
 
-/* Import Google Fonts - Roboto (Material Design Standard) */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap');
+/* Import Enhanced Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-/* Import Angular Material theme (includes MDC components internally) */
+/* Import Angular Material theme */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* ============================================
+   ENHANCED CSS VARIABLES - INSPIRED BY KIMI DESIGN
+   ============================================ */
+/* Moroccan-Inspired Material Design 3 Palette */
+:root {
+  --md-sys-color-primary: #D2691E; /* Terracotta */
+  --md-sys-color-primary-container: #FFF8F3;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-on-primary-container: #8B4513;
+
+  --md-sys-color-secondary: #008B8B; /* Teal */
+  --md-sys-color-secondary-container: #E0F4F4;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-on-secondary-container: #004D4D;
+
+  --md-sys-color-tertiary: #FFBF00; /* Amber */
+  --md-sys-color-tertiary-container: #FFF9E6;
+  --md-sys-color-on-tertiary: #000000;
+  --md-sys-color-on-tertiary-container: #8B6914;
+
+  --md-sys-color-surface: #FDF5E6; /* Warm White */
+  --md-sys-color-surface-variant: #F5F5F5;
+  --md-sys-color-on-surface: #36454F; /* Charcoal */
+  --md-sys-color-on-surface-variant: #49454F;
+
+  --md-sys-color-outline: #9CAF88; /* Sage */
+  --md-sys-color-outline-variant: #CAC4D0;
+
+  --md-sys-color-error: #B00020;
+  --md-sys-color-error-container: #FDECEA;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-on-error-container: #690005;
+
+  --md-sys-color-background: #FEFBFF;
+  --md-sys-color-on-background: #36454F;
+
+  --md-sys-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --md-sys-elevation-2: 0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
+
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-full: 1000px;
+
+  --md-sys-spacing-xs: 4px;
+  --md-sys-spacing-sm: 8px;
+  --md-sys-spacing-md: 16px;
+  --md-sys-spacing-lg: 24px;
+  --md-sys-spacing-xl: 32px;
+  --md-sys-spacing-xxl: 48px;
+
+  --md-sys-typescale-headline-small-font-size: 24px;
+  --md-sys-typescale-headline-small-font-weight: 700;
+  --md-sys-typescale-title-large-font-size: 20px;
+  --md-sys-typescale-title-large-font-weight: 600;
+  --md-sys-typescale-body-small-font-size: 14px;
+  --md-sys-typescale-body-small-font-weight: 400;
+  --md-sys-typescale-body-medium-font-size: 16px;
+  --md-sys-typescale-body-medium-font-weight: 400;
+  --md-sys-typescale-title-medium-font-size: 18px;
+  --md-sys-typescale-title-medium-font-weight: 600;
+  --md-sys-typescale-label-large-font-size: 16px;
+  --md-sys-typescale-label-large-font-weight: 500;
+}
 
 /* Note: Angular Material v15+ includes all Material Design Components (MDC) internally.
    No need to import material-components-web separately as it causes deprecation warnings
@@ -254,30 +319,116 @@ html {
 }
 
 body {
-  height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.5;
-  letter-spacing: 0.00938em;
-  background-color: var(--md-sys-color-background);
-  color: var(--md-sys-color-on-background);
+  font-family: var(--font-primary);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--charcoal);
+  background: linear-gradient(135deg, var(--warm-white) 0%, #F5F5DC 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Material Design Typography Scale */
+/* Enhanced Typography - Inspired by Kimi Design */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 var(--md-sys-spacing-4) 0;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin: 0 0 var(--md-sys-spacing-4) 0;
+  color: var(--charcoal);
+}
+
+a {
+  color: var(--terracotta);
+  text-decoration: none;
+  transition: color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+
+  &:hover {
+    color: #E67E22;
+    text-decoration: underline;
+  }
+}
+
+/* Enhanced Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-primary { color: var(--terracotta); }
+.text-accent { color: var(--teal); }
+.text-muted { color: #6b7280; }
+
+.font-display { font-family: var(--font-display); }
+.font-primary { font-family: var(--font-primary); }
+
+.font-weight-light { font-weight: 300; }
+.font-weight-normal { font-weight: 400; }
+.font-weight-medium { font-weight: 500; }
+.font-weight-semibold { font-weight: 600; }
+.font-weight-bold { font-weight: 700; }
+
+/* Enhanced Spacing Utilities */
+.m-0 { margin: 0; }
+.m-1 { margin: var(--md-sys-spacing-1); }
+.m-2 { margin: var(--md-sys-spacing-2); }
+.m-3 { margin: var(--md-sys-spacing-3); }
+.m-4 { margin: var(--md-sys-spacing-4); }
+.m-5 { margin: var(--md-sys-spacing-6); }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--md-sys-spacing-1); }
+.mt-2 { margin-top: var(--md-sys-spacing-2); }
+.mt-3 { margin-top: var(--md-sys-spacing-3); }
+.mt-4 { margin-top: var(--md-sys-spacing-4); }
+.mt-5 { margin-top: var(--md-sys-spacing-6); }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--md-sys-spacing-1); }
+.mb-2 { margin-bottom: var(--md-sys-spacing-2); }
+.mb-3 { margin-bottom: var(--md-sys-spacing-3); }
+.mb-4 { margin-bottom: var(--md-sys-spacing-4); }
+.mb-5 { margin-bottom: var(--md-sys-spacing-6); }
+
+.p-0 { padding: 0; }
+.p-1 { padding: var(--md-sys-spacing-1); }
+.p-2 { padding: var(--md-sys-spacing-2); }
+.p-3 { padding: var(--md-sys-spacing-3); }
+.p-4 { padding: var(--md-sys-spacing-4); }
+.p-5 { padding: var(--md-sys-spacing-6); }
+
+/* Display Utilities */
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+
+/* Enhanced Material Design Typography Scale */
 .md-typescale-display-large {
-  font-family: 'Roboto', sans-serif;
-  font-size: 57px;
-  font-weight: 400;
-  line-height: 64px;
-  letter-spacing: -0.25px;
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--charcoal);
 }
 
 .md-typescale-display-medium {
-  font-family: 'Roboto', sans-serif;
-  font-size: 45px;
+  font-family: var(--font-display);
+  font-size: 2.8125rem;
   font-weight: 400;
   line-height: 52px;
   letter-spacing: 0px;
@@ -1008,6 +1159,7 @@ body {
     background-color: #ef4444 !important;
     color: #ffffff !important;
   }
+}
 
   .mat-mdc-snack-bar-action {
     color: #ffffff !important;
@@ -1018,7 +1170,7 @@ body {
     font-weight: 700;
     margin-right: 8px;
   }
-}
+/* removed stray closing brace */
 
 /* Info Toast */
 .toast-info {
@@ -1120,7 +1272,7 @@ body {
 /* Subtle Texture Overlay */
 .bg-texture-overlay {
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;

@@ -80,7 +80,7 @@ export const generalRateLimit = rateLimit({
            req.ip ||
            'unknown';
   },
-  handler: (req: Request, res: Response) => {
+  handler: (_req: Request, res: Response) => {
     const retryAfter = Math.ceil(RATE_LIMITS.general.windowMs / 1000);
     res.status(429).json({
       ...RATE_LIMITS.general.message,
@@ -101,7 +101,7 @@ export const authRateLimit = rateLimit({
     const identifier = req.body?.email || req.body?.username || 'unknown';
     return `${ip}:${identifier}`;
   },
-  skip: (req: Request, res: Response) => {
+  skip: (_req: Request, res: Response) => {
     // Skip rate limiting for successful requests (status < 400)
     return res.statusCode < 400;
   },
@@ -126,7 +126,7 @@ export const sensitiveRateLimit = rateLimit({
     const userId = (req as any).user?.id || 'anonymous';
     return `${ip}:${userId}`;
   },
-  handler: (req: Request, res: Response) => {
+  handler: (_req: Request, res: Response) => {
     const retryAfter = Math.ceil(RATE_LIMITS.sensitive.windowMs / 1000);
     res.status(429).json({
       ...RATE_LIMITS.sensitive.message,
@@ -146,7 +146,7 @@ export const uploadRateLimit = rateLimit({
     const userId = (req as any).user?.id || 'anonymous';
     return `${ip}:${userId}`;
   },
-  handler: (req: Request, res: Response) => {
+  handler: (_req: Request, res: Response) => {
     const retryAfter = Math.ceil(RATE_LIMITS.upload.windowMs / 1000);
     res.status(429).json({
       ...RATE_LIMITS.upload.message,
@@ -166,7 +166,7 @@ export const apiRateLimit = rateLimit({
     const userId = (req as any).user?.id || 'anonymous';
     return `${ip}:${userId}`;
   },
-  handler: (req: Request, res: Response) => {
+  handler: (_req: Request, res: Response) => {
     const retryAfter = Math.ceil(RATE_LIMITS.api.windowMs / 1000);
     res.status(429).json({
       ...RATE_LIMITS.api.message,
@@ -197,7 +197,7 @@ export const createCustomRateLimit = (options: {
              req.ip ||
              'unknown';
     }),
-    handler: (req: Request, res: Response) => {
+    handler: (_req: Request, res: Response) => {
       const retryAfter = Math.ceil(options.windowMs / 1000);
       res.status(429).json({
         error: 'Rate limit exceeded',

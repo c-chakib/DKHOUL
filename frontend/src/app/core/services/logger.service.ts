@@ -21,7 +21,7 @@ export class LoggerService {
    */
   debug(message: string, ...args: any[]): void {
     if (this.shouldLog(LogLevel.DEBUG)) {
-      console.log(`[DEBUG] ${message}`, ...args);
+  // Removed debug log
     }
   }
 
@@ -61,7 +61,7 @@ export class LoggerService {
   logWithTimestamp(message: string, ...args: any[]): void {
     if (this.isDevelopment) {
       const timestamp = new Date().toISOString();
-      console.log(`[${timestamp}] ${message}`, ...args);
+  // Removed debug log
     }
   }
 

@@ -61,8 +61,8 @@ export const initSentry = (dsn?: string, environment?: string) => {
       },
     });
 
-    console.log('🔍 Sentry error tracking initialized (Frontend)');
+  // Removed debug log
   } else {
-    console.log('ℹ️  Sentry not initialized (Frontend - localhost or no DSN)');
+  // Removed debug log
   }
 };

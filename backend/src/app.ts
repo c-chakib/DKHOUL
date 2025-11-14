@@ -69,7 +69,7 @@ app.use(helmet({
 // Additional security headers
 app.use(securityHeaders);
 // Explicitly ensure header present even if future middleware changes Helmet config
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   return next();
 });
@@ -131,7 +131,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/logs', logRoutes);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ success: true, message: 'Server is running' });
 });
 

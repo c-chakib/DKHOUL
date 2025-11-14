@@ -10,6 +10,8 @@ import {
   getGlobalMessages
 } from '../controllers/message.controller';
 import { authenticate } from '../middleware/auth.middleware';
+import { sendMessageValidation } from '../utils/validationRules';
+import { validate, sanitizeInput } from '../middleware/validation.middleware';
 
 const router = Router();
 
@@ -17,8 +19,10 @@ const router = Router();
 router.use(authenticate);
 
 router.post('/', sendMessage);
+router.post('/', sanitizeInput, sendMessageValidation, validate, sendMessage);
 router.get('/conversations', getConversations);
 router.post('/conversations', createConversation);
+router.post('/conversations', sanitizeInput, validate, createConversation);
 router.get('/conversation/:otherUserId', getConversation);
 router.get('/global', getGlobalMessages);
 router.get('/unread-count', getUnreadCount);

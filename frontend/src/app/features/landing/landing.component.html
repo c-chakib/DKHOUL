@@ -28,7 +28,10 @@
         
         <h1 class="md-hero-title">
           Connecter 15M de touristes<br/>
-          <span class="md-gradient-text">avec les Marocains</span>
+          <span class="md-gradient-text">
+            <span *ngIf="!animatedTagline">avec les Marocains</span>
+            <span *ngIf="animatedTagline">{{ animatedTagline }}</span>
+          </span>
         </h1>
         
         <p class="md-hero-description">
@@ -131,94 +134,26 @@
       <div class="md-cards-grid">
         
         <!-- Marketplace Card -->
-        <div class="md-gateway-card" (click)="navigateToMarketplace()">
+        <div class="md-gateway-card" tabindex="0" (click)="navigateToMarketplace()" (keydown.enter)="navigateToMarketplace()">
           <!-- Image with overlay -->
           <div class="md-card-image">
-            <img src="picture/overall/Gemini_Generated_Image_lhrdlmlhrdlmlhrd.png" 
-                 alt="DKHOUL Marketplace - Services touristiques authentiques au Maroc"
-                 loading="lazy"
-                 width="600"
-                 height="400" />
-            <div class="md-image-overlay"></div>
-            <div class="md-image-badge">
-              <mat-icon>storefront</mat-icon>
-              <span>Marketplace</span>
-            </div>
+            <img src="picture/overall/Gemini_Generated_Image_9keka9keka9keka9.png" alt="Marketplace" />
           </div>
-          
           <div class="md-card-content">
-            <h2 class="md-card-title">Accéder à la Marketplace</h2>
-            
-            <p class="md-card-description">
-              Découvrez des milliers de services authentiques offerts par des Marocains : 
-              espaces uniques, cours de cuisine, visites guidées et bien plus encore.
-            </p>
-            
-            <ul class="md-card-list">
-              <li>
-                <div class="md-bullet"></div>
-                <span>Parcourir tous les services disponibles</span>
-              </li>
-              <li>
-                <div class="md-bullet"></div>
-                <span>Réserver instantanément en ligne</span>
-              </li>
-              <li>
-                <div class="md-bullet"></div>
-                <span>Contacter directement les Hosts</span>
-              </li>
-            </ul>
-            
-            <button mat-raised-button class="md-card-cta md-primary-cta">
-              <span>Explorer la Marketplace</span>
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
+            <h3 class="md-card-title">Marketplace</h3>
+            <p class="md-card-desc">Accédez à tous les services DKHOUL</p>
           </div>
         </div>
         
         <!-- Investor Pitch Card -->
-        <div class="md-gateway-card" (click)="navigateToInvestor()">
+        <div class="md-gateway-card" tabindex="0" (click)="navigateToInvestor()" (keydown.enter)="navigateToInvestor()">
           <!-- Image with overlay -->
           <div class="md-card-image">
-            <img src="picture/overall/Gemini_Generated_Image_sszal4sszal4ssza.png" 
-                 alt="DKHOUL - Opportunité d'investissement"
-                 loading="lazy"
-                 width="600"
-                 height="400" />
-            <div class="md-image-overlay"></div>
-            <div class="md-image-badge md-accent-badge">
-              <mat-icon>trending_up</mat-icon>
-              <span>Opportunité d'Investissement</span>
-            </div>
+            <img src="picture/overall/Gemini_Generated_Image_b94gjrb94gjrb94g.png" alt="Investor" />
           </div>
-          
           <div class="md-card-content">
-            <h2 class="md-card-title">Dossier Investisseur</h2>
-            
-            <p class="md-card-description">
-              Découvrez l'opportunité d'investissement : marché, modèle économique, projections financières 
-              et impact social de DKHOUL.
-            </p>
-            
-            <ul class="md-card-list">
-              <li>
-                <div class="md-bullet md-accent-bullet"></div>
-                <span>Problématique et opportunité de marché</span>
-              </li>
-              <li>
-                <div class="md-bullet md-accent-bullet"></div>
-                <span>Modèle économique et projections financières</span>
-              </li>
-              <li>
-                <div class="md-bullet md-accent-bullet"></div>
-                <span>Demande de financement : 500,000 DH</span>
-              </li>
-            </ul>
-            
-            <button mat-raised-button class="md-card-cta md-accent-cta">
-              <span>Voir le Pitch</span>
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
+            <h3 class="md-card-title">Investisseur</h3>
+            <p class="md-card-desc">Découvrez les opportunités d'investissement</p>
           </div>
         </div>
         

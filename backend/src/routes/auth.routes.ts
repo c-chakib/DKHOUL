@@ -10,8 +10,15 @@ import {
   getCurrentUser,
   googleAuth
 } from '../controllers/auth.controller';
-import { registerValidation, loginValidation } from '../utils/validators';
-import { validate } from '../middleware/validation.middleware';
+import {
+  registerValidation,
+  loginValidation,
+  verifyEmailValidation,
+  forgotPasswordValidation,
+  resetPasswordValidation,
+  refreshTokenValidation
+} from '../utils/validationRules';
+import { validate, sanitizeInput } from '../middleware/validation.middleware';
 import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
@@ -56,7 +63,7 @@ const router = Router();
  *       409:
  *         description: User already exists
  */
-router.post('/register', registerValidation, validate, register);
+router.post('/register', sanitizeInput, registerValidation, validate, register);
 
 /**
  * @swagger
@@ -104,7 +111,7 @@ router.post('/register', registerValidation, validate, register);
  *       401:
  *         description: Invalid credentials
  */
-router.post('/login', loginValidation, validate, login);
+router.post('/login', sanitizeInput, loginValidation, validate, login);
 
 /**
  * @swagger
@@ -127,7 +134,7 @@ router.post('/login', loginValidation, validate, login);
  *       200:
  *         description: Authentication successful
  */
-router.post('/google', googleAuth);
+router.post('/google', sanitizeInput, googleAuth);
 
 /**
  * @swagger
@@ -147,7 +154,7 @@ router.post('/google', googleAuth);
  *       400:
  *         description: Invalid or expired token
  */
-router.get('/verify-email/:token', verifyEmail);
+router.get('/verify-email/:token', sanitizeInput, verifyEmailValidation, validate, verifyEmail);
 
 /**
  * @swagger
@@ -171,7 +178,7 @@ router.get('/verify-email/:token', verifyEmail);
  *       200:
  *         description: Password reset email sent
  */
-router.post('/forgot-password', forgotPassword);
+router.post('/forgot-password', sanitizeInput, forgotPasswordValidation, validate, forgotPassword);
 
 /**
  * @swagger
@@ -203,7 +210,7 @@ router.post('/forgot-password', forgotPassword);
  *       400:
  *         description: Invalid or expired token
  */
-router.post('/reset-password/:token', resetPassword);
+router.post('/reset-password/:token', sanitizeInput, resetPasswordValidation, validate, resetPassword);
 
 /**
  * @swagger
@@ -228,7 +235,7 @@ router.post('/reset-password/:token', resetPassword);
  *       401:
  *         description: Invalid refresh token
  */
-router.post('/refresh', refreshToken);
+router.post('/refresh', sanitizeInput, refreshTokenValidation, validate, refreshToken);
 
 /**
  * @swagger

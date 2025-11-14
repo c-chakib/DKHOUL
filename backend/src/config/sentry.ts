@@ -19,7 +19,7 @@ export const initSentry = () => {
       profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
 
       // Error tracking
-      beforeSend(event, hint) {
+      beforeSend(event, _hint) {
         // Filter out sensitive information
         if (event.request?.data) {
           // Remove sensitive fields from request data
@@ -39,7 +39,7 @@ export const initSentry = () => {
       },
 
       // Capture console logs in production
-      beforeBreadcrumb(breadcrumb, hint) {
+      beforeBreadcrumb(breadcrumb, _hint) {
         if (breadcrumb.category === 'console' && process.env.NODE_ENV === 'production') {
           // Only capture error and warn level console logs
           if (!['error', 'warn'].includes(breadcrumb.level || '')) {

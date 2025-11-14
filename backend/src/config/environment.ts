@@ -66,8 +66,8 @@ export const config = {
 // Validate required environment variables
 const requiredEnvVars = [
   'MONGODB_URI',
-  'JWT_SECRET',
-  'JWT_REFRESH_SECRET'
+  'JWT_SECRET'
+  // 'JWT_REFRESH_SECRET' - removed since it has a default value
 ];
 
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);

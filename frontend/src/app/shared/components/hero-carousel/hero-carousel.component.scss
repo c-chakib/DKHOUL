@@ -1,0 +1,223 @@
+/* ============================================
+   HERO CAROUSEL - SPLIDE INTEGRATION
+   ============================================ */
+
+.splide {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.splide__track {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.splide__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.splide__slide {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-carousel-slide {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fdf5e6 0%, #f5f5dc 100%);
+}
+
+.hero-carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hero-carousel-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
+  padding: 40px 32px 24px;
+  color: white;
+}
+
+.hero-carousel-content {
+  max-width: 600px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.hero-carousel-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: slideInUp 0.8s ease-out;
+}
+
+.hero-carousel-subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0;
+  opacity: 0.95;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  animation: slideInUp 0.8s ease-out 0.2s both;
+}
+
+/* Splide Custom Arrows */
+.splide__arrows {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.splide__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  color: #d2691e;
+  font-size: 20px;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.splide__arrow:hover {
+  background: #ffd700;
+  color: #8b4513;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.splide__arrow--prev {
+  left: 20px;
+}
+
+.splide__arrow--next {
+  right: 20px;
+}
+
+.splide__arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Splide Custom Pagination */
+.splide__pagination {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.splide__pagination__page {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.splide__pagination__page.is-active {
+  background: #ffd700;
+  border-color: #ffd700;
+  transform: scale(1.2);
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-carousel-slide {
+    height: 320px;
+  }
+
+  .hero-carousel-title {
+    font-size: 2rem;
+  }
+
+  .hero-carousel-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-carousel-overlay {
+    padding: 32px 24px 20px;
+  }
+
+  .splide__arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .splide__arrow--prev {
+    left: 12px;
+  }
+
+  .splide__arrow--next {
+    right: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-carousel-slide {
+    height: 280px;
+  }
+
+  .hero-carousel-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-carousel-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .hero-carousel-overlay {
+    padding: 24px 20px 16px;
+  }
+
+  .splide__arrows {
+    display: none; /* Hide arrows on mobile, use pagination only */
+  }
+}

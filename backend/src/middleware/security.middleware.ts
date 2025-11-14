@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
  * Additional security headers middleware
  * These headers complement Helmet's security headers
  */
-export const securityHeaders = (req: Request, res: Response, next: NextFunction) => {
+export const securityHeaders = (_req: Request, res: Response, next: NextFunction) => {
   // Prevent clickjacking
   res.setHeader('X-Frame-Options', 'DENY');
 
@@ -31,7 +31,7 @@ export const securityHeaders = (req: Request, res: Response, next: NextFunction)
 /**
  * Development-only headers (should be disabled in production)
  */
-export const developmentHeaders = (req: Request, res: Response, next: NextFunction) => {
+export const developmentHeaders = (_req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === 'development') {
     // CORS headers for development
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');

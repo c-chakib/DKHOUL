@@ -94,8 +94,7 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
       location, // nested object { address, city, country }
       languages,
       notificationPreferences,
-      avatar,
-      coverPhoto
+      avatar
     } = req.body;
 
     const user = await User.findById(userId);

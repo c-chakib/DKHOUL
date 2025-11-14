@@ -41,7 +41,7 @@ const s3Mock = {
       return {};
     }
   }),
-  headBucket: ({ Bucket }: any) => ({
+  headBucket: ({ Bucket: _Bucket }: any) => ({
     promise: async () => {
       // pretend the bucket exists in test
       return true;

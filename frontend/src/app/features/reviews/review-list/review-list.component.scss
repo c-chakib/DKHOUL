@@ -95,9 +95,13 @@
   }
 
   .reviews-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: var(--md-sys-spacing-xl);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
 
     .review-card {
       padding: var(--md-sys-spacing-xl);

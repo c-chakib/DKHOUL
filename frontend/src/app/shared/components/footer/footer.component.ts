@@ -19,6 +19,6 @@ export class FooterComponent {
   changeLanguage(lang: string): void {
     this.currentLanguage = lang;
     // TODO: Implement actual language change logic with i18n
-    console.log('Footer language changed to:', lang);
+  // Removed debug log
   }
 }

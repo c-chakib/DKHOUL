@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -30,8 +31,9 @@ import { MessageService } from '../../../core/services/message.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+
   isLoggedIn = false;
-  currentUser: any = null;
+  currentUser: import('../../../models/user').User | null = null;
   unreadMessages = 0;
   currentLanguage = 'fr';
   currentLanguageFlag = '🇫🇷';
@@ -40,13 +42,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isScrolled = false;
   private subscriptions: Subscription[] = [];
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private socketService: SocketService,
-    private messageService: MessageService
-  ) {}
+  authService = inject(AuthService);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
+  socketService = inject(SocketService);
+  messageService = inject(MessageService);
 
   ngOnInit(): void {
     // Track scroll for navbar style
@@ -70,17 +70,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isMarketingLayout = this.computeIsMarketingLayout();
 
     // Subscribe to auth state
-    const authSub = this.authService.currentUser.subscribe((user: any) => {
+    const authSub = this.authService.currentUser.subscribe((user: import('../../../models/user').User | null) => {
       this.isLoggedIn = !!user;
       this.currentUser = user;
-      
       if (user) {
         // Connect socket when user logs in
         const token = localStorage.getItem('token');
         if (token) {
           this.socketService.connect(token);
         }
-        
         // Load initial unread count
         this.loadUnreadCount();
       }
@@ -133,12 +131,28 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private loadUnreadCount(): void {
     this.messageService.getConversations().subscribe({
-      next: (response: any) => {
-        const conversations = response?.data?.conversations || response?.conversations || response?.data || response || [];
-        const totalUnread = Array.isArray(conversations)
-          ? conversations.reduce((sum: number, conv: any) => sum + (conv?.unreadCount || 0), 0)
-          : 0;
-        this.socketService.setUnreadCount(totalUnread);
+      next: (response: unknown) => {
+            // Type assertion fix: response should be { unreadCount: number, conversations?: any[] }
+            interface Conversation { unreadCount?: number; }
+            let conversations: Conversation[] = [];
+            if (typeof response === 'object' && response !== null) {
+              if ('unreadCount' in response) {
+                this.unreadMessages = (response as { unreadCount: number }).unreadCount ?? 0;
+              } else {
+                this.unreadMessages = 0;
+              }
+              if ('conversations' in response && Array.isArray((response as { conversations?: Conversation[] }).conversations)) {
+                  conversations = (response as { conversations: Conversation[] }).conversations;
+              } else if ('data' in response && Array.isArray((response as { data?: { conversations?: Conversation[] } }).data?.conversations)) {
+                  conversations = (response as { data: { conversations: Conversation[] } }).data.conversations;
+              }
+            } else {
+              this.unreadMessages = 0;
+            }
+            const totalUnread = Array.isArray(conversations)
+              ? conversations.reduce((sum: number, conv: { unreadCount?: number }) => sum + (conv?.unreadCount || 0), 0)
+              : 0;
+            this.socketService.setUnreadCount(totalUnread);
       },
       error: (error) => {
         console.error('Error loading unread count:', error);
@@ -161,7 +175,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         break;
     }
     // TODO: Implement actual language change logic with i18n
-    console.log('Language changed to:', lang);
+  // Removed debug log
   }
 
   toggleMobileMenu(): void {
@@ -229,25 +243,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   isProvider(): boolean {
-    // Backend uses 'host' role, but frontend may receive 'provider' from registration
-    // Support both for compatibility
-    return this.currentUser?.role === 'provider' || this.currentUser?.role === 'host';
+  // Backend uses 'host' role, but frontend may receive 'provider' from registration
+  // Support both for compatibility
+  return this.currentUser?.role === 'provider' || this.currentUser?.role === 'host';
   }
 
   isAdmin(): boolean {
-    return this.currentUser?.role === 'admin';
+  return this.currentUser?.role === 'admin';
   }
 
   getInitials(): string {
-    if (!this.currentUser) return '?';
-    const first = this.currentUser.firstName?.charAt(0) || '';
-    const last = this.currentUser.lastName?.charAt(0) || '';
-    return (first + last).toUpperCase() || '?';
+  if (!this.currentUser) return '?';
+  const first = this.currentUser?.profile?.firstName?.charAt(0) || '';
+  const last = this.currentUser?.profile?.lastName?.charAt(0) || '';
+  return (first + last).toUpperCase() || '?';
   }
 
   getUserRole(): string {
-    if (this.isAdmin()) return 'Administrateur';
-    if (this.isProvider()) return 'Host';
-    return 'Voyageur';
+  if (this.isAdmin()) return 'Administrateur';
+  if (this.isProvider()) return 'Host';
+  return 'Voyageur';
   }
 }

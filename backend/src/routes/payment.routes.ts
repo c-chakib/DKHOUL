@@ -10,26 +10,23 @@ import {
   stripeWebhook
 } from '../controllers/payment.controller';
 import { authenticate, authorize } from '../middleware/auth.middleware';
+import { createPaymentIntentValidation } from '../utils/validationRules';
+import { validate, sanitizeInput } from '../middleware/validation.middleware';
 import express from 'express';
 
 const router = Router();
 
-// Webhook route (must be before express.json() middleware)
-router.post(
-  '/webhook/stripe',
-  express.raw({ type: 'application/json' }),
-  stripeWebhook
-);
+// Stripe webhook removed for now (no Stripe integration)
 
 // Protected routes
 router.use(authenticate);
 
-router.post('/create-intent', createPaymentIntent);
-router.post('/confirm', confirmPayment);
+router.post('/create-intent', sanitizeInput, createPaymentIntentValidation, validate, createPaymentIntent);
+router.post('/confirm', sanitizeInput, validate, confirmPayment);
 router.get('/my-payments', getMyPayments); // Must come before /:id
 router.get('/my', getMyPayments); // Alias for backward compatibility
-router.post('/refund', refundPayment); // Support body-based refund
-router.post('/:id/confirm-cash', authorize('host', 'provider', 'admin'), confirmCashPayment);
+router.post('/refund', sanitizeInput, validate, refundPayment); // Support body-based refund
+router.post('/:id/confirm-cash', authorize('host', 'provider', 'admin'), sanitizeInput, validate, confirmCashPayment);
 router.get('/:id', getPaymentById); // Parametric route must come after specific routes
 
 // Admin routes

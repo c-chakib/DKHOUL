@@ -2,6 +2,18 @@
    HOME COMPONENT - MATERIAL DESIGN 3 STYLES
    ============================================ */
 
+/* Scroll Progress Indicator */
+.scroll-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--terracotta), var(--teal));
+  z-index: 1000;
+  transition: width 0.1s ease;
+}
+
 /* ============================================
    HERO SECTION
    ============================================ */

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { SeoService } from './core/services/seo.service';
@@ -14,10 +14,8 @@ import { FooterComponent } from './shared/components/footer/footer.component';
 export class AppComponent implements OnInit {
   title = 'DKHOUL - Discover Authentic Moroccan Experiences';
 
-  constructor(
-    private router: Router,
-    private seoService: SeoService
-  ) {}
+  router = inject(Router);
+  seoService = inject(SeoService);
 
   ngOnInit(): void {
     // Update SEO on route changes

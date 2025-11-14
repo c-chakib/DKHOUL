@@ -9,7 +9,7 @@ import { calculateServiceFee, getObjectIdString } from '../utils/helpers';
 export const createBooking = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user.userId;
-    const { serviceId, bookingDate, numberOfGuests, timeSlot, specialRequests } = req.body;
+    const { serviceId, bookingDate, numberOfGuests, timeSlot } = req.body;
 
     // Get service
     const service = await Service.findById(serviceId);

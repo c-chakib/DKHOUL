@@ -3,11 +3,10 @@ import multerS3 from 'multer-s3';
 import { s3, bucketName } from '../config/aws';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
-import fs from 'fs';
 import { AppError } from './error.middleware';
 
 // File filter for images
-const imageFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const imageFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
   
   if (allowedMimes.includes(file.mimetype)) {
@@ -24,10 +23,10 @@ export const uploadToS3 = multer({
     s3: s3,
     bucket: bucketName!,
     acl: 'public-read',
-    metadata: (req: any, file: any, cb: any) => {
-      cb(null, { fieldName: file.fieldname });
+    metadata: (_req: any, _file: any, cb: any) => {
+      cb(null, { fieldName: _file.fieldname });
     },
-    key: (req: any, file: any, cb: any) => {
+    key: (_req: any, file: any, cb: any) => {
       const ext = path.extname(file.originalname);
       const filename = `${uuidv4()}${ext}`;
       const folder = file.fieldname === 'photo' ? 'profiles' : 'services';

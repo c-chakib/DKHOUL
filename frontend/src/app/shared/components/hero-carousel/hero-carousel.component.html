@@ -1,0 +1,17 @@
+<div class="splide" #splideContainer>
+  <div class="splide__track">
+    <ul class="splide__list">
+      <li class="splide__slide" *ngFor="let image of images">
+        <div class="hero-carousel-slide">
+          <img [src]="image.src" [alt]="image.alt" class="hero-carousel-image" loading="lazy" />
+          <div class="hero-carousel-overlay" *ngIf="image.title || image.subtitle">
+            <div class="hero-carousel-content">
+              <h2 class="hero-carousel-title" *ngIf="image.title">{{ image.title }}</h2>
+              <p class="hero-carousel-subtitle" *ngIf="image.subtitle">{{ image.subtitle }}</p>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,394 @@
+<!DOCTYPE html><html lang="en"><head>
+<base href="https://qlxel7gjqjyhe.ok.kimi.link">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DKHOUL - Authentic Moroccan Experiences</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --terracotta: #D2691E;
+            --teal: #008B8B;
+            --amber: #FFBF00;
+            --warm-white: #FDF5E6;
+            --charcoal: #36454F;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--warm-white) 0%, #F5F5DC 100%);
+            min-height: 100vh;
+        }
+        
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, var(--terracotta), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .category-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(210, 105, 30, 0.15);
+        }
+        
+        .stats-counter {
+            font-family: 'Playfair Display', serif;
+            color: var(--terracotta);
+        }
+        
+        .floating-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: radial-gradient(circle at 25% 25%, var(--terracotta) 2px, transparent 2px),
+                              radial-gradient(circle at 75% 75%, var(--teal) 2px, transparent 2px);
+            background-size: 40px 40px;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .nav-tab {
+            transition: all 0.3s ease;
+            color: var(--charcoal);
+        }
+        
+        .nav-tab.active {
+            color: var(--terracotta);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--terracotta), #E67E22);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--teal), #20B2AA);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 139, 139, 0.3);
+        }
+    </style>
+<script src="https://statics.moonshot.cn/sdk/preview-widgets.min.js" defer=""></script></head>
+<body class="overflow-x-hidden">
+    <!-- Floating Pattern Background -->
+    <div class="floating-pattern fixed inset-0 z-0"></div>
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex flex-col justify-center items-center px-4 pt-16 pb-24 z-10">
+        <div class="text-center max-w-4xl mx-auto">
+            <!-- Logo/Brand -->
+            <div class="mb-8">
+                <h1 class="hero-title text-5xl md:text-7xl font-bold mb-4">DKHOUL</h1>
+                <div class="text-xl md:text-2xl text-gray-600 mb-6">
+                    <span id="typed-tagline"></span>
+                </div>
+            </div>
+            
+            <!-- Hero Image Carousel -->
+            <div class="splide mb-8 rounded-2xl overflow-hidden shadow-2xl" id="hero-carousel">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <img src="resources/hero-riad.png" alt="Moroccan Riad" class="w-full h-64 md:h-96 object-cover"/>
+                        </li>
+                        <li class="splide__slide">
+                            <img src="https://kimi-web-img.moonshot.cn/img/cdn.prod.website-files.com/0164413f868bf39785cf8194412d58573b0ec5a7.jpg" alt="Moroccan Landscape" class="w-full h-64 md:h-96 object-cover"/>
+                        </li>
+                        <li class="splide__slide">
+                            <img src="https://kimi-web-img.moonshot.cn/img/media.istockphoto.com/7e09630883862a12cd4d43e352edd5c066d1536d.jpg" alt="Moroccan Courtyard" class="w-full h-64 md:h-96 object-cover"/>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <button onclick="navigateTo(&#39;discover.html&#39;)" class="btn-primary px-8 py-4 rounded-full text-lg font-semibold">
+                    Explore Services
+                </button>
+                <button onclick="showComingSoon()" class="btn-secondary px-8 py-4 rounded-full text-lg font-semibold">
+                    Become a Host
+                </button>
+            </div>
+            
+            <!-- Key Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <div class="text-center">
+                    <div class="stats-counter text-3xl md:text-4xl font-bold mb-2" data-target="580">0</div>
+                    <div class="text-gray-600 text-sm">Active Hosts</div>
+                </div>
+                <div class="text-center">
+                    <div class="stats-counter text-3xl md:text-4xl font-bold mb-2" data-target="10000">0</div>
+                    <div class="text-gray-600 text-sm">Happy Travelers</div>
+                </div>
+                <div class="text-center">
+                    <div class="stats-counter text-3xl md:text-4xl font-bold mb-2" data-target="5000">0</div>
+                    <div class="text-gray-600 text-sm">Services Provided</div>
+                </div>
+                <div class="text-center">
+                    <div class="stats-counter text-3xl md:text-4xl font-bold mb-2" data-target="80">0</div>
+                    <div class="text-gray-600 text-sm">% Revenue to Hosts</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Service Categories -->
+    <section class="relative py-16 px-4 z-10">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">Choose Your Experience</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- DKHOUL Space -->
+                <div class="category-card rounded-2xl p-6 text-center">
+                    <div class="text-6xl mb-4">🏠</div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">DKHOUL Space</h3>
+                    <p class="text-gray-600 mb-6">Monetize your space with micro-services</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">🎒 Baggage Storage</span>
+                            <span class="font-semibold text-terracotta">20-30 DH</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">🚿 Shower Express</span>
+                            <span class="font-semibold text-terracotta">30-50 DH</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">📶 WiFi/Coworking</span>
+                            <span class="font-semibold text-terracotta">50-100 DH</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="navigateTo(&#39;discover.html?category=space&#39;)" class="btn-primary w-full py-3 rounded-full font-semibold">
+                        Find Space Services
+                    </button>
+                </div>
+                
+                <!-- DKHOUL Skills -->
+                <div class="category-card rounded-2xl p-6 text-center">
+                    <div class="text-6xl mb-4">🎓</div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">DKHOUL Skills</h3>
+                    <p class="text-gray-600 mb-6">Share your expertise and culture</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">🍽️ Moroccan Cooking</span>
+                            <span class="font-semibold text-terracotta">200-400 DH</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">🗣️ Darija Lessons</span>
+                            <span class="font-semibold text-terracotta">150-250 DH</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">🎨 Traditional Crafts</span>
+                            <span class="font-semibold text-terracotta">200-350 DH</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="navigateTo(&#39;discover.html?category=skills&#39;)" class="btn-secondary w-full py-3 rounded-full font-semibold">
+                        Find Skill Services
+                    </button>
+                </div>
+                
+                <!-- DKHOUL Connect -->
+                <div class="category-card rounded-2xl p-6 text-center">
+                    <div class="text-6xl mb-4">🤝</div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">DKHOUL Connect</h3>
+                    <p class="text-gray-600 mb-6">Offer your time and local knowledge</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">🛍️ Souk Shopping</span>
+                            <span class="font-semibold text-terracotta">100-150 DH</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">💡 Local Tips</span>
+                            <span class="font-semibold text-terracotta">50 DH</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">🚕 Transport Help</span>
+                            <span class="font-semibold text-terracotta">Variable</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="navigateTo(&#39;discover.html?category=connect&#39;)" class="btn-primary w-full py-3 rounded-full font-semibold">
+                        Find Connect Services
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Featured Services Preview -->
+    <section class="relative py-16 px-4 z-10">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">Featured Experiences</h2>
+            
+            <div class="splide" id="featured-services">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <div class="service-card mx-2">
+                                <img src="https://kimi-web-img.moonshot.cn/img/img.freepik.com/a98a157a3dcd5fb4714171d26d7b280fe03c70fb.jpg" alt="Riad Experience" class="w-full h-48 object-cover"/>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-2">Authentic Riad Stay</h3>
+                                    <p class="text-gray-600 text-sm mb-3">Experience traditional Moroccan hospitality</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-terracotta font-bold">150 DH/hour</span>
+                                        <div class="flex items-center">
+                                            <span class="text-yellow-500">⭐</span>
+                                            <span class="text-sm text-gray-600 ml-1">4.9 (127)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="service-card mx-2">
+                                <img src="https://kimi-web-img.moonshot.cn/img/i0.wp.com/83acd0dbd9db01a0dfd42e2ec68ae52fdd34f463.jpg" alt="Spice Market" class="w-full h-48 object-cover"/>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-2">Spice Market Tour</h3>
+                                    <p class="text-gray-600 text-sm mb-3">Discover authentic Moroccan spices</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-terracotta font-bold">120 DH/hour</span>
+                                        <div class="flex items-center">
+                                            <span class="text-yellow-500">⭐</span>
+                                            <span class="text-sm text-gray-600 ml-1">4.8 (89)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="service-card mx-2">
+                                <img src="https://kimi-web-img.moonshot.cn/img/www.palaisamani.com/29b5a40e2f2d8bdeffb098bd3d68c0dd70f06777.jpeg" alt="Tea Ceremony" class="w-full h-48 object-cover"/>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-2">Mint Tea Ceremony</h3>
+                                    <p class="text-gray-600 text-sm mb-3">Learn the art of Moroccan tea</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-terracotta font-bold">80 DH/hour</span>
+                                        <div class="flex items-center">
+                                            <span class="text-yellow-500">⭐</span>
+                                            <span class="text-sm text-gray-600 ml-1">4.9 (156)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="service-card mx-2">
+                                <img src="https://kimi-web-img.moonshot.cn/img/pulitzercenter.org/3310ffd79501c1cb23339b247a427e5d2f3417af.webp" alt="Calligraphy" class="w-full h-48 object-cover"/>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-2">Arabic Calligraphy</h3>
+                                    <p class="text-gray-600 text-sm mb-3">Master beautiful Arabic script</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-terracotta font-bold">200 DH/hour</span>
+                                        <div class="flex items-center">
+                                            <span class="text-yellow-500">⭐</span>
+                                            <span class="text-sm text-gray-600 ml-1">4.7 (73)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Trust &amp; Safety -->
+    <section class="relative py-16 px-4 z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800">Why Choose DKHOUL?</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="text-5xl mb-4">🤝</div>
+                    <h3 class="text-xl font-bold mb-3">Authentic Connections</h3>
+                    <p class="text-gray-600">Meet real Moroccans and experience genuine culture</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-4">💰</div>
+                    <h3 class="text-xl font-bold mb-3">Fair Pricing</h3>
+                    <p class="text-gray-600">80% of revenue goes directly to local hosts</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-4">🛡️</div>
+                    <h3 class="text-xl font-bold mb-3">Verified &amp; Safe</h3>
+                    <p class="text-gray-600">All hosts verified with secure payment system</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-50">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <button onclick="navigateTo(&#39;index.html&#39;)" class="nav-tab active flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">🏠</span>
+                <span class="text-xs font-medium">Home</span>
+            </button>
+            <button onclick="navigateTo(&#39;discover.html&#39;)" class="nav-tab flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">🔍</span>
+                <span class="text-xs font-medium">Discover</span>
+            </button>
+            <button onclick="navigateTo(&#39;booking.html&#39;)" class="nav-tab flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">📅</span>
+                <span class="text-xs font-medium">Bookings</span>
+            </button>
+            <button onclick="navigateTo(&#39;profile.html&#39;)" class="nav-tab flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">👤</span>
+                <span class="text-xs font-medium">Profile</span>
+            </button>
+        </div>
+    </nav>
+    
+    <script src="main.js"></script>
+
+</body></html>

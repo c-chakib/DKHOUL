@@ -434,7 +434,7 @@ export const getAllPayments = async (req: Request, res: Response, next: NextFunc
 };
 
 // Get platform statistics
-export const getPlatformStats = async (req: Request, res: Response, next: NextFunction) => {
+export const getPlatformStats = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     // User statistics
     const totalUsers = await User.countDocuments();

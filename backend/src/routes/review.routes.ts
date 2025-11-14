@@ -8,8 +8,7 @@ import {
   respondToReview
 } from '../controllers/review.controller';
 import { authenticate, authorize } from '../middleware/auth.middleware';
-import { reviewValidation } from '../utils/validators';
-import { validate } from '../middleware/validation.middleware';
+import { createReviewValidation } from '../utils/validationRules';
 
 const router = Router();
 
@@ -20,7 +19,8 @@ router.get('/:id', getReviewById);
 // Protected routes
 router.use(authenticate);
 
-router.post('/', reviewValidation, validate, createReview);
+import { validate, sanitizeInput } from '../middleware/validation.middleware';
+router.post('/', sanitizeInput, createReviewValidation, validate, createReview);
 router.put('/:id', updateReview);
 router.delete('/:id', deleteReview);
 router.post('/:id/respond', respondToReview);

@@ -19,7 +19,6 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     
     // Create email verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     
     // Map role from frontend to backend
     const userRole = role === 'provider' ? 'host' : 'tourist';
@@ -280,7 +279,7 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
 };
 
 // Logout (client should delete tokens)
-export const logout = async (req: Request, res: Response, next: NextFunction) => {
+export const logout = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     res.json({
       success: true,
